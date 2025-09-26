@@ -35,11 +35,12 @@ class VoiceManager {
 
     public init() {
         this.capsLockListener = (event: KeyboardEvent) => {
-            if (!this.hasVoiceSetup()) {
-                banner.error('Voice transcription unavailable: Please configure TRANSCRIPTION_API_ENDPOINT in env.ts to enable voice input')
+            if (event.code !== 'CapsLock') {
                 return
             }
-            if (event.code !== 'CapsLock') {
+
+            if (!this.hasVoiceSetup()) {
+                banner.error('Voice transcription unavailable: Please configure TRANSCRIPTION_API_ENDPOINT in env.ts to enable voice input')
                 return
             }
 
