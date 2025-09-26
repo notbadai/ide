@@ -1,4 +1,4 @@
-# NotBadAI AI-IDE
+# NotBadAI IDE
 
 A code editor with AI assistance. It supports chat, apply changes, autocomplete, and inline gray completions etc. These AI
 features ***(extensions)*** are simple Python scripts, so you can easily modify them, create your own, and quickly try out new code tool

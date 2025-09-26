@@ -1,4 +1,4 @@
-# NotBadAI AI-IDE
+# # NotBadAI IDE
 
 ## Code Editor
 
