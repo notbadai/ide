@@ -29,10 +29,32 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Clone weya dependency
+clone_weya_dependency() {
+    print_status "Setting up weya dependency..."
+
+    # Create lib directory if it doesn't exist
+    if [ ! -d "lib" ]; then
+        mkdir -p lib
+        print_status "Created lib directory"
+    fi
+
+    # Clone weya repository if it doesn't exist
+    if [ -d "lib/weya" ]; then
+        print_warning "weya already exists in lib directory. Removing and re-cloning..."
+        rm -rf lib/weya
+    fi
+
+    print_status "Cloning weya repository..."
+    git clone https://github.com/vpj/weya.git lib/weya
+
+    print_status "weya dependency cloned successfully"
+}
+
 # Check for required tools
 check_prerequisites() {
     print_status "Checking prerequisites..."
-    
+
     if ! command_exists git; then
         print_error "Git is not installed. Please install Git first."
         exit 1
@@ -42,7 +64,7 @@ check_prerequisites() {
 # Install Node.js using official installer or NVM
 install_nodejs() {
     print_status "Installing Node.js and npm..."
-    
+
     # Check if Node.js is already installed with correct version
     if command_exists node; then
         node_version=$(node --version)
@@ -54,18 +76,18 @@ install_nodejs() {
             print_warning "Node.js $node_version is installed but outdated. Installing newer version..."
         fi
     fi
-    
+
     # Try to install via NVM first (most reliable)
     if ! command_exists nvm; then
         print_status "Installing Node Version Manager (NVM)..."
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        
+
         # Source nvm
         export NVM_DIR="$HOME/.nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
     fi
-    
+
     # Install Node.js via NVM
     if command_exists nvm; then
         print_status "Installing Node.js via NVM..."
@@ -92,7 +114,7 @@ install_nodejs() {
         print_error "Please install Node.js and run this script again."
         exit 1
     fi
-    
+
     # Verify installation
     if command_exists node && command_exists npm; then
         node_version=$(node --version)
@@ -108,12 +130,12 @@ install_nodejs() {
 # Clone repository
 clone_repo() {
     print_status "Cloning AI-IDE repository..."
-    
+
     if [ -d "ai-ide" ]; then
         print_warning "Directory 'ai-ide' already exists. Removing it..."
         rm -rf ai-ide
     fi
-    
+
     git clone https://github.com/geov-ai/ai-ide.git
     cd ai-ide
 }
@@ -127,7 +149,7 @@ install_dependencies() {
 # Build and package application
 build_package() {
     print_status "Building and packaging the application..."
-    
+
     # Check if Makefile exists
     if [ ! -f "Makefile" ]; then
         print_warning "Makefile not found. Using npm scripts instead..."
@@ -153,11 +175,12 @@ main() {
     print_status "Starting AI-IDE build process..."
     echo ""
 
+    clone_weya_dependency
     install_nodejs
     install_dependencies
     build_package
     post_build_info
-    
+
     print_status "Build script completed!"
 }
 
