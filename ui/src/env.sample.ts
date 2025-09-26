@@ -1,0 +1,1 @@
+export const TRANSCRIPTION_API_ENDPOINT: string = ''
