@@ -51,6 +51,21 @@ clone_weya_dependency() {
     print_status "weya dependency cloned successfully"
 }
 
+# Create environment configuration file
+create_env_config() {
+    print_status "Creating environment configuration..."
+
+    # Create env.ts file if it doesn't exist
+    if [ ! -f "ui/src/env.ts" ]; then
+        cat > ui/src/env.ts << 'EOF'
+export const TRANSCRIPTION_API_ENDPOINT: string = ''
+EOF
+        print_status "Created ui/src/env.ts file"
+    else
+        print_warning "ui/src/env.ts already exists, skipping creation"
+    fi
+}
+
 # Check for required tools
 check_prerequisites() {
     print_status "Checking prerequisites..."
@@ -176,6 +191,7 @@ main() {
     echo ""
 
     clone_weya_dependency
+    create_env_config
     install_nodejs
     install_dependencies
     build_package
