@@ -15,7 +15,7 @@ For detailed information on using extensions and developing/modifying your own, 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/geov-ai/ai-ide.git
+git clone https://github.com/notbadai/ide
 ```
 
 2. Build the application:
