@@ -21,7 +21,7 @@ git clone https://github.com/geov-ai/ai-ide.git
 2. Build the application:
 
 ```bash
-cd ai-ide
+cd ide
 chmod +x build.sh
 ./build.sh
 ```

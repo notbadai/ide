@@ -1,1 +1,0 @@
-export const TRANSCRIPTION_API_ENDPOINT: string = 'http://192.222.52.200:8000/v1/audio/transcriptions'
