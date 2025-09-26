@@ -19,7 +19,7 @@ section).
 
 ### Extension Errors
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.004.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.004.png" alt=""/>
 
 If an extension encounters any errors during execution, they will appear under `Extensions` → `Errors`. It will
 provide details such as error messages and stack traces to help you debug and resolve the issue.
@@ -53,7 +53,7 @@ customize it as needed.
 
 #### 1. config.yaml
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.006.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.006.png" alt=""/>
 
 All extension-related settings are defined in [config.yaml](https://github.com/hnipun/extensions/blob/main/config.yaml).
 From this file, you can configure the main entry file and other settings for each extension.

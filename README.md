@@ -30,7 +30,7 @@ The packaged application will be available in the `dist/desktop/` directory.
 
 ## Setup
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.001.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.001.png" alt=""/>
 
 To use the AI features, you need to complete the following setup:
 
@@ -52,7 +52,7 @@ pip install openai requests GitPython black labml
 
 ## Features
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.003.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.003.png" alt=""/>
 
 #### 1. Chat
 
@@ -93,7 +93,7 @@ trigger autocomplete suggestions manually.
 
 #### 4. Gray Code Completions
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.002.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.002.png" alt=""/>
 
 Shows inline ghost-text suggestions, single or multi-line, to help you complete code quickly.
 
