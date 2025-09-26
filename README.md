@@ -8,7 +8,7 @@ ideas.
 
 ## Documentation
 
-For detailed information on using extensions and developing/modifying your own, please see our [documentation](https://github.com/geov-ai/ai-ide/blob/main/docs/README.md).
+For detailed information on using extensions and developing/modifying your own, please see our [documentation](https://github.com/notbadai/ide/blob/main/docs/README.md).
 
 ## Build from Source
 
