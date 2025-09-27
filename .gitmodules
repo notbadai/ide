@@ -1,0 +1,3 @@
+[submodule "lib/weya"]
+	path = lib/weya
+	url = https://github.com/vpj/weya.git
