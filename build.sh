@@ -164,36 +164,29 @@ install_dependencies() {
 # Build and package application
 build_package() {
     print_status "Building and packaging the application..."
-
-    # Check if Makefile exists
-    if [ -f "Makefile" ]; then
-        make package-electron
-    else
-        print_warning "Makefile not found. Using npm scripts with manual asset setup..."
-        
-        # Replicate the compile-ui target from Makefile
-        rm -rf dist*
-        mkdir -p dist/js/sourcemaps
-        
-        if [ -d "ui/static" ]; then
-            cp -r ui/static/* dist/
-            # Create 404.html as a copy of index.html (like Makefile does)
-            if [ -f "dist/index.html" ]; then
-                cp dist/index.html dist/404.html
-            fi
+    
+    # Replicate the compile-ui target from Makefile
+    rm -rf dist*
+    mkdir -p dist/js/sourcemaps
+    
+    if [ -d "ui/static" ]; then
+        cp -r ui/static/* dist/
+        # Create 404.html as a copy of index.html (like Makefile does)
+        if [ -f "dist/index.html" ]; then
+            cp dist/index.html dist/404.html
         fi
-        
-        mkdir -p dist/xterm
-        if [ -f "node_modules/@xterm/xterm/css/xterm.css" ]; then
-            cp node_modules/@xterm/xterm/css/xterm.css dist/xterm/
-        fi
-        if [ -f "node_modules/@xterm/xterm/lib/xterm.js" ]; then
-            cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
-        fi
-        
-        npm run build
-        npm run package:electron
     fi
+    
+    mkdir -p dist/xterm
+    if [ -f "node_modules/@xterm/xterm/css/xterm.css" ]; then
+        cp node_modules/@xterm/xterm/css/xterm.css dist/xterm/
+    fi
+    if [ -f "node_modules/@xterm/xterm/lib/xterm.js" ]; then
+        cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
+    fi
+    
+    npm run build
+    npm run package:electron
 }
 
 # Post-build instructions

@@ -178,3 +178,4 @@ node_modules/*
 ./.workspace.yaml
 .workspace.yaml
 /ui/src/env.ts
+/lib/
