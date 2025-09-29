@@ -10,20 +10,20 @@ ideas.
 
 For detailed information on using extensions and developing/modifying your own, please see our [documentation](https://github.com/notbadai/ide/blob/main/docs/README.md).
 
-## Build from Source
+## Installation
 
-1. Clone the repository:
+### Quick Install
+
+Install AI-IDE with a single command (clones repo and builds automatically):
 
 ```bash
-git clone https://github.com/notbadai/ide
+curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash
 ```
 
-2. Build the application:
+Or If you've already cloned the repository, just run the build script:
 
 ```bash
-cd ide
-chmod +x build.sh
-./build.sh
+chmod +x build.sh ./build.sh
 ```
 
 The packaged application will be available in the `dist/desktop/` directory.
