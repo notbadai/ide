@@ -23,7 +23,7 @@ curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash
 Or If you've already cloned the repository, just run the build script:
 
 ```bash
-chmod +x build.sh ./build.sh
+chmod +x build.sh && ./build.sh
 ```
 
 The packaged application will be available in the `dist/desktop/` directory.
