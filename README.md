@@ -110,7 +110,7 @@ This tool provides Git integration with commit and push functionality. When sele
 commit message based on your Git diffs. You can then push your commits to the remote repository directly from the
 interface.
 
-### 6. Voice
+#### 6. Voice
 
 This is an experimental feature. To use voice, toggle `Caps Lock` on to start and off to stop.
 When you start voice input, the current active chat will be rendered, and the transcribed text will appear in the chat
