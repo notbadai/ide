@@ -9,10 +9,11 @@ compile-ui:
 	mkdir -p dist/xterm
 	cp node_modules/@xterm/xterm/css/xterm.css dist/xterm/
 	cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
-	npm run build
+	npm run build:sass
+	npm run build:ui
 
 watch: compile-ui
-	npm run electron:dev
+	npm run build:electron && (npm run watch:ui & npm run watch:sass & npm run electron)
 
 package: compile-ui
-	npm run package:electron
+	npm run build:electron && npm run package:electron

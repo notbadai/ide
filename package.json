@@ -22,17 +22,13 @@
   },
   "main": "dist/platform/main.js",
   "scripts": {
-    "build": "$npm_execpath run build:ui && $npm_execpath run build:sass",
-    "watch": "$npm_execpath run watch:ui & $npm_execpath run watch:sass & $npm_execpath run serve",
-    "serve": "http-server dist",
     "build:ui": "mkdir -p dist/js && browserify ui/src/main.ts -t uglifyify -d -p [ tsify -p tsconfig.json] | uglifyjs -cm -o dist/js/bundle.min.js --source-map \"content=inline,url=bundle.min.js.map,includeSources\"",
     "watch:ui": "mkdir -p dist/js && watchify ui/src/main.ts -t uglifyify -d -p [ tsify -p tsconfig.json] -v -o dist/js/bundle.min.js",
     "build:sass": "sass --style compressed ui/styles/style.scss:dist/css/style.css",
     "watch:sass": "sass --style compressed --watch ui/styles/style.scss:dist/css/style.css",
+    "electron": "electron .",
     "build:electron": "tsc",
-    "electron": "npm run build:electron && electron .",
-    "electron:dev": "npm run build:electron && (npm run watch:ui & npm run watch:sass & electron .)",
-    "package:electron": "npm run build:electron && DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --asar.unpack='**/*.node' --app-version=$npm_package_version",
+    "package:electron": "DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --asar.unpack='**/*.node' --app-version=$npm_package_version",
     "postinstall": "electron-rebuild -f -w node-pty"
   },
   "browserslist": {
