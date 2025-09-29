@@ -8,8 +8,7 @@ ones.
 
 ## Terminal
 
-To reset the terminal (clearing both the display and back-scroll history), right-click the terminal tab and choose
-`Clear Buffer`.
+Multiple terminals are supported. To reset a terminal, including clearing its display and scrollback history, right-click the terminal tab and select `Clear Buffer`.
 
 ## Extensions
 
