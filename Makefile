@@ -1,6 +1,6 @@
 .PHONY: compile-ui watch package clean install
 
-compile-ui:
+compile:
 	npm install
 	rm -rf dist*
 	mkdir -p dist/js/sourcemaps
@@ -11,9 +11,10 @@ compile-ui:
 	cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
 	npm run build:sass
 	npm run build:ui
+	npm run build:electron
 
-watch: compile-ui
-	npm run build:electron && (npm run watch:ui & npm run watch:sass & npm run electron)
+watch: compile
+	npm run watch:ui & npm run watch:sass & npm run electron
 
-package: compile-ui
-	npm run build:electron && npm run package:electron
+package: compile
+	npm run package:electron
