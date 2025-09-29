@@ -20,11 +20,8 @@ compile-prod-ui: compile-ui
 	mv dist/css/style.css dist/css/$(CSS_CHECKSUM).css
 	mv dist/css/style.css.map dist/css/$(CSS_CHECKSUM).css.map
 	
-run-electron: compile-ui ## Build UI, then launch the desktop app
-	npm install && npm run electron
-	
-watch-electron: compile-ui ## Watch assets & auto-reload Electron
+watch: compile-ui ## Watch assets & auto-reload Electron
 	npm install && npm run electron:dev
 
-package-electron: compile-ui ## Build & package the Electron app (current OS/arch)
+package: compile-ui ## Build & package the Electron app (current OS/arch)
 	npm install && npm run package:electron
