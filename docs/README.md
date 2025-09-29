@@ -2,7 +2,21 @@
 
 ## Developer
 
-To compile frontend assets and automatically recompile when changes are made:
+Follow these steps to set up the development environment.
+
+1. Initialize and update git submodules:
+
+```bash
+ git submodule update --init --recursive
+```
+
+2. Create an `env.ts` file in `ui/src/` and add the following configuration:
+
+```typescript
+export const TRANSCRIPTION_API_ENDPOINT: string = ''
+```
+
+3. To compile frontend assets and automatically recompile when changes are made:
 
 ```bash
 make watch
