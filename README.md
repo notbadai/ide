@@ -26,7 +26,7 @@ Or If you've already cloned the repository, just run the build script:
 chmod +x build.sh && ./build.sh
 ```
 
-The packaged application will be available in the `dist/desktop/` directory.
+The packaged application will be available in the `ide/dist/desktop/` directory.
 
 ## Setup
 
