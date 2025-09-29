@@ -12,9 +12,9 @@ For detailed information on using extensions and developing/modifying your own, 
 
 ## Installation
 
-### Quick Install
+### Quick Install & Update
 
-Install IDE with a single command (clones repo and builds automatically):
+Install or update IDE with a single command (clones repo and builds automatically):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash

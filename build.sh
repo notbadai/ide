@@ -51,16 +51,6 @@ EOF
     fi
 }
 
-# Check for required tools
-check_prerequisites() {
-    print_status "Checking prerequisites..."
-
-    if ! command_exists git; then
-        print_error "Git is not installed. Please install Git first."
-        exit 1
-    fi
-}
-
 # Install Node.js using official installer or NVM
 install_nodejs() {
     print_status "Installing Node.js and npm..."
@@ -161,11 +151,15 @@ build_package() {
     npm run package:electron
 }
 
-# Post-build instructions
-post_build_info() {
-    print_status "Build completed successfully!"
+# Post-installation instructions
+post_install_info() {
+    print_status "Installation completed successfully!"
     echo ""
-    print_status "The packaged application is available in the 'dist/desktop/' directory."
+    print_status "The packaged application is available in the 'ide/dist/desktop/' directory."
+    echo ""
+    print_status "To run the application:"
+    echo "  cd ide/dist/desktop/"
+    echo "  open ai-ide-v*.app"
     echo ""
     print_status "Required Python packages for AI extensions:"
     echo "pip install openai requests GitPython black labml"
@@ -176,7 +170,6 @@ main() {
     print_status "Starting IDE build process..."
     echo ""
 
-    check_prerequisites
     init_submodules
     create_env_config
     install_nodejs
