@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # IDE Build Script for macOS
-# This script clones the repository and builds the desktop application
+# This script builds the desktop application
 
 set -e  # Exit on any error
 
@@ -29,26 +29,11 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Clone weya dependency
-clone_weya_dependency() {
-    print_status "Setting up weya dependency..."
-
-    # Create lib directory if it doesn't exist
-    if [ ! -d "lib" ]; then
-        mkdir -p lib
-        print_status "Created lib directory"
-    fi
-
-    # Clone weya repository if it doesn't exist
-    if [ -d "lib/weya" ]; then
-        print_warning "weya already exists in lib directory. Removing and re-cloning..."
-        rm -rf lib/weya
-    fi
-
-    print_status "Cloning weya repository..."
-    git clone https://github.com/vpj/weya.git lib/weya
-
-    print_status "weya dependency cloned successfully"
+# Initialize git submodules
+init_submodules() {
+    print_status "Initializing git submodules..."
+    git submodule update --init --recursive
+    print_status "Git submodules initialized successfully"
 }
 
 # Create environment configuration file
@@ -191,7 +176,8 @@ main() {
     print_status "Starting IDE build process..."
     echo ""
 
-    clone_weya_dependency
+    check_prerequisites
+    init_submodules
     create_env_config
     install_nodejs
     install_dependencies
