@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AI-IDE Build Script for macOS
+# AI-IDE Installation Script for macOS
 # This script clones the repository and builds the desktop application
 
 set -e  # Exit on any error
@@ -27,43 +27,6 @@ print_error() {
 # Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
-}
-
-# Clone weya dependency
-clone_weya_dependency() {
-    print_status "Setting up weya dependency..."
-
-    # Create lib directory if it doesn't exist
-    if [ ! -d "lib" ]; then
-        mkdir -p lib
-        print_status "Created lib directory"
-    fi
-
-    # Clone weya repository if it doesn't exist
-    if [ -d "lib/weya" ]; then
-        print_warning "weya already exists in lib directory. Removing and re-cloning..."
-        rm -rf lib/weya
-    fi
-
-    print_status "Cloning weya repository..."
-    git clone https://github.com/vpj/weya.git lib/weya
-
-    print_status "weya dependency cloned successfully"
-}
-
-# Create environment configuration file
-create_env_config() {
-    print_status "Creating environment configuration..."
-
-    # Create env.ts file if it doesn't exist
-    if [ ! -f "ui/src/env.ts" ]; then
-        cat > ui/src/env.ts << 'EOF'
-export const TRANSCRIPTION_API_ENDPOINT: string = ''
-EOF
-        print_status "Created ui/src/env.ts file"
-    else
-        print_warning "ui/src/env.ts already exists, skipping creation"
-    fi
 }
 
 # Check for required tools
@@ -142,45 +105,42 @@ install_nodejs() {
     fi
 }
 
-# Install dependencies
-install_dependencies() {
-    print_status "Installing dependencies..."
-    npm install
+# Clone repository
+clone_repo() {
+    print_status "Cloning AI-IDE repository..."
+
+    if [ -d "ide" ]; then
+        print_warning "Directory 'ide' already exists. Removing it..."
+        rm -rf ide
+    fi
+
+    git clone https://github.com/notbadai/ide.git ide
+    cd ide
+    print_status "Successfully cloned and entered ide directory"
 }
 
-# Build and package application
-build_package() {
-    print_status "Building and packaging the application..."
+# Run the build script
+run_build_script() {
+    print_status "Running build script..."
     
-    # Replicate the compile-ui target from Makefile
-    rm -rf dist*
-    mkdir -p dist/js/sourcemaps
-    
-    if [ -d "ui/static" ]; then
-        cp -r ui/static/* dist/
-        # Create 404.html as a copy of index.html (like Makefile does)
-        if [ -f "dist/index.html" ]; then
-            cp dist/index.html dist/404.html
-        fi
+    if [ ! -f "build.sh" ]; then
+        print_error "build.sh not found in the cloned repository!"
+        exit 1
     fi
     
-    mkdir -p dist/xterm
-    if [ -f "node_modules/@xterm/xterm/css/xterm.css" ]; then
-        cp node_modules/@xterm/xterm/css/xterm.css dist/xterm/
-    fi
-    if [ -f "node_modules/@xterm/xterm/lib/xterm.js" ]; then
-        cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
-    fi
-    
-    npm run build
-    npm run package:electron
+    chmod +x build.sh
+    ./build.sh
 }
 
-# Post-build instructions
-post_build_info() {
-    print_status "Build completed successfully!"
+# Post-installation instructions
+post_install_info() {
+    print_status "Installation completed successfully!"
     echo ""
-    print_status "The packaged application is available in the 'dist/desktop/' directory."
+    print_status "The packaged application is available in the 'ide/dist/desktop/' directory."
+    echo ""
+    print_status "To run the application:"
+    echo "  cd ide/dist/desktop/"
+    echo "  open ai-ide-v*.app"
     echo ""
     print_status "Required Python packages for AI extensions:"
     echo "pip install openai requests GitPython black labml"
@@ -188,17 +148,16 @@ post_build_info() {
 
 # Main execution
 main() {
-    print_status "Starting AI-IDE build process..."
+    print_status "Starting AI-IDE installation process..."
     echo ""
 
-    clone_weya_dependency
-    create_env_config
+    check_prerequisites
     install_nodejs
-    install_dependencies
-    build_package
-    post_build_info
+    clone_repo
+    run_build_script
+    post_install_info
 
-    print_status "Build script completed!"
+    print_status "Installation script completed!"
 }
 
 # Run main function
