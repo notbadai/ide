@@ -161,7 +161,7 @@ export class EditorView extends ScreenView {
     async render(): Promise<WeyaElement> {
         this.elem = $('div', '.page.editor-view')
 
-        setTitle({section: 'AI IDE', item: 'NotBadAI'})
+        setTitle({section: 'IDE', item: 'NotBadAI'})
 
         this._render().then()
 

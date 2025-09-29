@@ -5,7 +5,7 @@ export function setTitle(opt: { section?: string, item?: string }) {
     } else if (opt.section != null || opt.item != null) {
         document.title = `${opt.section || opt.item}`
     } else {
-        document.title = 'AI IDE - NotBadAI'
+        document.title = 'IDE - NotBadAI'
     }
 }
 

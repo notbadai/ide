@@ -159,7 +159,7 @@ post_build_info() {
     echo ""
     print_status "To run the application:"
     echo "  cd ide/dist/desktop/"
-    echo "  open ai-ide-v*.app"
+    echo "  open ide-v*.app"
     echo ""
     print_status "Required Python packages for AI extensions:"
     echo "pip install openai requests GitPython black labml"

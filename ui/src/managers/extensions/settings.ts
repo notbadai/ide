@@ -320,7 +320,7 @@ export class ExtensionSettings {
                 headers: {
                     'Authorization': `Bearer ${key}`,
                     'Content-Type': 'application/json',
-                    'X-Title': 'NotBad AI IDE'
+                    'X-Title': 'NotBadAI IDE'
                 }
             })
 
