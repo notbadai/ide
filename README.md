@@ -123,11 +123,17 @@ transcription.
 It’s quite fast and easy to set up.
 
 1. Run the transcription server.
-2. Create a file named `env.ts` inside the `ui/src/` directory.
+2. Create a file named `env.ts` inside the `ui/src/` directory (if it doesn't already exist).
 3. Add your server URL like this:
 
 ```typescript
 export const TRANSCRIPTION_API_ENDPOINT: string = 'http://x.x.x.x:xxxx/v1/audio/transcriptions'
 ```
 
-Finally, follow the steps from `Build from Source` to build the app with voice.
+Finally, follow the steps to build the app with voice.
+
+## Community
+
+Join our Discord server to connect with other users, get support, and discuss features:
+
+[Join our Discord](https://discord.gg/8MjX9xVS)
