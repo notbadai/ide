@@ -152,7 +152,7 @@ build_package() {
 }
 
 # Post-installation instructions
-post_install_info() {
+post_build_info() {
     print_status "Installation completed successfully!"
     echo ""
     print_status "The packaged application is available in the 'ide/dist/desktop/' directory."
