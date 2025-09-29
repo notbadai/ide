@@ -110,13 +110,24 @@ clone_repo() {
     print_status "Cloning IDE repository..."
 
     if [ -d "ide" ]; then
-        print_warning "Directory 'ide' already exists. Removing it..."
-        rm -rf ide
+        print_warning "Directory 'ide' already exists. Updating repository..."
+        cd ide
+        
+        # Check if it's a git repository
+        if [ -d ".git" ]; then
+            print_status "Pulling latest changes..."
+            git fetch origin
+            git reset --hard origin/main
+            print_status "Repository updated successfully"
+        else
+            print_error "Directory 'ide' exists but is not a git repository. Please remove it manually."
+            exit 1
+        fi
+    else
+        git clone https://github.com/notbadai/ide.git ide
+        cd ide
+        print_status "Successfully cloned and entered ide directory"
     fi
-
-    git clone https://github.com/notbadai/ide.git ide
-    cd ide
-    print_status "Successfully cloned and entered ide directory"
 }
 
 # Run the build script
