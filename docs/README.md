@@ -2,17 +2,19 @@
 
 ## Developer
 
-To compile assets and watch for changes:
+To compile frontend assets and automatically recompile when changes are made:
 
 ```bash
 make watch
 ```
 
-To build and package the Electron app for distribution in `dist/desktop/`:
+To build and package the Electron application into a distributable format run:
 
 ```bash
 make package
 ```
+
+The packaged application will be available in the `dist/desktop/` directory.
 
 ## Code Editor
 
