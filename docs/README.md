@@ -134,9 +134,9 @@ To view the logs:
 
 - Or use the shortcut `Shift+Cmd+I` 
 
-### Setting Up Voice
+## Setting Up Voice
 
-#### Server Setup
+### Server Setup
 
 We’ve tested [faster-whisper-server](https://github.com/etalab-ia/faster-whisper-server/tree/master) as the backend for
 transcription.  
