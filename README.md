@@ -14,16 +14,10 @@ For detailed information on using extensions and developing/modifying your own, 
 
 ### Quick Install & Update
 
-Install or update IDE with a single command (clones repo and builds automatically):
+Install or update IDE with a single command (clones/update the repo and builds automatically):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash
-```
-
-Or If you've already cloned the repository, just run the build script:
-
-```bash
-chmod +x build.sh && ./build.sh
 ```
 
 The packaged application will be available in the `ide/dist/desktop/` directory.
