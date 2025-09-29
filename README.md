@@ -108,7 +108,7 @@ interface.
 
 This is an experimental feature. To use voice, toggle `Caps Lock` on to start and off to stop.
 When you start voice input, the current active chat will be rendered, and the transcribed text will appear in the chat
-input box.
+input box. Setup instructions are available in the [documentation](https://github.com/notbadai/ide/blob/main/docs/README.md#setting-up-voice)
 
 
 ## Community
