@@ -110,21 +110,6 @@ This is an experimental feature. To use voice, toggle `Caps Lock` on to start an
 When you start voice input, the current active chat will be rendered, and the transcribed text will appear in the chat
 input box.
 
-### Server Setup
-
-We’ve tested [faster-whisper-server](https://github.com/etalab-ia/faster-whisper-server/tree/master) as the backend for
-transcription.  
-It’s quite fast and easy to set up.
-
-1. Run the transcription server.
-2. Create a file named `env.ts` inside the `ui/src/` directory (if it doesn't already exist).
-3. Add your server URL like this:
-
-```typescript
-export const TRANSCRIPTION_API_ENDPOINT: string = 'http://x.x.x.x:xxxx/v1/audio/transcriptions'
-```
-
-Finally, follow the steps to build the app with voice.
 
 ## Community
 
