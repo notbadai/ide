@@ -9,7 +9,7 @@ set -e  # Exit on any error
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'  # No Color
 
 # Print colored output
 print_status() {
@@ -127,18 +127,20 @@ install_dependencies() {
 build_package() {
     print_status "Building and packaging the application..."
     
-    # Replicate the compile-ui target from Makefile
+    # Clean and prepare directories
     rm -rf dist*
     mkdir -p dist/js/sourcemaps
     
+    # Copy static files
     if [ -d "ui/static" ]; then
         cp -r ui/static/* dist/
-        # Create 404.html as a copy of index.html (like Makefile does)
+        # Create 404.html as a copy of index.html
         if [ -f "dist/index.html" ]; then
             cp dist/index.html dist/404.html
         fi
     fi
     
+    # Copy xterm files
     mkdir -p dist/xterm
     if [ -f "node_modules/@xterm/xterm/css/xterm.css" ]; then
         cp node_modules/@xterm/xterm/css/xterm.css dist/xterm/
@@ -147,7 +149,20 @@ build_package() {
         cp node_modules/@xterm/xterm/lib/xterm.js dist/xterm/
     fi
     
-    npm run build
+    # Build SASS
+    print_status "Building SASS..."
+    npm run build:sass
+    
+    # Build UI
+    print_status "Building UI..."
+    npm run build:ui
+    
+    # Build Electron
+    print_status "Building Electron backend..."
+    npm run build:electron
+    
+    # Package Electron app
+    print_status "Packaging Electron application..."
     npm run package:electron
 }
 
