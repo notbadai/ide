@@ -39,7 +39,7 @@ provide details such as error messages and stack traces to help you debug and re
 
 ### Running Extensions
 
-<img src="https://github.com/geov-ai/ai-ide/blob/main/docs/images/image.005.png" alt=""/>
+<img src="https://github.com/notbadai/ide/blob/main/docs/images/image.005.png" alt=""/>
 
 Extensions that are currently running will be listed under `Extensions` → `Running`.
 From this tab, you can:

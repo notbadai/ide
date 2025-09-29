@@ -1,5 +1,5 @@
 {
-  "name": "ai-ide",
+  "name": "ide",
   "version": "0.9.7.5",
   "private": true,
   "author": "notbadai",
@@ -32,7 +32,7 @@
     "build:electron": "tsc",
     "electron": "npm run build:electron && electron .",
     "electron:dev": "npm run build:electron && (npm run watch:ui & npm run watch:sass & electron .)",
-    "package:electron": "npm run build:electron && DEBUG=electron-packager electron-packager . \"ai-ide-v$npm_package_version\" --out=dist/desktop --overwrite --asar.unpack='**/*.node' --app-version=$npm_package_version",
+    "package:electron": "npm run build:electron && DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --asar.unpack='**/*.node' --app-version=$npm_package_version",
     "postinstall": "electron-rebuild -f -w node-pty"
   },
   "browserslist": {

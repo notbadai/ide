@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AI-IDE Installation Script for macOS
+# IDE Installation Script for macOS
 # This script clones the repository and builds the desktop application
 
 set -e  # Exit on any error
@@ -107,7 +107,7 @@ install_nodejs() {
 
 # Clone repository
 clone_repo() {
-    print_status "Cloning AI-IDE repository..."
+    print_status "Cloning IDE repository..."
 
     if [ -d "ide" ]; then
         print_warning "Directory 'ide' already exists. Removing it..."
@@ -148,7 +148,7 @@ post_install_info() {
 
 # Main execution
 main() {
-    print_status "Starting AI-IDE installation process..."
+    print_status "Starting IDE installation process..."
     echo ""
 
     check_prerequisites

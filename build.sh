@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# AI-IDE Build Script for macOS
+# IDE Build Script for macOS
 # This script clones the repository and builds the desktop application
 
 set -e  # Exit on any error
@@ -188,7 +188,7 @@ post_build_info() {
 
 # Main execution
 main() {
-    print_status "Starting AI-IDE build process..."
+    print_status "Starting IDE build process..."
     echo ""
 
     clone_weya_dependency
