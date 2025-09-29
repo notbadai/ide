@@ -14,7 +14,7 @@ For detailed information on using extensions and developing/modifying your own, 
 
 ### Quick Install
 
-Install AI-IDE with a single command (clones repo and builds automatically):
+Install IDE with a single command (clones repo and builds automatically):
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash
