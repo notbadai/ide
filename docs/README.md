@@ -17,7 +17,7 @@ make package
 ## Code Editor
 
 The code editor supports shortcuts similar to VS
-Code. [Here](https://github.com/hnipun/aiide-docs/blob/main/shortcuts.md)’s a list of the popular
+Code. [Here](https://github.com/notbadai/ide/blob/main/docs/shortcuts.md)’s a list of the popular
 ones.
 
 ## Terminal
