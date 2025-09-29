@@ -1,5 +1,19 @@
 # NotBadAI IDE
 
+## Developer
+
+To compile assets and watch for changes:
+
+```bash
+make watch
+```
+
+To build and package the Electron app for distribution in `dist/desktop/`:
+
+```bash
+make package
+```
+
 ## Code Editor
 
 The code editor supports shortcuts similar to VS
