@@ -39,7 +39,7 @@ From this tab, you can:
 - If an extension sends an update, it will appear under `Extensions` → `Updates`.
 - If an extension sends a notification, it will be shown under `Extensions` → `Notifications`.
 
-### Developing Your Own Extensions
+## Developing Your Own Extensions
 
 To use your own set of extensions, create a directory named `extensions` at the root level of your project.
 This will override all the default extensions, as the editor will use this directory as the extension path when
@@ -51,7 +51,7 @@ customize it as needed.
 
 ***Note: Default extensions are automatically downloaded to `~/.notbadaiide/extensions/` when you first run the application.***
 
-#### 1. config.yaml
+### 1. config.yaml
 
 <img src="https://github.com/notbadai/ide/blob/main/docs/images/image.006.png" alt=""/>
 
@@ -60,7 +60,7 @@ From this file, you can configure the main entry file and other settings for eac
 
 Any errors in the `config.yaml` file will be displayed in the `Extensions` tab.
 
-#### 2. Extension API
+### 2. Extension API
 
 The [ExtensionAPI](https://github.com/hnipun/extensions/blob/main/common/api.py)
 defines:
@@ -77,7 +77,7 @@ def extension(api: ExtensionAPI):
 
 This function is executed by the editor when the extension runs.
 
-#### 3. `extensions/common` directory
+### 3. `extensions/common` directory
 
 The `extensions/common` directory is automatically added to the Python path when running an extension.
 This allows you to import shared utilities, or settings directly into your extensions without needing relative
@@ -91,7 +91,7 @@ from common.diff import get_matches
 from common.settings import LLM_PROVIDERS
 ```
 
-#### 4. Debug Logs
+### 4. Debug Logs
 
 During extension development, you can add debug logs using the [
 `log`](https://github.com/hnipun/extensions/blob/32a86209fb968d1b157d72ef73e43d2a95452523/common/api.py#L234)  function
