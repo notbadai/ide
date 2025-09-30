@@ -110,7 +110,6 @@ class ExtensionManager {
     }
 
     public terminate = async (uuid: string) => {
-        const extension = this.extensions.get(uuid)
         let sendData = {
             type: 'terminate',
             uuid: uuid,
