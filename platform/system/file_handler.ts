@@ -122,7 +122,8 @@ class FileHandler {
     public async getExtensions(): Promise<Extensions> {
         try {
             const config = await this.loadExtensionConfig()
-            httpServer.restart(config.getPort()).then()
+            const { host, port } = config.getServerConfig()
+            httpServer.restart(host, port).then()
             return {
                 chat: config.getChatExtensions(),
                 autocomplete: config.getAutocompleteExtension(),

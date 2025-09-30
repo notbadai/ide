@@ -30,11 +30,12 @@ export interface ExtensionConfigData {
         ignore_whitespace?: boolean     // whether to ignore whitespace differences
     }
     tools?: Tool[]
-    port?: number
+    port: number
+    host: string
 }
 
 const VALID_CONFIG_KEYS = new Set([
-    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'diff', 'tools', 'port'
+    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'diff', 'tools', 'port', 'host'
 ])
 
 const VALID_DIFF_KEYS = new Set([
@@ -89,6 +90,15 @@ export class ExtensionConfig {
             if (!VALID_CONFIG_KEYS.has(key)) {
                 throw new ExtensionConfigError(`config.yaml: unknown parameter '${key}'`)
             }
+        }
+
+        // check required fields
+        if (config.port === undefined) {
+            throw new ExtensionConfigError("config.yaml: 'port' is required")
+        }
+
+        if (config.host === undefined) {
+            throw new ExtensionConfigError("config.yaml: 'host' is required")
         }
 
         // check chat extensions
@@ -173,10 +183,13 @@ export class ExtensionConfig {
         }
 
         // check port
-        if (config.port !== undefined) {
-            if (!Number.isInteger(config.port) || config.port < 1 || config.port > 65535) {
-                throw new ExtensionConfigError("config.yaml: 'port' must be an integer between 1 and 65535")
-            }
+        if (!Number.isInteger(config.port) || config.port < 1 || config.port > 65535) {
+            throw new ExtensionConfigError("config.yaml: 'port' must be an integer between 1 and 65535")
+        }
+
+        // check host
+        if (typeof config.host !== 'string' || config.host.trim() === '') {
+            throw new ExtensionConfigError("config.yaml: 'host' must be a non-empty string")
         }
 
         // check diff settings
@@ -277,10 +290,6 @@ export class ExtensionConfig {
         return this.config.autocomplete || null
     }
 
-    public getVoiceExtension(): string | null {
-        return this.config.voice || null
-    }
-
     public getPythonPath(): string | null {
         return this.config.python_path || null
     }
@@ -294,8 +303,11 @@ export class ExtensionConfig {
         }
     }
 
-    public getPort(): number {
-        return this.config.port
+    public getServerConfig(): { host: string, port: number; } {
+        return {
+            host: this.config.host,
+            port: this.config.port,
+        }
     }
 
     public getTools(): Tool[] {

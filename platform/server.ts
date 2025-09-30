@@ -25,7 +25,7 @@ class HttpServer {
 
     public init(options: HttpServerOptions) {
         this.port = options.port
-        this.host = options.host || 'localhost'
+        this.host = options.host
     }
 
     private setupMiddleware() {
@@ -70,7 +70,7 @@ class HttpServer {
             try {
                 const terminalName = req.params.name
                 const terminalData = await terminalManager.getTerminalData(terminalName)
-                
+
                 res.status(200).json({
                     success: true,
                     data: terminalData
@@ -145,22 +145,22 @@ class HttpServer {
         return this.server !== null
     }
 
-    public async restart(newPort?: number): Promise<void> {
-        const targetPort = newPort || this.port
+    public async restart(host: string, port: number): Promise<void> {
+        const targetPort = port || this.port
+        const targetHost = host || this.host
 
-        if (this.isRunning() && targetPort === this.port) {
-            console.log(`HTTP server already running on correct port ${this.port}`)
+        if (this.isRunning() && targetPort === this.port && targetHost === this.host) {
+            console.log(`HTTP server already running on ${this.host}:${this.port}`)
             return
         }
 
         if (this.isRunning()) {
-            console.log(`Stopping HTTP server to change port from ${this.port} to ${targetPort}`)
+            console.log(`Stopping HTTP server to change from ${this.host}:${this.port} to ${targetHost}:${targetPort}`)
             await this.stop()
         }
 
-        if (newPort !== undefined) {
-            this.port = newPort
-        }
+        this.port = targetPort
+        this.host = targetHost
 
         await this.start()
         streamService.onRestart()
@@ -217,8 +217,11 @@ class HttpServer {
         }
     }
 
-    public getPort(): number {
-        return this.port
+    public getServerConfig(): { host: string, port: number; } {
+        return {
+            host: this.config.host,
+            port: this.config.port,
+        }
     }
 }
 
