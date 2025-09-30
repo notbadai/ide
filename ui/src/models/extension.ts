@@ -5,10 +5,8 @@ export type ExtensionType =
     'chat'
     | 'autocomplete'
     | 'apply'
-    | 'keybind'
     | 'symbolLookup'
     | 'terminate'
-    | 'voice'
     | 'tool'
 
 export interface Prediction {
@@ -81,6 +79,7 @@ export interface EditorState {
 
 export interface ExtensionData {
     uuid: string  // extension uuid
+    name: string
     type: string
 
     requestId?: string
@@ -182,7 +181,7 @@ export interface AudioTranscription {
 }
 
 export interface ExtensionResponse {
-    uuid: string // extension uuid
+    uuid?: string // extension uuid
     is_stopped: boolean
     requestId?: string
     log?: LogResponse

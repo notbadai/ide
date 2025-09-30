@@ -66,14 +66,32 @@ class HttpServer {
             }
         })
 
-        this.app.get('/api/terminal/:terminalName', async (req: Request, res: Response) => {
+        this.app.get('/api/terminal/:name', async (req: Request, res: Response) => {
             try {
-                const terminalName = req.params.terminalName
+                const terminalName = req.params.name
                 const terminalData = await terminalManager.getTerminalData(terminalName)
                 
                 res.status(200).json({
                     success: true,
                     data: terminalData
+                })
+            } catch (error) {
+                console.error('Error getting terminal data:', error)
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error',
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                })
+            }
+        })
+
+        this.app.get('/api/extension/data/:name', async (req: Request, res: Response) => {
+            try {
+                const extensionName = req.params.name
+                const channel = streamService.getChannel(extensionName)
+                res.status(200).json({
+                    success: true,
+                    data: channel.getData()
                 })
             } catch (error) {
                 console.error('Error getting terminal data:', error)

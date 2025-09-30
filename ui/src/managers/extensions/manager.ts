@@ -8,8 +8,8 @@ import {terminalManager} from "../terminal/manager"
 import {activityBarManager, EXTENSIONS} from "../activity_bar/manager"
 
 export interface Extension {
-    uuid?: string // use to recognize multiple extension type (chat, autocomplete, etc)
-    type: ExtensionType // use to recognize single extension type (apply, etc)
+    uuid?: string
+    type: ExtensionType
     name: string
     description?: string
     onReceive: (data: any) => void
@@ -67,6 +67,7 @@ class ExtensionManager {
         const activateTerminal = terminalManager.activateTerminal?.terminal
         const completeData: ExtensionData = {
             uuid: uuid,
+            name: extension.name,
             type: extension.type,
             requestId: data.requestId,
 
@@ -110,9 +111,11 @@ class ExtensionManager {
     }
 
     public terminate = async (uuid: string) => {
+        const extension = this.extensions.get(uuid)
         let sendData = {
             type: 'terminate',
             uuid: uuid,
+            name: extension.name,
         }
         await this.sendData(sendData)
     }
