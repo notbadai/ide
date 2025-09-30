@@ -31,9 +31,7 @@ export interface InspectionResult {
 }
 
 export interface MetaData {
-    uuid: string
     request_id?: string
-    port: number
 }
 
 export type ApiKey = {

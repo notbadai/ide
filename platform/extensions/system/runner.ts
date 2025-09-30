@@ -2,11 +2,13 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
 
-export function buildEnv(extensionsDir: string, uuid: string): Record<string, string> {
+export function buildEnv(extensionsDir: string, uuid: string, host: string, port: number): Record<string, string> {
     const env = {...process.env}
     env.PYTHONPATH = `${extensionsDir}${path.delimiter}${env.PYTHONPATH || ''}`
     env.PYTHONDONTWRITEBYTECODE = '1'
     env.EXTENSION_UUID = uuid
+    env.HOST = host
+    env.PORT = `${port}`
 
     return env
 }

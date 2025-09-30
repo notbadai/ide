@@ -4,6 +4,7 @@ import {EditorState} from "../../../ui/src/models/extension"
 import {fileHandler} from "../../system/file_handler"
 import path from "path"
 import {buildEnv, createVirtualRunner} from "./runner"
+import {httpServer} from "../../server"
 import fs from "fs"
 import os from "os"
 import {spawn} from "child_process"
@@ -79,7 +80,8 @@ export abstract class OnDemandExtension extends BaseExtension {
 
         const extPath = path.join(this.extensionDirPath, `${name}.py`)
         const virtualRunner = createVirtualRunner(this.extensionDirPath, extPath)
-        const env = buildEnv(this.extensionDirPath, this.channel.uuid)
+        const {host, port} = httpServer.getServerConfig()
+        const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
         const root = fileHandler.getRoot()
 
         try {

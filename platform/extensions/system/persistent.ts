@@ -6,6 +6,7 @@ import fs from "fs"
 import {fileHandler} from "../../system/file_handler"
 import {fileWatcher} from "../../system/file_watcher"
 import {globalSettings} from "../../system/global_settings"
+import {httpServer} from "../../server"
 import {buildEnv, createPersistentRunner} from "./runner"
 import os from "os"
 import readline from "readline"
@@ -123,7 +124,8 @@ export abstract class PersistentExtension extends BaseExtension {
         }
 
         const persistentRunner = createPersistentRunner(this.extensionDirPath, extPath)
-        const env = buildEnv(this.extensionDirPath)
+        const {host, port} = httpServer.getServerConfig()
+        const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
 
         if (this.pythonPath == null) {
             throw new Error('`python_path` path not set in your extension management or config.yaml file')

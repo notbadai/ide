@@ -5,7 +5,6 @@ import {EditorState, ExtensionData} from "../../../ui/src/models/extension"
 import {fileHandler} from '../../system/file_handler'
 import {globalSettings} from "../../system/global_settings"
 import {ApiKey} from "../../../ui/src/models/extension"
-import {httpServer} from "../../server"
 import {prepareEditorState} from "./utils"
 
 export interface BaseExtensionOptions {
@@ -36,7 +35,7 @@ export abstract class BaseExtension {
 
     protected async runAndStream(name: string, extensionData: ExtensionData): Promise<void> {
         const data = await this.prepareEditorState(extensionData)
-        data.meta_data = {uuid: this.channel.uuid, request_id: extensionData.requestId, port: httpServer.getPort()}
+        data.meta_data = {request_id: extensionData.requestId}
 
         await this.run(name, data)
     }
