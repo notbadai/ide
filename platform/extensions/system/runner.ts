@@ -29,8 +29,6 @@ ext  = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ext)
 
 if __name__ == "__main__":
-    # payload = sys.stdin.read()
-    # api = ExtensionAPI().load(**json.loads(payload))
     api = ExtensionAPI().load()
     ext.extension(api)
     `
@@ -60,19 +58,19 @@ spec.loader.exec_module(ext)
 
 requests_lock = threading.Lock()
 
-def handle_request(request_data):
+def handle_request():
     # create API instance
     api = ExtensionAPI()
-    api.load(**request_data)
+    api.load()
 
     try:
         ext.extension(api)
     except Exception as e:
         api._dump('error', content=traceback.format_exc())
 
-def process_request_async(request_data):
+def process_request_async():
     """Process a single request in a separate thread"""
-    thread = threading.Thread(target=handle_request, args=(request_data,), daemon=True)
+    thread = threading.Thread(target=handle_request, daemon=True)
     thread.start()
 
 if __name__ == "__main__":
@@ -81,9 +79,12 @@ if __name__ == "__main__":
             line = sys.stdin.readline()
             if not line:
                 break
-
-            request_data = json.loads(line.strip())
-            process_request_async(request_data)
+            line = line.strip()
+            if line == "PROCESS_REQUEST":
+                process_request_async()
+            else:
+                break
+            process_request_async()
     except KeyboardInterrupt:
         pass
     `

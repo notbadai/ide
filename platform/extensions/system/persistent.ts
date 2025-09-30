@@ -36,7 +36,8 @@ export abstract class PersistentExtension extends BaseExtension {
 
         try {
             // get or create persistent process for this extension
-            await this.getOrCreatePersistentProcess(name, requestId)
+            const proc = await this.getOrCreatePersistentProcess(name, requestId)
+            proc.stdin?.write('PROCESS_REQUEST\n')
 
             console.log(`Sent request ${requestId} to persistent extension ${name}`)
 
