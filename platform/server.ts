@@ -90,7 +90,7 @@ class HttpServer {
                 const channel = streamService.getChannel(req.params.uuid)
                 res.status(200).json({
                     success: true,
-                    data: channel.getData()
+                    data: channel.dequeueEditorState()
                 })
             } catch (error) {
                 console.error('Error getting terminal data:', error)

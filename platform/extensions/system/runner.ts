@@ -29,8 +29,9 @@ ext  = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ext)
 
 if __name__ == "__main__":
-    payload = sys.stdin.read()
-    api = ExtensionAPI().load(**json.loads(payload))
+    # payload = sys.stdin.read()
+    # api = ExtensionAPI().load(**json.loads(payload))
+    api = ExtensionAPI().load()
     ext.extension(api)
     `
 

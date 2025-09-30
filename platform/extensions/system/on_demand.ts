@@ -108,10 +108,6 @@ export abstract class OnDemandExtension extends BaseExtension {
 
             await this.setUpErrorHandling()
 
-            const payload = JSON.stringify(data) + '\n'
-            this.proc.stdin?.write(payload)
-            this.proc.stdin?.end()
-
             console.log(`Receiving output from extension ${name} in ${root}`)
 
             this.proc.on('error', async (error) => {

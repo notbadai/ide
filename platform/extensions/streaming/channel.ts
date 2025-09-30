@@ -1,11 +1,11 @@
-import {ExtensionResponse, ExtensionData} from "../../../ui/src/models/extension"
+import {ExtensionResponse, EditorState} from "../../../ui/src/models/extension"
 
 export type SendResponseCallback = (response: ExtensionResponse) => void | Promise<void>
 export type OnCompleteCallback = (uuid: string) => void
 
 export class StreamChannel {
     public readonly uuid: string
-    public readonly extensionData: ExtensionData
+    public editorStates: EditorState[]
     public isTerminated: boolean = false
 
     private readonly sendResponseCallback: SendResponseCallback
@@ -15,12 +15,12 @@ export class StreamChannel {
         sendResponseCallback: SendResponseCallback,
         onCompleteCallBack: OnCompleteCallback,
         uuid: string,
-        extensionData?: ExtensionData,
     ) {
         this.sendResponseCallback = sendResponseCallback
         this.onCompleteCallBack = onCompleteCallBack
         this.uuid = uuid
-        this.extensionData = extensionData
+
+        this.editorStates = []
     }
 
     public terminate(): void {
@@ -30,8 +30,12 @@ export class StreamChannel {
         }
     }
 
-    public getData() {
-        return this.extensionData
+    public dequeueEditorState(): EditorState | undefined {
+        return this.editorStates.shift()
+    }
+
+    public enqueueEditorState(state: EditorState): void {
+        this.editorStates.push(state)
     }
 
     public async sendResponse(response: Partial<ExtensionResponse>, requestId?: string): Promise<void> {
