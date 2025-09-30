@@ -168,10 +168,6 @@ export class ExtensionConfig {
                     }
                 }
 
-                if (tool.pinned !== undefined && typeof tool.pinned !== 'boolean') {
-                    throw new ExtensionConfigError(`config.yaml: tool at index ${index} 'pinned' must be a boolean if provided`)
-                }
-
                 // check for unknown properties in tool object
                 const validToolKeys = new Set(['name', 'extension', 'description', 'shortcut'])
                 for (const key of Object.keys(tool)) {

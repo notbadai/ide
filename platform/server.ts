@@ -219,8 +219,8 @@ class HttpServer {
 
     public getServerConfig(): { host: string, port: number; } {
         return {
-            host: this.config.host,
-            port: this.config.port,
+            host: this.host,
+            port: this.port,
         }
     }
 }
