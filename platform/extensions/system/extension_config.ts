@@ -15,7 +15,6 @@ export interface Tool {
     extension: string
     description?: string
     shortcut?: string
-    pinned?: boolean
 }
 
 export interface ExtensionConfigData {
@@ -24,7 +23,6 @@ export interface ExtensionConfigData {
     symbol_lookup?: string
     python_path?: string
     autocomplete?: string
-    voice?: string
     diff?: {
         min_collapse_lines?: number    // min_lines_for_collapsible_section
         min_auto_collapse_lines?: number // min_lines_for_auto_collapse
@@ -36,7 +34,7 @@ export interface ExtensionConfigData {
 }
 
 const VALID_CONFIG_KEYS = new Set([
-    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'voice', 'diff', 'tools', 'port'
+    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'diff', 'tools', 'port'
 ])
 
 const VALID_DIFF_KEYS = new Set([
@@ -106,7 +104,7 @@ export class ExtensionConfig {
         }
 
         // check single extensions
-        for (const extType of ['apply', 'symbol_lookup', 'python_path', 'autocomplete', 'voice'] as const) {
+        for (const extType of ['apply', 'symbol_lookup', 'python_path', 'autocomplete'] as const) {
             if (config[extType] !== undefined) {
                 if (typeof config[extType] !== 'string') {
                     throw new ExtensionConfigError(`config.yaml: '${extType}' must be a string`)
@@ -165,7 +163,7 @@ export class ExtensionConfig {
                 }
 
                 // check for unknown properties in tool object
-                const validToolKeys = new Set(['name', 'extension', 'description', 'shortcut', 'pinned'])
+                const validToolKeys = new Set(['name', 'extension', 'description', 'shortcut'])
                 for (const key of Object.keys(tool)) {
                     if (!validToolKeys.has(key)) {
                         throw new ExtensionConfigError(`config.yaml: unknown property '${key}' in tool at index ${index}`)
