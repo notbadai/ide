@@ -179,3 +179,4 @@ node_modules/*
 .workspace.yaml
 /ui/src/env.ts
 /lib/
+/extensions/

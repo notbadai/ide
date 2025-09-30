@@ -11,7 +11,6 @@ export function buildEnv(extensionsDir: string): Record<string, string> {
 }
 
 export function createVirtualRunner(extensionsDir: string, extFile: string): string {
-
     const template = `
 import sys, json, importlib, pathlib
 import importlib.util
