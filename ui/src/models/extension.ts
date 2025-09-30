@@ -79,7 +79,6 @@ export interface EditorState {
 
 export interface ExtensionData {
     uuid: string  // extension uuid
-    name: string
     type: string
 
     requestId?: string

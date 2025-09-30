@@ -67,7 +67,6 @@ class ExtensionManager {
         const activateTerminal = terminalManager.activateTerminal?.terminal
         const completeData: ExtensionData = {
             uuid: uuid,
-            name: extension.name,
             type: extension.type,
             requestId: data.requestId,
 
@@ -115,7 +114,6 @@ class ExtensionManager {
         let sendData = {
             type: 'terminate',
             uuid: uuid,
-            name: extension.name,
         }
         await this.sendData(sendData)
     }
