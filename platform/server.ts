@@ -85,10 +85,9 @@ class HttpServer {
             }
         })
 
-        this.app.get('/api/extension/data/:name', async (req: Request, res: Response) => {
+        this.app.get('/api/extension/data/:uuid', async (req: Request, res: Response) => {
             try {
-                const extensionName = req.params.name
-                const channel = streamService.getChannel(extensionName)
+                const channel = streamService.getChannel(req.params.uuid)
                 res.status(200).json({
                     success: true,
                     data: channel.getData()
