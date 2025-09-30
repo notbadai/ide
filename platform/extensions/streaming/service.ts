@@ -140,8 +140,8 @@ class StreamService {
         this.autocompleteExtension?.markPersistentProcessDirty()
     }
 
-    public getChannel(name: string): StreamChannel {
-        return this.activeChannels.get(name)
+    public getChannel(uuid: string): StreamChannel {
+        return this.activeChannels.get(uuid)
     }
 }
 
