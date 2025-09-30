@@ -69,10 +69,9 @@ class StreamService {
             (response) => this.onSend(response),
             (uuid) => this.onCompleteChannel(uuid),
             data.uuid,
-            data.name,
         )
 
-        this.activeChannels.set(channel.name, channel)
+        this.activeChannels.set(channel.uuid, channel)
         const chatExtension = new ChatExtension({channel})
         await chatExtension.execute({...data})
     }
@@ -82,9 +81,8 @@ class StreamService {
             (response) => this.onSend(response),
             (uuid) => this.onCompleteChannel(uuid),
             data.uuid,
-            data.name,
         )
-        this.activeChannels.set(channel.name, channel)
+        this.activeChannels.set(channel.uuid, channel)
         const patchApplier = new ApplyExtension({channel})
         await patchApplier.execute({...data})
     }
@@ -94,9 +92,8 @@ class StreamService {
             (response) => this.onSend(response),
             (uuid) => this.onCompleteChannel(uuid),
             data.uuid,
-            data.name,
         )
-        this.activeChannels.set(channel.name, channel)
+        this.activeChannels.set(channel.uuid, channel)
         const patchApplier = new SymbolLookupExtension({channel})
         await patchApplier.execute({...data})
     }
@@ -107,9 +104,8 @@ class StreamService {
                 (response) => this.onSend(response),
                 (uuid) => this.onCompleteChannel(uuid),
                 data.uuid,
-                data.name,
             )
-            this.activeChannels.set(channel.name, channel)
+            this.activeChannels.set(channel.uuid, channel)
             this.autocompleteExtension = new AutocompleteExtension({channel})
         }
         await this.autocompleteExtension.execute({...data})
@@ -120,9 +116,8 @@ class StreamService {
             (response) => this.onSend(response),
             (uuid) => this.onCompleteChannel(uuid),
             data.uuid,
-            data.name,
         )
-        this.activeChannels.set(channel.name, channel)
+        this.activeChannels.set(channel.uuid, channel)
         const toolsExtension = new ToolsExtension({channel})
         await toolsExtension.execute({...data})
     }

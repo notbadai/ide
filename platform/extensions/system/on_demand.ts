@@ -79,7 +79,7 @@ export abstract class OnDemandExtension extends BaseExtension {
 
         const extPath = path.join(this.extensionDirPath, `${name}.py`)
         const virtualRunner = createVirtualRunner(this.extensionDirPath, extPath)
-        const env = buildEnv(this.extensionDirPath)
+        const env = buildEnv(this.extensionDirPath, this.channel.uuid)
         const root = fileHandler.getRoot()
 
         try {

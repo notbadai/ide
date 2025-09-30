@@ -4,8 +4,7 @@ export type SendResponseCallback = (response: ExtensionResponse) => void | Promi
 export type OnCompleteCallback = (uuid: string) => void
 
 export class StreamChannel {
-    // public readonly uuid: string
-    public readonly name: string
+    public readonly uuid: string
     public readonly extensionData: ExtensionData
     public isTerminated: boolean = false
 
@@ -16,20 +15,18 @@ export class StreamChannel {
         sendResponseCallback: SendResponseCallback,
         onCompleteCallBack: OnCompleteCallback,
         uuid: string,
-        name: string,
         extensionData?: ExtensionData,
     ) {
         this.sendResponseCallback = sendResponseCallback
         this.onCompleteCallBack = onCompleteCallBack
-        // this.uuid = uuid
-        this.name = name
+        this.uuid = uuid
         this.extensionData = extensionData
     }
 
     public terminate(): void {
         this.isTerminated = true
         if (this.onCompleteCallBack) {
-            this.onCompleteCallBack(this.name)
+            this.onCompleteCallBack(this.uuid)
         }
     }
 
@@ -39,7 +36,7 @@ export class StreamChannel {
 
     public async sendResponse(response: Partial<ExtensionResponse>, requestId?: string): Promise<void> {
         const completeResponse: ExtensionResponse = {
-            // uuid: this.uuid,
+            uuid: this.uuid,
             is_stopped: response.is_stopped,
             requestId: requestId,
 
