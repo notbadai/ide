@@ -180,7 +180,7 @@ export interface AudioTranscription {
 }
 
 export interface ExtensionResponse {
-    uuid?: string // extension uuid
+    uuid: string // extension uuid
     is_stopped: boolean
     requestId?: string
     log?: LogResponse
