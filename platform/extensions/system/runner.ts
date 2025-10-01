@@ -27,7 +27,7 @@ ext_module = importlib.import_module(module_name)
 
 # read settings to find entry point
 settings_module = importlib.import_module(f"{module_name}.settings")
-entry_point_name = getattr(settings_module, 'ENTRY_POINT', 'extension')
+entry_point_name = getattr(settings_module, 'ENTRY_POINT')
 
 # get the entry point function
 entry_fn = getattr(ext_module, entry_point_name, None)
@@ -61,7 +61,7 @@ ext_module = importlib.import_module(module_name)
 
 # read settings to find entry point
 settings_module = importlib.import_module(f"{module_name}.settings")
-entry_point_name = getattr(settings_module, 'ENTRY_POINT', 'extension')
+entry_point_name = getattr(settings_module, 'ENTRY_POINT')
 
 # get the entry point function
 entry_fn = getattr(ext_module, entry_point_name, None)
