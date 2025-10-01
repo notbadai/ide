@@ -40,7 +40,6 @@ export abstract class PersistentExtension extends BaseExtension {
             proc.stdin?.write('PROCESS_REQUEST\n')
 
             console.log(`Sent request ${requestId} to persistent extension ${name}`)
-
         } catch (error) {
             console.error('Error in runPersistentProcess:', error)
             const message = error instanceof Error ? error.message : String(error)
