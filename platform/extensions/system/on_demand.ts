@@ -3,7 +3,7 @@ import readline from "readline"
 import {EditorState} from "../../../ui/src/models/extension"
 import {fileHandler} from "../../system/file_handler"
 import path from "path"
-import {buildEnv, createVirtualRunner} from "./runner"
+import {buildEnv, createOnDemandRunner} from "./runner"
 import {httpServer} from "../../server"
 import fs from "fs"
 import os from "os"
@@ -78,7 +78,7 @@ export abstract class OnDemandExtension extends BaseExtension {
     protected async run(name: string, data: EditorState): Promise<void> {
         this.watchAndTerminateOnDemand().then()
 
-        const virtualRunner = createVirtualRunner(this.extensionDirPath, name)
+        const virtualRunner = createOnDemandRunner(this.extensionDirPath, name)
         const {host, port} = httpServer.getServerConfig()
         const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
         const root = fileHandler.getRoot()

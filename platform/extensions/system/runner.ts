@@ -13,7 +13,7 @@ export function buildEnv(extensionsDir: string, uuid: string, host: string, port
     return env
 }
 
-export function createVirtualRunner(extensionsDir: string, moduleName: string): string {
+export function createOnDemandRunner(extensionsDir: string, moduleName: string): string {
     const template = `
 import sys, json, importlib, pathlib
 
