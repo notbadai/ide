@@ -35,7 +35,6 @@ export abstract class BaseExtension {
 
     protected async runAndStream(name: string, extensionData: ExtensionData): Promise<void> {
         const editorState = await this.prepareEditorState(extensionData)
-        editorState.meta_data = {request_id: extensionData.requestId}
         this.channel.enqueueEditorState(editorState)
 
         await this.run(name, editorState)

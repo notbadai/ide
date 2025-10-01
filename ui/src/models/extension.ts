@@ -30,10 +30,6 @@ export interface InspectionResult {
     description: string
 }
 
-export interface MetaData {
-    request_id?: string
-}
-
 export type ApiKey = {
     key: string
     provider: string
@@ -41,7 +37,7 @@ export type ApiKey = {
 }
 
 export interface EditorState {
-    meta_data?: MetaData
+    request_id?: string
 
     repo: string[]
     repo_path: string

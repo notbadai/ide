@@ -29,6 +29,7 @@ export async function prepareEditorState(extensionData: ExtensionData, apiKeys: 
     const toolState = extensionData.tool_state || null
     const terminalNames = extensionData.terminal_names || []
     const activeTerminalName = extensionData.active_terminal_name || null
+    const requestId = extensionData.requestId || null
 
     let audioBlobPath = null
     if (extensionData.audio_blob != null) {
@@ -87,6 +88,8 @@ export async function prepareEditorState(extensionData: ExtensionData, apiKeys: 
     }
 
     return {
+        request_id: requestId,
+
         repo,
         repo_path: fileHandler.getRoot(),
 

@@ -51,9 +51,8 @@ class HttpServer {
                 const requestData = req.body
 
                 const response = this.toResponse(requestData)
-                const metaData = requestData.meta_data
                 const channel = streamService.getChannel(req.params.uuid)
-                await channel.sendResponse(response, metaData.request_id)
+                await channel.sendResponse(response, requestData.request_id)
 
                 res.status(200).json({success: true})
             } catch (error) {

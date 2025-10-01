@@ -26,7 +26,7 @@ export abstract class PersistentExtension extends BaseExtension {
     }
 
     protected async run(name: string, data: EditorState): Promise<void> {
-        const requestId = data.meta_data.request_id
+        const requestId = data.request_id
 
         this.persistentRequestCount++
         if (this.persistentRequestCount >= MAX_PERSISTENT_REQUESTS) {
