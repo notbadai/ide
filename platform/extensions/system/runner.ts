@@ -13,24 +13,29 @@ export function buildEnv(extensionsDir: string, uuid: string, host: string, port
     return env
 }
 
-export function createVirtualRunner(extensionsDir: string, extFile: string): string {
+export function createVirtualRunner(extensionsDir: string, moduleName: string): string {
     const template = `
 import sys, json, importlib, pathlib
-import importlib.util
 
 EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
     sys.path.insert(0, EXT_DIR)
 
-from notbadai.common.api import ExtensionAPI
-file_path = pathlib.Path(${JSON.stringify(extFile)})
-spec = importlib.util.spec_from_file_location("user_extension", file_path)
-ext  = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(ext)
+# Import the extension module
+module_name = ${JSON.stringify(moduleName)}
+ext_module = importlib.import_module(module_name)
+
+# Read settings to find entry point
+settings_module = importlib.import_module(f"{module_name}.settings")
+entry_point_name = getattr(settings_module, 'ENTRY_POINT', 'extension')
+
+# Get the entry point function
+entry_fn = getattr(ext_module, entry_point_name, None)
+if entry_fn is None:
+    raise AttributeError(f"Entry point '{entry_point_name}' not found in module '{module_name}'")
 
 if __name__ == "__main__":
-    api = ExtensionAPI().load()
-    ext.extension(api)
+    entry_fn()
     `
 
     const tempFile = path.join(os.tmpdir(), `extension_runner_${Date.now()}.py`)

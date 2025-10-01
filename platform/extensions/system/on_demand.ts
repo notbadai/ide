@@ -78,18 +78,12 @@ export abstract class OnDemandExtension extends BaseExtension {
     protected async run(name: string, data: EditorState): Promise<void> {
         this.watchAndTerminateOnDemand().then()
 
-        const extPath = path.join(this.extensionDirPath, `${name}.py`)
-        const virtualRunner = createVirtualRunner(this.extensionDirPath, extPath)
+        const virtualRunner = createVirtualRunner(this.extensionDirPath, name)
         const {host, port} = httpServer.getServerConfig()
         const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
         const root = fileHandler.getRoot()
 
         try {
-            // check if extension file exists before trying to create process
-            if (!fs.existsSync(extPath)) {
-                throw new Error(`Extension file not found: ${extPath}`)
-            }
-
             if (this.pythonPath == null) {
                 throw new Error('`python_path` path not set in your extension management or config.yaml file')
             }
