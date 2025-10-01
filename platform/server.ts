@@ -46,13 +46,13 @@ class HttpServer {
     }
 
     private setupRoutes() {
-        this.app.post('/api/extension', async (req: Request, res: Response) => {
+        this.app.post('/api/extension/response/:uuid', async (req: Request, res: Response) => {
             try {
                 const requestData = req.body
 
                 const response = this.toResponse(requestData)
                 const metaData = requestData.meta_data
-                const channel = streamService.getChannel(metaData.uuid)
+                const channel = streamService.getChannel(req.params.uuid)
                 await channel.sendResponse(response, metaData.request_id)
 
                 res.status(200).json({success: true})

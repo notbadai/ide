@@ -44,34 +44,46 @@ if __name__ == "__main__":
     return tempFile
 }
 
-export function createPersistentRunner(extensionsDir: string, extFile: string): string {
+export function createPersistentRunner(extensionsDir: string, moduleName: string): string {
     const template = `
+import os
+import requests
 import sys, json, pathlib, threading, traceback
-import importlib.util
+import importlib
 
 EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
     sys.path.insert(0, EXT_DIR)
 
-from notbadai.common.api import ExtensionAPI
+# Import the extension module
+module_name = ${JSON.stringify(moduleName)}
+ext_module = importlib.import_module(module_name)
 
-# Load the extension module
-file_path = pathlib.Path(${JSON.stringify(extFile)})
-spec = importlib.util.spec_from_file_location("user_extension", file_path)
-ext = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(ext)
+# Read settings to find entry point
+settings_module = importlib.import_module(f"{module_name}.settings")
+entry_point_name = getattr(settings_module, 'ENTRY_POINT', 'extension')
+
+# Get the entry point function
+entry_fn = getattr(ext_module, entry_point_name, None)
+if entry_fn is None:
+    raise AttributeError(f"Entry point '{entry_point_name}' not found in module '{module_name}'")
 
 requests_lock = threading.Lock()
 
-def handle_request():
-    # create API instance
-    api = ExtensionAPI()
-    api.load()
+host = os.environ['HOST']
+port = int(os.environ['PORT'])
+uuid = os.environ['EXTENSION_UUID']
 
+def send_error(content: str):
+    data = {'method': 'error', 'content': content }
+    data['meta_data'] = {'request_id': ''}
+    requests.post(f'http://{host}:{port}/api/extension/response/{uuid}', json=data)
+
+def handle_request():
     try:
-        ext.extension(api)
+        entry_fn()
     except Exception as e:
-        api._dump('error', content=traceback.format_exc())
+        send_error(traceback.format_exc())
 
 def process_request_async():
     """Process a single request in a separate thread"""
@@ -89,7 +101,6 @@ if __name__ == "__main__":
                 process_request_async()
             else:
                 break
-            process_request_async()
     except KeyboardInterrupt:
         pass
     `

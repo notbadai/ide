@@ -108,15 +108,9 @@ export abstract class PersistentExtension extends BaseExtension {
     }
 
     protected async createPersistentProcess(name: string, requestId: string): Promise<ChildProcess> {
-        const extPath = path.join(this.extensionDirPath, `${name}.py`)
         const root = fileHandler.getRoot()
 
-        // check if extension file exists before trying to create process
-        if (!fs.existsSync(extPath)) {
-            throw new Error(`Extension file not found: ${extPath}`)
-        }
-
-        const persistentRunner = createPersistentRunner(this.extensionDirPath, extPath)
+        const persistentRunner = createPersistentRunner(this.extensionDirPath, name)
         const {host, port} = httpServer.getServerConfig()
         const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
 
