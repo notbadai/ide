@@ -22,7 +22,7 @@ EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
     sys.path.insert(0, EXT_DIR)
 
-from common.api import ExtensionAPI
+from notbadai.common.api import ExtensionAPI
 file_path = pathlib.Path(${JSON.stringify(extFile)})
 spec = importlib.util.spec_from_file_location("user_extension", file_path)
 ext  = importlib.util.module_from_spec(spec)
@@ -48,7 +48,7 @@ EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
     sys.path.insert(0, EXT_DIR)
 
-from common.api import ExtensionAPI
+from notbadai.common.api import ExtensionAPI
 
 # Load the extension module
 file_path = pathlib.Path(${JSON.stringify(extFile)})
