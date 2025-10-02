@@ -84,7 +84,7 @@ setup_python_config() {
     
     # Ask user for confirmation with proper error handling
     print_prompt "Is this the Python environment you want to use? (y/n): "
-    read -n 1 -r REPLY
+    read -r REPLY </dev/tty
     echo ""
     
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
