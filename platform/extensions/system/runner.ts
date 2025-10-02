@@ -2,9 +2,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
 
-export function buildEnv(extensionsDir: string, uuid: string, host: string, port: number): Record<string, string> {
+export function buildEnv(extensionsDir: string | null, uuid: string, host: string, port: number): Record<string, string> {
     const env = {...process.env}
-    env.PYTHONPATH = `${extensionsDir}${path.delimiter}${env.PYTHONPATH || ''}`
+    if (extensionsDir) {
+        env.PYTHONPATH = `${extensionsDir}${path.delimiter}${env.PYTHONPATH || ''}`
+    }
     env.PYTHONDONTWRITEBYTECODE = '1'
     env.EXTENSION_UUID = uuid
     env.HOST = host
@@ -13,14 +15,17 @@ export function buildEnv(extensionsDir: string, uuid: string, host: string, port
     return env
 }
 
-export function createOnDemandRunner(extensionsDir: string, moduleName: string): string {
-    const template = `
-import sys, json, importlib, pathlib
-
+export function createOnDemandRunner(extensionsDir: string | null, moduleName: string): string {
+    // Only add extensionsDir to sys.path if it's provided
+    const sysPathSetup = extensionsDir ? `
 EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
     sys.path.insert(0, EXT_DIR)
+` : ''
 
+    const template = `
+import sys, json, importlib, pathlib
+${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
 ext_module = importlib.import_module(module_name)
@@ -44,17 +49,20 @@ if __name__ == "__main__":
     return tempFile
 }
 
-export function createPersistentRunner(extensionsDir: string, moduleName: string): string {
+export function createPersistentRunner(extensionsDir: string | null, moduleName: string): string {
+    // Only add extensionsDir to sys.path if it's provided
+    const sysPathSetup = extensionsDir ? `
+EXT_DIR = ${JSON.stringify(extensionsDir)}
+if EXT_DIR not in sys.path:
+    sys.path.insert(0, EXT_DIR)
+` : ''
+
     const template = `
 import os
 import requests
 import sys, json, pathlib, threading, traceback
 import importlib
-
-EXT_DIR = ${JSON.stringify(extensionsDir)}
-if EXT_DIR not in sys.path:
-    sys.path.insert(0, EXT_DIR)
-
+${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
 ext_module = importlib.import_module(module_name)
