@@ -35,7 +35,7 @@ import {
     setDiagnosticInfo,
     DiagnosticOutput,
 } from "./widgets/diagnostic/utils"
-import {AutoSaveManager} from './autosave_manager'
+import {AutoSaveManager} from '../utils/autosave_manager'
 import {popup} from "../components/popup"
 import {DiffView} from "../components/diff_view"
 import {SymbolLookupExtension} from "../extensions/symbol_lookup"

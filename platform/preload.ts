@@ -16,7 +16,7 @@ export interface ElectronAPI {
     updateWorkspaceConfig: (updates: any) => Promise<void>
 
     loadExtensionConfigContent: () => Promise<string>
-    saveExtensionConfig: (configContent: string) => Promise<void>
+    saveExtensionConfig: (configContent: string) => Promise<string | null>
 
     onFileWatcherChanges: (cb: () => void) => void
 

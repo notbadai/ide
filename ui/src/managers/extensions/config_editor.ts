@@ -10,6 +10,8 @@ import {indentUnit} from "@codemirror/language"
 import {vscodeDark} from '@uiw/codemirror-theme-vscode'
 import {yaml} from '@codemirror/lang-yaml'
 import {DataLoader} from "../../components/loader"
+import {AutoSaveManager} from "../../utils/autosave_manager"
+import {extensionPane} from "./extension_pane"
 
 
 class ConfigEditor {
@@ -17,6 +19,7 @@ class ConfigEditor {
     private editorElem: HTMLDivElement
 
     private loader: DataLoader
+    private autoSaveManager: AutoSaveManager
 
     private editorView: EditorView
     private content: string
@@ -24,6 +27,12 @@ class ConfigEditor {
     constructor() {
         this.loader = new DataLoader(async (force) => {
             this.content = await window.electronAPI.loadExtensionConfigContent()
+        })
+        this.autoSaveManager = new AutoSaveManager({
+            onSave: async () => {
+                const error = await window.electronAPI.saveExtensionConfig(this.configContent)
+                extensionPane.updateExtensionError(error)
+            }
         })
     }
 
@@ -44,6 +53,12 @@ class ConfigEditor {
 
 
     private renderEditor() {
+        const changeWatcher = EditorView.updateListener.of(update => {
+            if (update.docChanged) {
+                this.autoSaveManager.notifyChange()
+            }
+        })
+
         const extensions = [
             // disableCmCompletion,
             keymap.of([
@@ -61,6 +76,7 @@ class ConfigEditor {
             yaml(),
             vscodeDark,
             indentUnit.of("    "),
+            changeWatcher,
         ]
 
         let editorState = EditorState.create({
@@ -76,7 +92,7 @@ class ConfigEditor {
     }
 
 
-    public get settings(): string {
+    public get configContent(): string {
         return this.editorView.state.doc.toString()
     }
 

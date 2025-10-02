@@ -151,7 +151,7 @@ export class ExtensionConfig {
                 if (typeof apiProvider.default !== 'boolean') {
                     throw new ConfigError(`config.yaml: api_provider at index ${index} 'default' must be a boolean`)
                 }
-                
+
                 if (apiProvider.default === true) {
                     defaultCount++
                 }
@@ -411,7 +411,7 @@ export async function loadExtensionConfigContent(): Promise<string> {
     }
 }
 
-export async function saveExtensionConfig(configContent: string): Promise<void> {
+export async function saveExtensionConfig(configContent: string): Promise<Error | null> {
     const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
 
     // parse the YAML content
@@ -420,25 +420,27 @@ export async function saveExtensionConfig(configContent: string): Promise<void> 
         parsedConfig = yaml.load(configContent) as ConfigData
 
         if (!parsedConfig || typeof parsedConfig !== 'object') {
-            throw new ConfigError("config.yaml file must contain a YAML dictionary")
+            return new ConfigError("config.yaml file must contain a YAML dictionary")
         }
 
         const tempConfig = new ExtensionConfig(configPath)
         tempConfig.validateConfig(parsedConfig)
     } catch (error) {
         if (error instanceof ConfigError) {
-            throw error
+            return error
         }
         if (error instanceof yaml.YAMLException) {
-            throw new ConfigError(`invalid YAML in config.yaml file: ${error.message}`)
+            return new ConfigError(`invalid YAML in config.yaml file: ${error.message}`)
         }
-        throw new ConfigError(`failed to parse config.yaml content: ${error.message}`)
+        return new ConfigError(`failed to parse config.yaml content: ${error.message}`)
     }
 
     // if validation passes, write to file
     try {
         await fs.writeFile(configPath, configContent, 'utf8')
     } catch (error) {
-        throw new ConfigError(`failed to write config.yaml file: ${error.message}`)
+        return new ConfigError(`failed to write config.yaml file: ${error.message}`)
     }
+
+    return null
 }

@@ -327,12 +327,13 @@ class ExtensionPane extends BaseComponent {
         }
     }
 
-    private updateExtensionError(): boolean {
+    public updateExtensionError(extensionError: string = null): boolean {
         if (!this.errorElem) {
             return false
         }
-
-        const extensionError = projectManager.project?.extensions?.error
+        if (extensionError == null) {
+            extensionError = projectManager.project?.extensions?.error
+        }
         if (extensionError) {
             const messageElem = this.errorElem.querySelector('.error-message') as HTMLDivElement
             messageElem.textContent = extensionError

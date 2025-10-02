@@ -121,8 +121,13 @@ class IPCHandlers {
             return await loadExtensionConfigContent()
         })
 
-        this.handleIPC('fs:saveExtensionConfig', async (configContent: string) => {
-            await saveExtensionConfig(configContent)
+        this.handleIPC('fs:saveExtensionConfig', async (configContent: string): Promise<string | null> => {
+            const res = await saveExtensionConfig(configContent)
+            if (res != null) {
+                return res.message
+            }
+
+            return null
         })
     }
 
