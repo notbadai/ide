@@ -251,7 +251,7 @@ export class CodeEditor extends BaseComponent {
                 this.language = 'sql'
                 return sql()
             default:
-                return []        // plain-text fallback
+                return [] // plain-text fallback
         }
     }
 

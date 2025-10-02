@@ -1,11 +1,10 @@
 import {ChildProcess} from 'child_process'
 import {StreamChannel} from '../streaming/channel'
-import {ExtensionConfig, loadExtensionConfig} from './extension_config'
+import {ExtensionConfig, loadExtensionConfig} from '../../system/extension_config'
 import {EditorState, ExtensionData} from "../../../ui/src/models/extension"
-import {fileHandler} from '../../system/file_handler'
-import {globalSettings} from "../../system/global_settings"
-import {ApiKey} from "../../../ui/src/models/extension"
+import {ApiProvider} from "../../../ui/src/models/extension"
 import {prepareEditorState} from "./utils"
+import {fileHandler} from "../../system/file_handler"
 
 export interface BaseExtensionOptions {
     channel: StreamChannel
@@ -17,7 +16,7 @@ export abstract class BaseExtension {
 
     protected proc: ChildProcess | null = null
 
-    protected apiKeys: ApiKey[] | null = null
+    protected apiProviders: ApiProvider[] | null = null
     protected pythonPath: string | null = null
     protected extensionDirPath: string | null = null
 
@@ -30,7 +29,7 @@ export abstract class BaseExtension {
     protected abstract run(name: string, data: EditorState): Promise<void>
 
     protected async prepareEditorState(extensionData: ExtensionData): Promise<EditorState> {
-        return prepareEditorState(extensionData, this.apiKeys)
+        return prepareEditorState(extensionData, this.apiProviders)
     }
 
     protected async runAndStream(name: string, extensionData: ExtensionData): Promise<void> {
@@ -44,18 +43,11 @@ export abstract class BaseExtension {
         console.log(`Executing autocomplete process`)
 
         try {
-            this.apiKeys = await globalSettings.getApiKeys()
-
-            if (this.apiKeys == null) {
-                this.apiKeys = []
-            }
+            this.extensionDirPath = await fileHandler.getExtensionDirPath()
 
             this.config = await this.getExtensionConfig()
-
+            this.apiProviders = this.config.getApiProviders()
             this.pythonPath = this.config.getPythonPath()
-            if (this.pythonPath == null) {
-                this.pythonPath = await globalSettings.getPythonPath()
-            }
 
             const extension = this.getExtensionInfo(extensionData)
 
@@ -73,7 +65,6 @@ export abstract class BaseExtension {
     }
 
     protected async getExtensionConfig(): Promise<ExtensionConfig> {
-        this.extensionDirPath = await fileHandler.getExtensionDirPath()
-        return await loadExtensionConfig(this.extensionDirPath)
+        return await loadExtensionConfig()
     }
 }

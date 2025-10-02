@@ -6,9 +6,8 @@ import {FileOperationData} from '../../ui/src/models/file_operation'
 import {GitClient} from '../git/git_client'
 import {filterGitIgnorePaths} from '../helpers/helpers'
 import {fileWatcher} from './file_watcher'
-import {loadExtensionConfig, ExtensionConfig, Tool} from '../extensions/system/extension_config'
+import {loadExtensionConfig, ExtensionConfig, Tool} from './extension_config'
 import {workspaceConfig, WorkspaceData} from './workspace_config'
-import {globalSettings} from './global_settings'
 import {httpServer} from "../server"
 
 export const MAX_TEXT_FILE_BYTES = 1024 * 256
@@ -115,14 +114,13 @@ class FileHandler {
     }
 
     private async loadExtensionConfig(): Promise<ExtensionConfig | null> {
-        const extensionsDir = await this.getExtensionDirPath()
-        return await loadExtensionConfig(extensionsDir)
+        return await loadExtensionConfig()
     }
 
     public async getExtensions(): Promise<Extensions> {
         try {
             const config = await this.loadExtensionConfig()
-            const { host, port } = config.getServerConfig()
+            const {host, port} = config.getServerConfig()
             httpServer.restart(host, port).then()
             return {
                 chat: config.getChatExtensions(),
@@ -440,22 +438,14 @@ class FileHandler {
         return this.getRelPath(path.join(this.root, 'extensions'))
     }
 
-    public async getExtensionDirPath(): Promise<string> {
+    public async getExtensionDirPath(): Promise<string | null> {
         const localExtensionsDir = path.join(this.root, 'extensions')
 
         try {
             await fs.access(localExtensionsDir)
             return localExtensionsDir
         } catch {
-            // local extensions directory doesn't exist, check global one
-            const globalExtensionsDir = globalSettings.getExtensionsDirectory()
-
-            try {
-                await fs.access(globalExtensionsDir)
-                return globalExtensionsDir
-            } catch {
-                throw new Error(`Extensions directory not found. Please ensure extensions exist in either '${localExtensionsDir}' or download from extension -> management`)
-            }
+            return null
         }
     }
 }

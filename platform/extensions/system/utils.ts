@@ -2,15 +2,13 @@ import {EditorState, ExtensionData} from "../../../ui/src/models/extension"
 import {fileHandler} from "../../system/file_handler"
 import path from "path"
 import {isDirectory, walk} from "../../helpers/files"
-import {globalSettings} from "../../system/global_settings"
-import {ApiKey} from "../../../ui/src/models/extension"
-import * as fs from 'fs'
+import {ApiProvider} from "../../../ui/src/models/extension"
 
 function getLocalPath(pathStr: string): string {
     return pathStr.split('/').slice(1).join('/')
 }
 
-export async function prepareEditorState(extensionData: ExtensionData, apiKeys: ApiKey[]): Promise<EditorState> {
+export async function prepareEditorState(extensionData: ExtensionData, apiProviders: ApiProvider[]): Promise<EditorState> {
     let prompt = extensionData.prompt
 
     const messages = extensionData.messages || []
@@ -31,10 +29,6 @@ export async function prepareEditorState(extensionData: ExtensionData, apiKeys: 
     const activeTerminalName = extensionData.active_terminal_name || null
     const requestId = extensionData.requestId || null
 
-    let audioBlobPath = null
-    if (extensionData.audio_blob != null) {
-        audioBlobPath = await saveAudioBlob(extensionData.audio_blob)
-    }
 
     const repo: string[] = []
     const documents = fileHandler.getDocs()
@@ -114,34 +108,9 @@ export async function prepareEditorState(extensionData: ExtensionData, apiKeys: 
         active_terminal_name: activeTerminalName,
         terminal_names: terminalNames,
 
-        api_keys: apiKeys,
-
-        audio_blob_path: audioBlobPath,
+        api_providers: apiProviders,
 
         tool_action: toolAction,
         tool_state: toolState
-    }
-}
-
-async function saveAudioBlob(audioBlob: ArrayBuffer): Promise<string> {
-    const baseDir = globalSettings.getBaseDirectory()
-    const audioDir = path.join(baseDir, 'voice_recordings')
-    const timestamp = Date.now()
-    const audioFileName = `voice_recording_${timestamp}.webm`
-    const audioFilePath = path.join(audioDir, audioFileName)
-
-    try {
-        if (!fs.existsSync(audioDir)) {
-            fs.mkdirSync(audioDir, {recursive: true})
-        }
-
-        const buffer = Buffer.from(audioBlob)
-
-        fs.writeFileSync(audioFilePath, buffer)
-
-        return audioFilePath
-    } catch (error) {
-        console.error('Failed to save audio blob:', error)
-        throw new Error(`Failed to save audio file: ${error.message}`)
     }
 }

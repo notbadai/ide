@@ -1,11 +1,11 @@
- import {Weya as $, WeyaElementFunction} from "../../../../lib/weya/weya"
+import {Weya as $, WeyaElementFunction} from "../../../../lib/weya/weya"
 import {BasicButton} from "../../components/buttons"
 import {clearChildElements} from "../../utils/document"
 import {projectManager} from "../project/manager"
 import {BaseComponent} from "../../components/base"
 import {activityBarManager, EXTENSIONS} from "../activity_bar/manager"
-import {extensionSettings} from "./settings"
 import {banner} from "../../components/banner"
+import {configEditor} from "./config_editor"
 
 export interface ExtensionLogEntry {
     id: string
@@ -563,13 +563,7 @@ class ExtensionPane extends BaseComponent {
     }
 
     private renderManagementPanel($: WeyaElementFunction): void {
-        extensionSettings.renderManagementPanel($,
-            () => {
-                if (this.currentTask != MANAGEMENT_TASK) {
-                    return
-                }
-                this.renderPanel()
-            }).then()
+        configEditor.render($).then()
     }
 
     private renderRunningPanel($: WeyaElementFunction): void {

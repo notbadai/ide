@@ -5,7 +5,6 @@ import path from "path"
 import fs from "fs"
 import {fileHandler} from "../../system/file_handler"
 import {fileWatcher} from "../../system/file_watcher"
-import {globalSettings} from "../../system/global_settings"
 import {httpServer} from "../../server"
 import {buildEnv, createPersistentRunner} from "./runner"
 import os from "os"
@@ -22,7 +21,6 @@ export abstract class PersistentExtension extends BaseExtension {
 
         const extensionWatchPath = fileHandler.getLocalExtensionsDirPath()
         fileWatcher.registerPathCallback(extensionWatchPath, () => this.markPersistentProcessDirty())
-        globalSettings.registerPythonPathCallback(() => this.markPersistentProcessDirty())
     }
 
     protected async run(name: string, data: EditorState): Promise<void> {

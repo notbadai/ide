@@ -30,10 +30,10 @@ export interface InspectionResult {
     description: string
 }
 
-export type ApiKey = {
+export type ApiProvider = {
     key: string
     provider: string
-    is_default: boolean
+    default: boolean
 }
 
 export interface EditorState {
@@ -63,7 +63,7 @@ export interface EditorState {
     active_terminal_name?: string
     terminal_names?: string[]
 
-    api_keys?: ApiKey[]
+    api_providers?: ApiProvider[]
 
     audio_blob_path?: string
 
