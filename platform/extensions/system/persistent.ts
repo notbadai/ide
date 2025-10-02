@@ -19,8 +19,7 @@ export abstract class PersistentExtension extends BaseExtension {
     protected constructor(opt: BaseExtensionOptions) {
         super(opt)
 
-        const extensionWatchPath = fileHandler.getLocalExtensionsDirPath()
-        fileWatcher.registerPathCallback(extensionWatchPath, () => this.markPersistentProcessDirty())
+        fileWatcher.registerPathCallback(fileHandler.localExtensionsDirPath, () => this.markPersistentProcessDirty())
     }
 
     protected async run(name: string, data: EditorState): Promise<void> {

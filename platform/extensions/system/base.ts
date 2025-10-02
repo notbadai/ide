@@ -1,6 +1,6 @@
 import {ChildProcess} from 'child_process'
 import {StreamChannel} from '../streaming/channel'
-import {ExtensionConfig, loadExtensionConfig} from '../../system/extension_config'
+import {ExtensionConfig} from '../../system/extension_config'
 import {EditorState, ExtensionData} from "../../../ui/src/models/extension"
 import {ApiProvider} from "../../../ui/src/models/extension"
 import {prepareEditorState} from "./utils"
@@ -43,9 +43,9 @@ export abstract class BaseExtension {
         console.log(`Executing autocomplete process`)
 
         try {
-            this.extensionDirPath = await fileHandler.getExtensionDirPath()
+            this.extensionDirPath = fileHandler.localExtensionsDirPath
 
-            this.config = await this.getExtensionConfig()
+            this.config = await fileHandler.getExtensionConfig()
             this.apiProviders = this.config.getApiProviders()
             this.pythonPath = this.config.getPythonPath()
 
@@ -62,9 +62,5 @@ export abstract class BaseExtension {
             await this.channel.sendResponse({is_stopped: true, error: {message: message}}, extensionData.requestId)
             this.channel.terminate()
         }
-    }
-
-    protected async getExtensionConfig(): Promise<ExtensionConfig> {
-        return await loadExtensionConfig()
     }
 }

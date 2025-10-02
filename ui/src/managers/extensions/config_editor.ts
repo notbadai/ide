@@ -2,9 +2,8 @@ import {WeyaElementFunction} from "../../../../lib/weya/weya"
 
 import {basicSetup} from 'codemirror'
 import {EditorView, keymap} from '@codemirror/view'
-import {EditorSelection, EditorState, StateCommand} from '@codemirror/state'
+import {EditorState} from '@codemirror/state'
 import {indentWithTab} from "@codemirror/commands"
-import {autocompletion} from "@codemirror/autocomplete"
 import {indentationMarkers} from '@replit/codemirror-indentation-markers'
 import {vscodeKeymap} from "@replit/codemirror-vscode-keymap"
 import {indentUnit} from "@codemirror/language"
@@ -12,22 +11,6 @@ import {vscodeDark} from '@uiw/codemirror-theme-vscode'
 import {yaml} from '@codemirror/lang-yaml'
 import {DataLoader} from "../../components/loader"
 
-const disableCmCompletion = autocompletion({
-    override: [() => null],
-    activateOnTyping: false,
-    defaultKeymap: false
-})
-
-export const insertNewlineKeepIndent: StateCommand = ({state, dispatch}) => {
-    dispatch(state.update(state.changeByRange(range => {
-        let indent = /^\s*/.exec(state.doc.lineAt(range.from).text)![0]
-        return {
-            changes: {from: range.from, to: range.to, insert: state.lineBreak + indent},
-            range: EditorSelection.cursor(range.from + indent.length + 1)
-        }
-    }), {scrollIntoView: true, userEvent: "input"}))
-    return true
-}
 
 class ConfigEditor {
     private elem: HTMLDivElement
@@ -36,11 +19,11 @@ class ConfigEditor {
     private loader: DataLoader
 
     private editorView: EditorView
-    private readonly content: string
+    private content: string
 
     constructor() {
         this.loader = new DataLoader(async (force) => {
-
+            this.content = await window.electronAPI.loadExtensionConfigContent()
         })
     }
 

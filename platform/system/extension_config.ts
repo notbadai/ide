@@ -367,8 +367,10 @@ export class ExtensionConfig {
     }
 }
 
-export async function loadExtensionConfig(): Promise<ExtensionConfig | null> {
-    const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
+export async function loadExtensionConfig(configPath: string | null): Promise<ExtensionConfig | null> {
+    if (configPath == null) {
+        configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
+    }
 
     const config = new ExtensionConfig(configPath)
     await config.load()
@@ -378,13 +380,13 @@ export async function loadExtensionConfig(): Promise<ExtensionConfig | null> {
 
 export async function loadExtensionConfigContent(): Promise<string> {
     const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
-    
+
     try {
         await fs.access(configPath)
     } catch {
         return ''
     }
-    
+
     try {
         return await fs.readFile(configPath, 'utf8')
     } catch (error) {

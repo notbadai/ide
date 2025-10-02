@@ -113,13 +113,9 @@ class FileHandler {
         return this.rootName
     }
 
-    private async loadExtensionConfig(): Promise<ExtensionConfig | null> {
-        return await loadExtensionConfig()
-    }
-
     public async getExtensions(): Promise<Extensions> {
         try {
-            const config = await this.loadExtensionConfig()
+            const config = await this.getExtensionConfig()
             const {host, port} = config.getServerConfig()
             httpServer.restart(host, port).then()
             return {
@@ -434,18 +430,18 @@ class FileHandler {
         await workspaceConfig?.save()
     }
 
-    public getLocalExtensionsDirPath(): string {
+    public get localExtensionsDirPath(): string {
         return this.getRelPath(path.join(this.root, 'extensions'))
     }
 
-    public async getExtensionDirPath(): Promise<string | null> {
-        const localExtensionsDir = path.join(this.root, 'extensions')
+    public async getExtensionConfig(): Promise<ExtensionConfig> {
+        const configPath = path.join(this.localExtensionsDirPath, 'config.yaml')
 
         try {
-            await fs.access(localExtensionsDir)
-            return localExtensionsDir
+            await fs.access(configPath)
+            return await loadExtensionConfig(configPath)
         } catch {
-            return null
+            return await loadExtensionConfig(null)
         }
     }
 }
