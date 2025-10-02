@@ -24,9 +24,92 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+print_prompt() {
+    echo -e "${YELLOW}[PROMPT]${NC} $1"
+}
+
 # Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# Detect and configure Python path
+setup_python_config() {
+    local config_dir="$HOME/.notbadaiide"
+    local config_file="$config_dir/config.yaml"
+    
+    # Check if config already exists
+    if [ -f "$config_file" ]; then
+        print_status "Configuration file already exists at $config_file"
+        print_status "Skipping Python configuration setup"
+        return
+    fi
+    
+    print_status "Setting up Python configuration..."
+    
+    # Check if Python is installed
+    if ! command_exists python3 && ! command_exists python; then
+        print_error "Python is not installed on your system."
+        echo ""
+        echo "Please install Python first:"
+        echo "  Option 1: Download from https://www.python.org/downloads/"
+        echo "  Option 2: Use Homebrew: brew install python3"
+        echo ""
+        echo "After installing Python, run this script again."
+        exit 1
+    fi
+    
+    # Detect Python path
+    local python_path=""
+    if command_exists python3; then
+        python_path=$(which python3)
+    elif command_exists python; then
+        python_path=$(which python)
+    fi
+    
+    # Get Python version
+    local python_version=$($python_path --version 2>&1)
+    
+    echo ""
+    print_prompt "Detected Python installation:"
+    echo "  Path: $python_path"
+    echo "  Version: $python_version"
+    echo ""
+    
+    # Ask user for confirmation
+    read -p "Is this the Python environment you want to use? (y/n): " -n 1 -r
+    echo ""
+    
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        print_warning "Python path not confirmed."
+        echo ""
+        echo "Please activate your desired Python environment and run this script again."
+        echo "For example:"
+        echo "  - If using venv: source /path/to/venv/bin/activate"
+        echo "  - If using conda: conda activate your-env"
+        echo ""
+        exit 1
+    fi
+    
+    # Create config directory if it doesn't exist
+    mkdir -p "$config_dir"
+    
+    # Copy default config and update python_path
+    print_status "Creating configuration file at $config_file"
+    
+    # Read default config and replace python_path
+    if [ -f "config.default.yaml" ]; then
+        sed "s|python_path:|python_path: $python_path|g" config.default.yaml > "$config_file"
+        print_status "Configuration file created successfully"
+    else
+        print_error "config.default.yaml not found. Cannot create configuration."
+        exit 1
+    fi
+    
+    echo ""
+    print_status "Python configuration complete!"
+    echo "  Config location: $config_file"
+    echo "  Python path: $python_path"
 }
 
 # Initialize git submodules
@@ -190,6 +273,7 @@ main() {
     install_nodejs
     install_dependencies
     build_package
+    setup_python_config
     post_build_info
 
     print_status "Build script completed!"

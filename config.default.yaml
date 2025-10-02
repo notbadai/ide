@@ -1,0 +1,34 @@
+chat:
+  - default
+  - files
+apply: apply.model
+symbol_lookup: lookup
+autocomplete: autocomplete
+diff:
+  min_collapse_lines: 3
+  min_auto_collapse_lines: 5
+  context_lines: 2
+  ignore_whitespace: false
+port: 7523
+host: localhost
+python_path:
+tools:
+   - name: "source control"
+     extension: "commit"
+     description: "A git commit tool"
+   - name: "modify big"
+     extension: "modify_big"
+     shortcut: "ctrl+,"
+   - name: "autocomplete big"
+     extension: "autocomplete_big"
+     shortcut: "ctrl+m"
+   - name: "analyze"
+     extension: "analyze"
+     shortcut: "cmd+e"
+   - name: "format"
+     extension: "format"
+     shortcut: "cmd+l"
+api_providers:
+   - provider: "openrouter"
+     key: ""
+     default: true
