@@ -15,6 +15,9 @@ export interface ElectronAPI {
 
     updateWorkspaceConfig: (updates: any) => Promise<void>
 
+    loadExtensionConfigContent: () => Promise<string>
+    saveExtensionConfig: (configContent: string) => Promise<void>
+
     onFileWatcherChanges: (cb: () => void) => void
 
     getCompletions: (data: Record<string, any>) => Promise<any>
@@ -52,6 +55,9 @@ const api: ElectronAPI = {
     checkContentMatch: (filePath: string, content: string) => ipcRenderer.invoke('fs:checkContentMatch', filePath, content),
 
     updateWorkspaceConfig: (updates: any) => ipcRenderer.invoke('fs:updateWorkspaceConfig', updates),
+
+    loadExtensionConfigContent: () => ipcRenderer.invoke('fs:loadExtensionConfigContent'),
+    saveExtensionConfig: (configContent: string) => ipcRenderer.invoke('fs:saveExtensionConfig', configContent),
 
     onFileWatcherChanges: (cb) => ipcRenderer.on('fileWatcher:changes', cb),
 

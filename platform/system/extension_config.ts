@@ -54,10 +54,10 @@ export class ExtensionConfig {
     }
 
     async load(): Promise<void> {
-        this.config = await this._loadConfig()
+        this.config = await this.loadConfig()
     }
 
-    private async _loadConfig(): Promise<ConfigData> {
+    private async loadConfig(): Promise<ConfigData> {
         try {
             await fs.access(this.configPath)
         } catch {
@@ -374,6 +374,22 @@ export async function loadExtensionConfig(): Promise<ExtensionConfig | null> {
     await config.load()
 
     return config
+}
+
+export async function loadExtensionConfigContent(): Promise<string> {
+    const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
+    
+    try {
+        await fs.access(configPath)
+    } catch {
+        return ''
+    }
+    
+    try {
+        return await fs.readFile(configPath, 'utf8')
+    } catch (error) {
+        throw new ConfigError(`failed to read config.yaml file: ${error.message}`)
+    }
 }
 
 export async function saveExtensionConfig(configContent: string): Promise<void> {

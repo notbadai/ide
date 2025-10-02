@@ -6,6 +6,7 @@ import {streamService} from "./extensions/streaming/service"
 import {settings} from "./system/settings"
 import {workspaceConfig} from "./system/workspace_config"
 import {FileOperationData} from "../ui/src/models/file_operation"
+import {loadExtensionConfigContent, saveExtensionConfig} from "./system/extension_config"
 
 export interface IPCHandlersOptions {
     mainWindow: BrowserWindow
@@ -114,6 +115,14 @@ class IPCHandlers {
                 console.error('Failed to update workspace config:', error)
                 throw error
             }
+        })
+
+        this.handleIPC('fs:loadExtensionConfigContent', async () => {
+            return await loadExtensionConfigContent()
+        })
+
+        this.handleIPC('fs:saveExtensionConfig', async (configContent: string) => {
+            await saveExtensionConfig(configContent)
         })
     }
 
