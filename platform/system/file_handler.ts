@@ -6,34 +6,13 @@ import {FileOperationData} from '../../ui/src/models/file_operation'
 import {GitClient} from '../git/git_client'
 import {filterGitIgnorePaths} from '../helpers/helpers'
 import {fileWatcher} from './file_watcher'
-import {loadExtensionConfig, ExtensionConfig, Tool} from './extension_config'
-import {workspaceConfig, WorkspaceData} from './workspace_config'
+import {loadExtensionConfig, ExtensionConfig} from './extension_config'
+import {workspaceConfig} from './workspace_config'
 import {httpServer} from "../server"
+import {Project, Extensions} from "./models"
 
 export const MAX_TEXT_FILE_BYTES = 1024 * 256
 
-export interface Project {
-    project_name: string
-    git_branch: string
-    files: Summary[]
-    extensions: Extensions
-    workspace?: WorkspaceData
-}
-
-export interface DiffSettings {
-    min_collapse_lines: number
-    min_auto_collapse_lines: number
-    context_lines: number
-    ignore_whitespace: boolean
-}
-
-export interface Extensions {
-    chat: string[]
-    autocomplete: string | null
-    diff: DiffSettings
-    tools?: Tool[]
-    error?: string
-}
 
 class FileHandler {
     private root: string
@@ -446,6 +425,7 @@ class FileHandler {
             return await loadExtensionConfig(configPath)
         } catch (error) {
             if (error.code === 'ENOENT') {
+                // if local extensions not exist load global
                 return await loadExtensionConfig(null)
             }
             throw error

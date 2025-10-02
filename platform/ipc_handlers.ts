@@ -7,6 +7,7 @@ import {settings} from "./system/settings"
 import {workspaceConfig} from "./system/workspace_config"
 import {FileOperationData} from "../ui/src/models/file_operation"
 import {loadExtensionConfigContent, saveExtensionConfig} from "./system/extension_config"
+import {Extensions} from "./system/models"
 
 export interface IPCHandlersOptions {
     mainWindow: BrowserWindow
@@ -121,13 +122,9 @@ class IPCHandlers {
             return await loadExtensionConfigContent()
         })
 
-        this.handleIPC('fs:saveExtensionConfig', async (configContent: string): Promise<string | null> => {
-            const res = await saveExtensionConfig(configContent)
-            if (res != null) {
-                return res.message
-            }
-
-            return null
+        this.handleIPC('fs:saveExtensionConfig', async (configContent: string): Promise<Extensions> => {
+            await saveExtensionConfig(configContent)
+            return await fileHandler.getExtensions()
         })
     }
 

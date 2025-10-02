@@ -1,6 +1,6 @@
 import {contextBridge, ipcRenderer} from 'electron'
-import {Project} from './system/file_handler'
 import {FileOperationData} from '../ui/src/models/file_operation'
+import {Extensions, Project} from "./system/models"
 
 export interface ElectronAPI {
     openDirectory: () => Promise<string | null>
@@ -16,7 +16,7 @@ export interface ElectronAPI {
     updateWorkspaceConfig: (updates: any) => Promise<void>
 
     loadExtensionConfigContent: () => Promise<string>
-    saveExtensionConfig: (configContent: string) => Promise<string | null>
+    saveExtensionConfig: (configContent: string) => Promise<Extensions>
 
     onFileWatcherChanges: (cb: () => void) => void
 

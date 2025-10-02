@@ -11,7 +11,7 @@ import {vscodeDark} from '@uiw/codemirror-theme-vscode'
 import {yaml} from '@codemirror/lang-yaml'
 import {DataLoader} from "../../components/loader"
 import {AutoSaveManager} from "../../utils/autosave_manager"
-import {extensionPane} from "./extension_pane"
+import {projectManager} from "../project/manager"
 
 
 class ConfigEditor {
@@ -30,8 +30,10 @@ class ConfigEditor {
         })
         this.autoSaveManager = new AutoSaveManager({
             onSave: async () => {
-                const error = await window.electronAPI.saveExtensionConfig(this.configContent)
-                extensionPane.updateExtensionError(error)
+                projectManager.project.extensions = await window.electronAPI.saveExtensionConfig(this.configContent)
+                for (const onFileSave of projectManager.getOnFileSaveCallbacks()) {
+                    onFileSave()
+                }
             }
         })
     }

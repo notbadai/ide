@@ -411,35 +411,13 @@ export async function loadExtensionConfigContent(): Promise<string> {
     }
 }
 
-export async function saveExtensionConfig(configContent: string): Promise<Error | null> {
+export async function saveExtensionConfig(configContent: string): Promise<void> {
     const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
 
-    // parse the YAML content
-    let parsedConfig: ConfigData
-    try {
-        parsedConfig = yaml.load(configContent) as ConfigData
-
-        if (!parsedConfig || typeof parsedConfig !== 'object') {
-            return new ConfigError("config.yaml file must contain a YAML dictionary")
-        }
-
-        const tempConfig = new ExtensionConfig(configPath)
-        tempConfig.validateConfig(parsedConfig)
-    } catch (error) {
-        if (error instanceof ConfigError) {
-            return error
-        }
-        if (error instanceof yaml.YAMLException) {
-            return new ConfigError(`invalid YAML in config.yaml file: ${error.message}`)
-        }
-        return new ConfigError(`failed to parse config.yaml content: ${error.message}`)
-    }
-
-    // if validation passes, write to file
     try {
         await fs.writeFile(configPath, configContent, 'utf8')
     } catch (error) {
-        return new ConfigError(`failed to write config.yaml file: ${error.message}`)
+        throw new ConfigError(`failed to write config.yaml file: ${error.message}`)
     }
 
     return null
