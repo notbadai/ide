@@ -5,7 +5,7 @@ import path from "path"
 import fs from "fs"
 import {fileHandler} from "../../system/file_handler"
 import {fileWatcher} from "../../system/file_watcher"
-import {globalSettings} from "../../system/global_settings"
+import {httpServer} from "../../server"
 import {buildEnv, createPersistentRunner} from "./runner"
 import os from "os"
 import readline from "readline"
@@ -19,13 +19,11 @@ export abstract class PersistentExtension extends BaseExtension {
     protected constructor(opt: BaseExtensionOptions) {
         super(opt)
 
-        const extensionWatchPath = fileHandler.getLocalExtensionsDirPath()
-        fileWatcher.registerPathCallback(extensionWatchPath, () => this.markPersistentProcessDirty())
-        globalSettings.registerPythonPathCallback(() => this.markPersistentProcessDirty())
+        fileWatcher.registerPathCallback(fileHandler.localRelExtensionsDirPath, () => this.markPersistentProcessDirty())
     }
 
     protected async run(name: string, data: EditorState): Promise<void> {
-        const requestId = data.meta_data.request_id
+        const requestId = data.request_id
 
         this.persistentRequestCount++
         if (this.persistentRequestCount >= MAX_PERSISTENT_REQUESTS) {
@@ -36,17 +34,9 @@ export abstract class PersistentExtension extends BaseExtension {
         try {
             // get or create persistent process for this extension
             const proc = await this.getOrCreatePersistentProcess(name, requestId)
-
-            // send request to persistent process
-            const payload = JSON.stringify({
-                ...data,
-                request_id: requestId
-            }) + '\n'
-
-            proc.stdin?.write(payload)
+            proc.stdin?.write('PROCESS_REQUEST\n')
 
             console.log(`Sent request ${requestId} to persistent extension ${name}`)
-
         } catch (error) {
             console.error('Error in runPersistentProcess:', error)
             const message = error instanceof Error ? error.message : String(error)
@@ -114,16 +104,11 @@ export abstract class PersistentExtension extends BaseExtension {
     }
 
     protected async createPersistentProcess(name: string, requestId: string): Promise<ChildProcess> {
-        const extPath = path.join(this.extensionDirPath, `${name}.py`)
         const root = fileHandler.getRoot()
 
-        // check if extension file exists before trying to create process
-        if (!fs.existsSync(extPath)) {
-            throw new Error(`Extension file not found: ${extPath}`)
-        }
-
-        const persistentRunner = createPersistentRunner(this.extensionDirPath, extPath)
-        const env = buildEnv(this.extensionDirPath)
+        const persistentRunner = createPersistentRunner(this.extensionDirPath, name)
+        const {host, port} = httpServer.getServerConfig()
+        const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
 
         if (this.pythonPath == null) {
             throw new Error('`python_path` path not set in your extension management or config.yaml file')

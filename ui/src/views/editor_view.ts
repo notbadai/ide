@@ -117,8 +117,6 @@ export class EditorView extends ScreenView {
             await activityBarManager.restoreActivity(projectManager.project.workspace?.activityState)
             resizableSplitView.restorePaneLayout()
             toolsManager.registerToolExtensions()
-            // download the extensions
-            window.electronAPI.extensionRepoDownload().then()
         })
     }
 

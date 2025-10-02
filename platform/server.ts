@@ -25,7 +25,7 @@ class HttpServer {
 
     public init(options: HttpServerOptions) {
         this.port = options.port
-        this.host = options.host || 'localhost'
+        this.host = options.host
     }
 
     private setupMiddleware() {
@@ -46,14 +46,13 @@ class HttpServer {
     }
 
     private setupRoutes() {
-        this.app.post('/api/extension', async (req: Request, res: Response) => {
+        this.app.post('/api/extension/response/:uuid', async (req: Request, res: Response) => {
             try {
                 const requestData = req.body
 
                 const response = this.toResponse(requestData)
-                const metaData = requestData.meta_data
-                const channel = streamService.getChannel(metaData.uuid)
-                await channel.sendResponse(response, metaData.request_id)
+                const channel = streamService.getChannel(req.params.uuid)
+                await channel.sendResponse(response, requestData.request_id)
 
                 res.status(200).json({success: true})
             } catch (error) {
@@ -66,14 +65,31 @@ class HttpServer {
             }
         })
 
-        this.app.get('/api/terminal/:terminalName', async (req: Request, res: Response) => {
+        this.app.get('/api/terminal/:name', async (req: Request, res: Response) => {
             try {
-                const terminalName = req.params.terminalName
+                const terminalName = req.params.name
                 const terminalData = await terminalManager.getTerminalData(terminalName)
-                
+
                 res.status(200).json({
                     success: true,
                     data: terminalData
+                })
+            } catch (error) {
+                console.error('Error getting terminal data:', error)
+                res.status(500).json({
+                    success: false,
+                    message: 'Internal server error',
+                    error: error instanceof Error ? error.message : 'Unknown error'
+                })
+            }
+        })
+
+        this.app.get('/api/extension/data/:uuid', async (req: Request, res: Response) => {
+            try {
+                const channel = streamService.getChannel(req.params.uuid)
+                res.status(200).json({
+                    success: true,
+                    data: channel.dequeueEditorState()
                 })
             } catch (error) {
                 console.error('Error getting terminal data:', error)
@@ -128,22 +144,22 @@ class HttpServer {
         return this.server !== null
     }
 
-    public async restart(newPort?: number): Promise<void> {
-        const targetPort = newPort || this.port
+    public async restart(host: string, port: number): Promise<void> {
+        const targetPort = port || this.port
+        const targetHost = host || this.host
 
-        if (this.isRunning() && targetPort === this.port) {
-            console.log(`HTTP server already running on correct port ${this.port}`)
+        if (this.isRunning() && targetPort === this.port && targetHost === this.host) {
+            console.log(`HTTP server already running on ${this.host}:${this.port}`)
             return
         }
 
         if (this.isRunning()) {
-            console.log(`Stopping HTTP server to change port from ${this.port} to ${targetPort}`)
+            console.log(`Stopping HTTP server to change from ${this.host}:${this.port} to ${targetHost}:${targetPort}`)
             await this.stop()
         }
 
-        if (newPort !== undefined) {
-            this.port = newPort
-        }
+        this.port = targetPort
+        this.host = targetHost
 
         await this.start()
         streamService.onRestart()
@@ -200,8 +216,11 @@ class HttpServer {
         }
     }
 
-    public getPort(): number {
-        return this.port
+    public getServerConfig(): { host: string, port: number; } {
+        return {
+            host: this.host,
+            port: this.port,
+        }
     }
 }
 

@@ -12,7 +12,6 @@ export interface Tool {
     extension: string
     description?: string
     shortcut?: string
-    pinned?: boolean
 }
 
 export interface Extensions {

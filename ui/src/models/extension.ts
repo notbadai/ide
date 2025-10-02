@@ -5,10 +5,8 @@ export type ExtensionType =
     'chat'
     | 'autocomplete'
     | 'apply'
-    | 'keybind'
     | 'symbolLookup'
     | 'terminate'
-    | 'voice'
     | 'tool'
 
 export interface Prediction {
@@ -32,20 +30,14 @@ export interface InspectionResult {
     description: string
 }
 
-export interface MetaData {
-    uuid: string
-    request_id?: string
-    port: number
-}
-
-export type ApiKey = {
+export type ApiProvider = {
     key: string
     provider: string
-    is_default: boolean
+    default?: boolean
 }
 
 export interface EditorState {
-    meta_data?: MetaData
+    request_id?: string
 
     repo: string[]
     repo_path: string
@@ -71,7 +63,7 @@ export interface EditorState {
     active_terminal_name?: string
     terminal_names?: string[]
 
-    api_keys?: ApiKey[]
+    api_providers?: ApiProvider[]
 
     audio_blob_path?: string
 

@@ -3,7 +3,8 @@ import readline from "readline"
 import {EditorState} from "../../../ui/src/models/extension"
 import {fileHandler} from "../../system/file_handler"
 import path from "path"
-import {buildEnv, createVirtualRunner} from "./runner"
+import {buildEnv, createOnDemandRunner} from "./runner"
+import {httpServer} from "../../server"
 import fs from "fs"
 import os from "os"
 import {spawn} from "child_process"
@@ -77,17 +78,12 @@ export abstract class OnDemandExtension extends BaseExtension {
     protected async run(name: string, data: EditorState): Promise<void> {
         this.watchAndTerminateOnDemand().then()
 
-        const extPath = path.join(this.extensionDirPath, `${name}.py`)
-        const virtualRunner = createVirtualRunner(this.extensionDirPath, extPath)
-        const env = buildEnv(this.extensionDirPath)
+        const virtualRunner = createOnDemandRunner(this.extensionDirPath, name)
+        const {host, port} = httpServer.getServerConfig()
+        const env = buildEnv(this.extensionDirPath, this.channel.uuid, host, port)
         const root = fileHandler.getRoot()
 
         try {
-            // check if extension file exists before trying to create process
-            if (!fs.existsSync(extPath)) {
-                throw new Error(`Extension file not found: ${extPath}`)
-            }
-
             if (this.pythonPath == null) {
                 throw new Error('`python_path` path not set in your extension management or config.yaml file')
             }
@@ -105,10 +101,6 @@ export abstract class OnDemandExtension extends BaseExtension {
             console.log(`Launching extension ${name} in ${root}`)
 
             await this.setUpErrorHandling()
-
-            const payload = JSON.stringify(data) + '\n'
-            this.proc.stdin?.write(payload)
-            this.proc.stdin?.end()
 
             console.log(`Receiving output from extension ${name} in ${root}`)
 

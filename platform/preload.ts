@@ -1,7 +1,6 @@
 import {contextBridge, ipcRenderer} from 'electron'
 import {Project} from './system/file_handler'
 import {FileOperationData} from '../ui/src/models/file_operation'
-import {ApiKey} from "../ui/src/models/extension"
 
 export interface ElectronAPI {
     openDirectory: () => Promise<string | null>
@@ -15,6 +14,9 @@ export interface ElectronAPI {
     checkContentMatch: (filePath: string, content: string) => Promise<boolean>
 
     updateWorkspaceConfig: (updates: any) => Promise<void>
+
+    loadExtensionConfigContent: () => Promise<string>
+    saveExtensionConfig: (configContent: string) => Promise<string | null>
 
     onFileWatcherChanges: (cb: () => void) => void
 
@@ -37,20 +39,6 @@ export interface ElectronAPI {
     onStreamReceive: (data: any) => Promise<void> // UI → Electron
     onStreamSend: (cb: (data: any) => void) => void  // Electron → UI
 
-    extensionRepoGetStatus: () => Promise<any>
-    extensionRepoDownload: () => Promise<any>
-    extensionRepoUpdate: () => Promise<any>
-    extensionRepoCheckForUpdates: () => Promise<any>
-
-    onExtensionRepoProgress: (cb: (progress: any) => void) => void
-
-    apiKeysSave: (keys: ApiKey[]) => Promise<void>
-    apiKeysGet: () => Promise<ApiKey[] | null>
-
-    pythonPathSave: (pythonPath: string) => Promise<void>
-    pythonPathGet: () => Promise<string | null>
-    pythonPathDelete: () => Promise<boolean>
-
     cachedProjectGetPath: () => Promise<string | null>
     cachedProjectSetUpFromCache: () => Promise<string>
 }
@@ -67,6 +55,9 @@ const api: ElectronAPI = {
     checkContentMatch: (filePath: string, content: string) => ipcRenderer.invoke('fs:checkContentMatch', filePath, content),
 
     updateWorkspaceConfig: (updates: any) => ipcRenderer.invoke('fs:updateWorkspaceConfig', updates),
+
+    loadExtensionConfigContent: () => ipcRenderer.invoke('fs:loadExtensionConfigContent'),
+    saveExtensionConfig: (configContent: string) => ipcRenderer.invoke('fs:saveExtensionConfig', configContent),
 
     onFileWatcherChanges: (cb) => ipcRenderer.on('fileWatcher:changes', cb),
 
@@ -92,20 +83,6 @@ const api: ElectronAPI = {
 
     sendTerminalDataResponse: (requestId: number, data: { snapshot: string[], before_reset: string[] }) =>
         ipcRenderer.send('terminal:dataResponse', requestId, data),
-
-    extensionRepoGetStatus: () => ipcRenderer.invoke('extensionRepo:getStatus'),
-    extensionRepoDownload: () => ipcRenderer.invoke('extensionRepo:download'),
-    extensionRepoUpdate: () => ipcRenderer.invoke('extensionRepo:update'),
-    extensionRepoCheckForUpdates: () => ipcRenderer.invoke('extensionRepo:checkForUpdates'),
-
-    onExtensionRepoProgress: (cb) => ipcRenderer.on('extensionRepo:progress', (_e, progress) => cb(progress)),
-
-    apiKeysSave: (keys: ApiKey[]) => ipcRenderer.invoke('apiKeys:save', keys),
-    apiKeysGet: () => ipcRenderer.invoke('apiKeys:get'),
-
-    pythonPathSave: (pythonPath: string) => ipcRenderer.invoke('pythonPath:save', pythonPath),
-    pythonPathGet: () => ipcRenderer.invoke('pythonPath:get'),
-    pythonPathDelete: () => ipcRenderer.invoke('pythonPath:delete'),
 
     cachedProjectGetPath: () => ipcRenderer.invoke('cachedProject:getPath'),
     cachedProjectSetUpFromCache: () => ipcRenderer.invoke('cachedProject:setUpFromCache')

@@ -3,10 +3,10 @@ import {BrowserWindow, dialog, ipcMain} from 'electron'
 import {terminalManager} from "./terminal/terminal_manager"
 import {fileHandler} from "./system/file_handler"
 import {streamService} from "./extensions/streaming/service"
-import {globalSettings} from "./system/global_settings"
+import {settings} from "./system/settings"
 import {workspaceConfig} from "./system/workspace_config"
 import {FileOperationData} from "../ui/src/models/file_operation"
-import {ApiKey} from "../ui/src/models/extension"
+import {loadExtensionConfigContent, saveExtensionConfig} from "./system/extension_config"
 
 export interface IPCHandlersOptions {
     mainWindow: BrowserWindow
@@ -52,9 +52,6 @@ class IPCHandlers {
     }
 
     public setupHandlers() {
-        this.setupExtensionRepoHandlers()
-        this.setupApiKeyHandlers()
-        this.setupPythonPathHandlers()
         this.setupCachedProjectHandlers()
         this.setupDialogHandlers()
         this.setupSystemHandlers()
@@ -62,71 +59,15 @@ class IPCHandlers {
         this.setupTerminalHandlers()
     }
 
-    private setupExtensionRepoHandlers() {
-        this.handleIPC('extensionRepo:getStatus', async () => {
-            return await globalSettings.getStatus()
-        })
-
-        this.handleIPC('extensionRepo:download', async () => {
-            return new Promise((resolve, reject) => {
-                globalSettings.downloadExtensions(
-                    (progress) => {
-                        // send progress updates to renderer
-                        this.mainWindow?.webContents.send('extensionRepo:progress', progress)
-                    }
-                ).then(resolve).catch(reject)
-            })
-        })
-
-        this.handleIPC('extensionRepo:update', async () => {
-            return new Promise((resolve, reject) => {
-                globalSettings.updateExtensions(
-                    (progress) => {
-                        // send progress updates to renderer
-                        this.mainWindow?.webContents.send('extensionRepo:progress', progress)
-                    }
-                ).then(resolve).catch(reject)
-            })
-        })
-
-        this.handleIPC('extensionRepo:checkForUpdates', async () => {
-            return await globalSettings.checkForUpdates()
-        })
-    }
-
-    private setupApiKeyHandlers() {
-        this.handleIPC('apiKeys:save', async (keys: ApiKey[]) => {
-            return await globalSettings.saveApiKeys(keys)
-        })
-
-        this.handleIPC('apiKeys:get', async (): Promise<ApiKey[]> => {
-            return await globalSettings.getApiKeys()
-        })
-    }
-
-    private setupPythonPathHandlers() {
-        this.handleIPC('pythonPath:save', async (pythonPath: string) => {
-            return await globalSettings.savePythonPath(pythonPath)
-        })
-
-        this.handleIPC('pythonPath:get', async () => {
-            return await globalSettings.getPythonPath()
-        })
-
-        this.handleIPC('pythonPath:delete', async () => {
-            return await globalSettings.deletePythonPath()
-        })
-    }
-
     private setupCachedProjectHandlers() {
         this.handleIPC('cachedProject:getPath', async () => {
-            const cachedPath = await globalSettings.getCachedProjectPath()
+            const cachedPath = await settings.getCachedProjectPath()
             if (cachedPath == null) {
                 return null
             }
 
             if (!fs.existsSync(cachedPath)) {
-                globalSettings.deleteCachedProjectPath().then()
+                settings.deleteCachedProjectPath().then()
                 return null
             }
 
@@ -134,7 +75,7 @@ class IPCHandlers {
         })
 
         this.handleIPC('cachedProject:setUpFromCache', async () => {
-            const cachedPath = await globalSettings.getCachedProjectPath()
+            const cachedPath = await settings.getCachedProjectPath()
             await this.onSetUpProject(cachedPath)
         })
     }
@@ -152,7 +93,7 @@ class IPCHandlers {
             const projectPath = filePaths[0]
 
             await this.onSetUpProject(projectPath)
-            globalSettings.saveCachedProjectPath(projectPath).then()
+            settings.saveCachedProjectPath(projectPath).then()
 
             return projectPath
         })
@@ -174,6 +115,19 @@ class IPCHandlers {
                 console.error('Failed to update workspace config:', error)
                 throw error
             }
+        })
+
+        this.handleIPC('fs:loadExtensionConfigContent', async () => {
+            return await loadExtensionConfigContent()
+        })
+
+        this.handleIPC('fs:saveExtensionConfig', async (configContent: string): Promise<string | null> => {
+            const res = await saveExtensionConfig(configContent)
+            if (res != null) {
+                return res.message
+            }
+
+            return null
         })
     }
 

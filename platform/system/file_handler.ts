@@ -6,9 +6,8 @@ import {FileOperationData} from '../../ui/src/models/file_operation'
 import {GitClient} from '../git/git_client'
 import {filterGitIgnorePaths} from '../helpers/helpers'
 import {fileWatcher} from './file_watcher'
-import {loadExtensionConfig, ExtensionConfig, Tool} from '../extensions/system/extension_config'
+import {loadExtensionConfig, ExtensionConfig, Tool} from './extension_config'
 import {workspaceConfig, WorkspaceData} from './workspace_config'
-import {globalSettings} from './global_settings'
 import {httpServer} from "../server"
 
 export const MAX_TEXT_FILE_BYTES = 1024 * 256
@@ -114,15 +113,11 @@ class FileHandler {
         return this.rootName
     }
 
-    private async loadExtensionConfig(): Promise<ExtensionConfig | null> {
-        const extensionsDir = await this.getExtensionDirPath()
-        return await loadExtensionConfig(extensionsDir)
-    }
-
     public async getExtensions(): Promise<Extensions> {
         try {
-            const config = await this.loadExtensionConfig()
-            httpServer.restart(config.getPort()).then()
+            const config = await this.getExtensionConfig()
+            const {host, port} = config.getServerConfig()
+            httpServer.restart(host, port).then()
             return {
                 chat: config.getChatExtensions(),
                 autocomplete: config.getAutocompleteExtension(),
@@ -435,26 +430,25 @@ class FileHandler {
         await workspaceConfig?.save()
     }
 
-    public getLocalExtensionsDirPath(): string {
+    public get localRelExtensionsDirPath(): string {
         return this.getRelPath(path.join(this.root, 'extensions'))
     }
 
-    public async getExtensionDirPath(): Promise<string> {
-        const localExtensionsDir = path.join(this.root, 'extensions')
+    public get localExtensionsDirPath(): string {
+        return path.join(this.root, 'extensions')
+    }
+
+    public async getExtensionConfig(): Promise<ExtensionConfig> {
+        const configPath = path.join(this.localExtensionsDirPath, 'config.yaml')
 
         try {
-            await fs.access(localExtensionsDir)
-            return localExtensionsDir
-        } catch {
-            // local extensions directory doesn't exist, check global one
-            const globalExtensionsDir = globalSettings.getExtensionsDirectory()
-
-            try {
-                await fs.access(globalExtensionsDir)
-                return globalExtensionsDir
-            } catch {
-                throw new Error(`Extensions directory not found. Please ensure extensions exist in either '${localExtensionsDir}' or download from extension -> management`)
+            await fs.access(configPath)
+            return await loadExtensionConfig(configPath)
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return await loadExtensionConfig(null)
             }
+            throw error
         }
     }
 }

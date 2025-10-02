@@ -13,7 +13,7 @@ import {fileHandler} from './system/file_handler'
 import {terminalManager} from "./terminal/terminal_manager"
 import {fileWatcher} from './system/file_watcher'
 import {streamService} from "./extensions/streaming/service"
-import {globalSettings} from './system/global_settings'
+import {settings} from './system/settings'
 import {createApplicationMenu} from "./menu"
 import {httpServer} from "./server"
 import {ipcHandlers} from "./ipc_handlers"
@@ -156,7 +156,7 @@ async function handleOpenProject(): Promise<void> {
     }
 
     const projectPath = filePaths[0]
-    globalSettings.saveCachedProjectPath(projectPath).then()
+    settings.saveCachedProjectPath(projectPath).then()
 
     // restart the entire Electron app
     app.relaunch()
@@ -168,7 +168,7 @@ async function setUpProject(projectPath: string) {
     fileWatcher.init(mainWindow)
     terminalManager.init(mainWindow, projectPath)
     streamService.init(mainWindow)
-    globalSettings.init(mainWindow, handleExtensionRestart)
+    settings.init()
     httpServer.init({port: 7520, host: 'localhost'})
 }
 
@@ -183,7 +183,6 @@ async function performCleanup() {
         streamService.cleanup()
         await fileWatcher.dispose()
         await fileHandler.onExit()
-        globalSettings?.stopDailyUpdateCheck()
         console.log('Cleanup completed successfully')
     } catch (error) {
         console.error('Error during cleanup:', error)

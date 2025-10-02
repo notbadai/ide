@@ -4,7 +4,6 @@ import {ChatExtension} from '../chat'
 import {ApplyExtension} from '../apply'
 import {SymbolLookupExtension} from '../symbol_lookup'
 import {AutocompleteExtension} from '../autocomplete'
-import {VoiceExtension} from "../voice"
 import {ToolsExtension} from '../tools'
 import {ExtensionData, ExtensionResponse} from "../../../ui/src/models/extension"
 
@@ -42,9 +41,6 @@ class StreamService {
             case 'autocomplete':
                 this.autocomplete(data).then()
                 break
-            case 'voice':
-                this.runVoiceExtension(data).then()
-                break
             case 'tool':
                 this.runToolsExtension(data).then()
                 break
@@ -76,9 +72,7 @@ class StreamService {
         )
 
         this.activeChannels.set(channel.uuid, channel)
-
         const chatExtension = new ChatExtension({channel})
-
         await chatExtension.execute({...data})
     }
 
@@ -117,17 +111,6 @@ class StreamService {
         await this.autocompleteExtension.execute({...data})
     }
 
-    private async runVoiceExtension(data: ExtensionData): Promise<void> {
-        const channel = new StreamChannel(
-            (response) => this.onSend(response),
-            (uuid) => this.onCompleteChannel(uuid),
-            data.uuid,
-        )
-        this.activeChannels.set(channel.uuid, channel)
-        const voiceExtension = new VoiceExtension({channel})
-        await voiceExtension.execute({...data})
-    }
-    
     private async runToolsExtension(data: ExtensionData): Promise<void> {
         const channel = new StreamChannel(
             (response) => this.onSend(response),

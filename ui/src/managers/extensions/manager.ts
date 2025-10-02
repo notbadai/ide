@@ -8,8 +8,8 @@ import {terminalManager} from "../terminal/manager"
 import {activityBarManager, EXTENSIONS} from "../activity_bar/manager"
 
 export interface Extension {
-    uuid?: string // use to recognize multiple extension type (chat, autocomplete, etc)
-    type: ExtensionType // use to recognize single extension type (apply, etc)
+    uuid?: string
+    type: ExtensionType
     name: string
     description?: string
     onReceive: (data: any) => void
