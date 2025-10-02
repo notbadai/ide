@@ -270,10 +270,10 @@ main() {
 
     init_submodules
     create_env_config
+    setup_python_config
     install_nodejs
     install_dependencies
     build_package
-    setup_python_config
     post_build_info
 
     print_status "Build script completed!"
