@@ -8,6 +8,26 @@ function getLocalPath(pathStr: string): string {
     return pathStr.split('/').slice(1).join('/')
 }
 
+function normalizeApiProviders(apiProviders: ApiProvider[]): ApiProvider[] {
+    if (apiProviders.length === 0) {
+        return apiProviders
+    }
+
+    const hasExplicitDefault = apiProviders.some(provider => provider.default === true)
+
+    if (hasExplicitDefault) {
+        return apiProviders.map(provider => ({
+            ...provider,
+            default: provider.default === true
+        }))
+    } else {
+        return apiProviders.map((provider, index) => ({
+            ...provider,
+            default: index === 0
+        }))
+    }
+}
+
 export async function prepareEditorState(extensionData: ExtensionData, apiProviders: ApiProvider[]): Promise<EditorState> {
     let prompt = extensionData.prompt
 
@@ -81,6 +101,8 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         prompt = messages.pop().content
     }
 
+    const normalizedApiProviders = normalizeApiProviders(apiProviders)
+
     return {
         request_id: requestId,
 
@@ -108,7 +130,7 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         active_terminal_name: activeTerminalName,
         terminal_names: terminalNames,
 
-        api_providers: apiProviders,
+        api_providers: normalizedApiProviders,
 
         tool_action: toolAction,
         tool_state: toolState
