@@ -48,24 +48,30 @@ setup_python_config() {
     print_status "Setting up Python configuration..."
     
     # Check if Python is installed
-    if ! command_exists python3 && ! command_exists python; then
+    if ! command_exists python; then
         print_error "Python is not installed on your system."
         echo ""
         echo "Please install Python first:"
-        echo "  Option 1: Download from https://www.python.org/downloads/"
-        echo "  Option 2: Use Homebrew: brew install python3"
         echo ""
-        echo "After installing Python, run this script again."
+        echo "  Recommended: Install Miniconda (lightweight Python distribution)"
+        echo "  1. Download Miniconda for macOS:"
+        echo "     For Apple Silicon: https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh"
+        echo "     For Intel: https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
+        echo ""
+        echo "  2. Install Miniconda:"
+        echo "     bash ~/Downloads/Miniconda3-latest-MacOSX-*.sh"
+        echo ""
+        echo "  3. After installation, restart your terminal and run this script again."
+        echo ""
+        echo "  Alternative options:"
+        echo "    - Download from https://www.python.org/downloads/"
+        echo "    - Use Homebrew: brew install python"
+        echo ""
         exit 1
     fi
     
     # Detect Python path
-    local python_path=""
-    if command_exists python3; then
-        python_path=$(which python3)
-    elif command_exists python; then
-        python_path=$(which python)
-    fi
+    local python_path=$(which python)
     
     # Get Python version
     local python_version=$($python_path --version 2>&1)
@@ -76,8 +82,9 @@ setup_python_config() {
     echo "  Version: $python_version"
     echo ""
     
-    # Ask user for confirmation
-    read -p "Is this the Python environment you want to use? (y/n): " -n 1 -r
+    # Ask user for confirmation with proper error handling
+    print_prompt "Is this the Python environment you want to use? (y/n): "
+    read -n 1 -r REPLY
     echo ""
     
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -85,8 +92,8 @@ setup_python_config() {
         echo ""
         echo "Please activate your desired Python environment and run this script again."
         echo "For example:"
-        echo "  - If using venv: source /path/to/venv/bin/activate"
         echo "  - If using conda: conda activate your-env"
+        echo "  - If using venv: source /path/to/venv/bin/activate"
         echo ""
         exit 1
     fi
