@@ -430,8 +430,12 @@ class FileHandler {
         await workspaceConfig?.save()
     }
 
-    public get localExtensionsDirPath(): string {
+    public get localRelExtensionsDirPath(): string {
         return this.getRelPath(path.join(this.root, 'extensions'))
+    }
+
+    public get localExtensionsDirPath(): string {
+        return path.join(this.root, 'extensions')
     }
 
     public async getExtensionConfig(): Promise<ExtensionConfig> {
@@ -440,8 +444,11 @@ class FileHandler {
         try {
             await fs.access(configPath)
             return await loadExtensionConfig(configPath)
-        } catch {
-            return await loadExtensionConfig(null)
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                return await loadExtensionConfig(null)
+            }
+            throw error
         }
     }
 }

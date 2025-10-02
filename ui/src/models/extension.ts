@@ -33,7 +33,7 @@ export interface InspectionResult {
 export type ApiProvider = {
     key: string
     provider: string
-    default: boolean
+    default?: boolean
 }
 
 export interface EditorState {

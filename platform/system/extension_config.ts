@@ -126,6 +126,7 @@ export class ExtensionConfig {
         }
 
         const providerNames = new Set<string>()
+        let defaultCount = 0
 
         for (const [index, apiProvider] of config.api_providers.entries()) {
             if (typeof apiProvider !== 'object' || apiProvider === null) {
@@ -142,7 +143,18 @@ export class ExtensionConfig {
             providerNames.add(apiProvider.provider)
 
             if (typeof apiProvider.key !== 'string' || apiProvider.key.trim() === '') {
-                throw new ConfigError(`config.yaml: api_provider at index ${index} must have a non-empty 'api_key' string`)
+                throw new ConfigError(`config.yaml: api_provider at index ${index} must have a non-empty 'key' string`)
+            }
+
+            // validate 'default' property if present
+            if (apiProvider.default !== undefined) {
+                if (typeof apiProvider.default !== 'boolean') {
+                    throw new ConfigError(`config.yaml: api_provider at index ${index} 'default' must be a boolean`)
+                }
+                
+                if (apiProvider.default === true) {
+                    defaultCount++
+                }
             }
 
             // check for unknown properties in api_provider object
@@ -152,6 +164,11 @@ export class ExtensionConfig {
                     throw new ConfigError(`config.yaml: unknown property '${key}' in api_provider at index ${index}`)
                 }
             }
+        }
+
+        // check that only one provider is marked as default
+        if (defaultCount > 1) {
+            throw new ConfigError("config.yaml: only one api_provider can be marked as 'default'")
         }
 
         // check chat extensions
