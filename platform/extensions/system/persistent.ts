@@ -9,6 +9,7 @@ import {httpServer} from "../../server"
 import {buildEnv, createPersistentRunner} from "./runner"
 import os from "os"
 import readline from "readline"
+import {registerConfigSaveCallback} from "../../system/extension_config"
 
 const MAX_PERSISTENT_REQUESTS = 250
 
@@ -20,6 +21,7 @@ export abstract class PersistentExtension extends BaseExtension {
         super(opt)
 
         fileWatcher.registerPathCallback(fileHandler.localRelExtensionsDirPath, () => this.markPersistentProcessDirty())
+        registerConfigSaveCallback(() => this.markPersistentProcessDirty())
     }
 
     protected async run(name: string, data: EditorState): Promise<void> {

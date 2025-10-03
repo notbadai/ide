@@ -411,11 +411,25 @@ export async function loadExtensionConfigContent(): Promise<string> {
     }
 }
 
+const configSaveCallbacks: Set<() => void> = new Set()
+
+export function registerConfigSaveCallback(callback: () => void): void {
+    configSaveCallbacks.add(callback)
+}
+
+export function unregisterConfigSaveCallback(callback: () => void): void {
+    configSaveCallbacks.delete(callback)
+}
+
 export async function saveExtensionConfig(configContent: string): Promise<void> {
     const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
 
     try {
         await fs.writeFile(configPath, configContent, 'utf8')
+        // notify all registered callbacks
+        for (const callback of configSaveCallbacks) {
+            callback()
+        }
     } catch (error) {
         throw new ConfigError(`failed to write config.yaml file: ${error.message}`)
     }

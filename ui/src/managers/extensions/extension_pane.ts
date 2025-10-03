@@ -38,6 +38,7 @@ class ExtensionPane extends BaseComponent {
     private panelElem: HTMLDivElement
     private errorElem: HTMLDivElement
     private warningElem: HTMLDivElement
+    private localExtensionsWarningElem: HTMLDivElement
     private tabsElem: HTMLDivElement
 
     private updateContainerElem: HTMLDivElement
@@ -242,6 +243,17 @@ class ExtensionPane extends BaseComponent {
                 })
             })
 
+            // add warning message for local extensions in effect
+            this.localExtensionsWarningElem = $('div', '.autocomplete-warning.hide', $ => {
+                $('div', '.warning-content', $ => {
+                    $('i', '.fas.fa-folder-open')
+                    $('div', '.warning-text', $ => {
+                        $('div', '.warning-title', 'Local Extension Configs Active')
+                        $('div', '.warning-message', 'To make changes, edit extensions/config.yaml in your project directory.')
+                    })
+                })
+            })
+
             // add warning message for missing autocomplete extension
             this.warningElem = $('div', '.autocomplete-warning.hide', $ => {
                 $('div', '.warning-content', $ => {
@@ -307,10 +319,25 @@ class ExtensionPane extends BaseComponent {
     }
 
     private updateExtensionStatus() {
+        this.updateLocalExtensionsWarning()
         if (this.updateExtensionError()) {
             return
         }
         this.updateAutocompleteWarning()
+    }
+
+    private updateLocalExtensionsWarning(): void {
+        if (!this.localExtensionsWarningElem) {
+            return
+        }
+
+        const isLocal = projectManager.project?.extensions?.isLocal ?? false
+
+        if (isLocal) {
+            this.localExtensionsWarningElem.classList.remove('hide')
+        } else {
+            this.localExtensionsWarningElem.classList.add('hide')
+        }
     }
 
     private updateAutocompleteWarning(): void {
@@ -327,13 +354,11 @@ class ExtensionPane extends BaseComponent {
         }
     }
 
-    public updateExtensionError(extensionError: string = null): boolean {
+    public updateExtensionError(): boolean {
         if (!this.errorElem) {
             return false
         }
-        if (extensionError == null) {
-            extensionError = projectManager.project?.extensions?.error
-        }
+        const extensionError = projectManager.project?.extensions?.error
         if (extensionError) {
             const messageElem = this.errorElem.querySelector('.error-message') as HTMLDivElement
             messageElem.textContent = extensionError

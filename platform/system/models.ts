@@ -22,5 +22,6 @@ export interface Extensions {
     autocomplete: string | null
     diff: DiffSettings
     tools?: Tool[]
-    error?: string
+    error?: string,
+    isLocal: boolean,
 }

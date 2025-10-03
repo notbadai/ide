@@ -20,6 +20,7 @@ export interface Extensions {
     diff: DiffSettings
     tools?: Tool[]
     error?: string
+    isLocal: boolean
 }
 
 export interface TabState {

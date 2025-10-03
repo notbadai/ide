@@ -19,9 +19,11 @@ class FileHandler {
     private rootName: string
 
     private readonly docs: Map<string, Document>
+    private isLocalConfig: boolean
 
     constructor() {
         this.docs = new Map()
+        this.isLocalConfig = false
     }
 
     public init(rootDir: string) {
@@ -102,13 +104,15 @@ class FileHandler {
                 autocomplete: config.getAutocompleteExtension(),
                 diff: config.getDiffSettings(),
                 tools: config.getTools(),
+                isLocal: this.isLocalConfig,
             }
         } catch (error) {
             return {
                 chat: [],
                 autocomplete: null,
                 diff: null,
-                error: error.message
+                error: error.message,
+                isLocal: this.isLocalConfig,
             }
         }
     }
@@ -422,9 +426,11 @@ class FileHandler {
 
         try {
             await fs.access(configPath)
+            this.isLocalConfig = true
             return await loadExtensionConfig(configPath)
         } catch (error) {
             if (error.code === 'ENOENT') {
+                this.isLocalConfig = false
                 // if local extensions not exist load global
                 return await loadExtensionConfig(null)
             }
