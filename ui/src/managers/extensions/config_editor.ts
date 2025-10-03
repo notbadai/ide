@@ -34,7 +34,8 @@ class ConfigEditor {
                 for (const onFileSave of projectManager.getOnFileSaveCallbacks()) {
                     onFileSave()
                 }
-            }
+            },
+            autoSaveDelayMs: 1_000
         })
     }
 
