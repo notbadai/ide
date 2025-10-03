@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $background: #1b242a;
 $secondary: #485460;
 $secondary-line: rgba(72, 84, 96, 0.5);
@@ -64,16 +66,15 @@ html, body {
   height: 100%;
   color: $font-color !important;
   background: $background !important;
+  font-size: $font-size;
 
   &.stop-scroll {
     position: relative;
+    overflow: hidden;
     @media screen and (max-width: 600px) {
       position: fixed;
     }
-    overflow: hidden;
   }
-
-  font-size: $font-size;
 
   pre, code {
     font-size: $font-size;
@@ -282,11 +283,11 @@ body.has-status-bar {
   &.error {
     background: linear-gradient(135deg,
             rgba($danger, 0.9) 0%,
-            rgba(darken($danger, 5%), 0.95) 100%);
+            rgba(color.adjust($danger, $lightness: -5%), 0.95) 100%);
     color: #ffffff;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    border-bottom-color: rgba(lighten($danger, 10%), 0.3);
+    border-bottom-color: rgba(color.adjust($danger, $lightness: 10%), 0.3);
 
     .close-btn {
       color: rgba(255, 255, 255, 0.9);
@@ -301,11 +302,11 @@ body.has-status-bar {
   &.success {
     background: linear-gradient(135deg,
             rgba($success, 0.85) 0%,
-            rgba(darken($success, 8%), 0.9) 100%);
+            rgba(color.adjust($success, $lightness: -8%), 0.9) 100%);
     color: #ffffff;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    border-bottom-color: rgba(lighten($success, 15%), 0.3);
+    border-bottom-color: rgba(color.adjust($success, $lightness: 15%), 0.3);
 
     .close-btn {
       color: rgba(255, 255, 255, 0.9);
@@ -320,11 +321,11 @@ body.has-status-bar {
   &.warning {
     background: linear-gradient(135deg,
             rgba($warning, 0.9) 0%,
-            rgba(darken($warning, 5%), 0.95) 100%);
+            rgba(color.adjust($warning, $lightness: -5%), 0.95) 100%);
     color: rgba(26, 26, 26, 0.9);
     font-weight: 500;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
-    border-bottom-color: rgba(lighten($warning, 10%), 0.4);
+    border-bottom-color: rgba(color.adjust($warning, $lightness: 10%), 0.4);
 
     .close-btn {
       color: rgba(26, 26, 26, 0.8);
@@ -339,11 +340,11 @@ body.has-status-bar {
   &.info {
     background: linear-gradient(135deg,
             rgba($active, 0.85) 0%,
-            rgba(darken($active, 8%), 0.9) 100%);
+            rgba(color.adjust($active, $lightness: -8%), 0.9) 100%);
     color: #ffffff;
     font-weight: 500;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    border-bottom-color: rgba(lighten($active, 15%), 0.3);
+    border-bottom-color: rgba(color.adjust($active, $lightness: 15%), 0.3);
 
     .close-btn {
       color: rgba(255, 255, 255, 0.9);
@@ -662,7 +663,7 @@ body.has-status-bar {
   &.background {
     background: linear-gradient(135deg,
             rgba($btn-background, 0.85),
-            rgba(darken($btn-background, 6%), 0.85)
+            rgba(color.adjust($btn-background, $lightness: -6%), 0.85)
     );
     border-color: rgba($btn-background, 0.3);
     color: rgba($btn-text, 0.95);
@@ -671,7 +672,7 @@ body.has-status-bar {
 
     &:hover {
       background: linear-gradient(135deg,
-              rgba(lighten($btn-background, 3%), 0.9),
+              rgba(color.adjust($btn-background, $lightness: 3%), 0.9),
               rgba($btn-background, 0.9)
       );
       border-color: rgba($btn-background, 0.5);
@@ -877,7 +878,7 @@ body.has-status-bar {
 
   .options {
     position: absolute;
-    background: rgba(mix($background, #fff, 97%), 0.95);
+    background: rgba(color.mix($background, #fff, 97%), 0.95);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     min-width: 200px;
@@ -931,7 +932,7 @@ body.has-status-bar {
 
       &:hover,
       &:focus-visible {
-        background: rgba(mix($btn-background, $secondary, 20%), 0.12);
+        background: rgba(color.mix($btn-background, $secondary, 20%), 0.12);
         color: rgba($font-color, 1);
         outline: none;
         transform: translateX(2px);
@@ -953,7 +954,7 @@ body.has-status-bar {
 
       &:active {
         transform: translateX(1px);
-        background: rgba(mix($btn-background, $secondary, 30%), 0.18);
+        background: rgba(color.mix($btn-background, $secondary, 30%), 0.18);
       }
     }
 
@@ -1283,7 +1284,7 @@ body.has-status-bar {
       justify-content: flex-end;
       padding-left: 8px;
       border-bottom: 1px solid rgba($secondary-line, 0.1);
-      background: rgba(mix($background, #fff, 99%), 0.3);
+      background: rgba(color.mix($background, #fff, 99%), 0.3);
       backdrop-filter: blur(4px);
       min-height: 28px;
       gap: 12px;
@@ -1446,7 +1447,7 @@ body.has-status-bar {
       }
 
       .cm-textfield {
-        background: rgba(mix($background, #fff, 98%), 0.8);
+        background: rgba(color.mix($background, #fff, 98%), 0.8);
         border: 1px solid rgba($secondary-line, 0.3);
         border-radius: 4px;
         padding: 2px 4px;
@@ -1458,7 +1459,7 @@ body.has-status-bar {
 
         &:focus {
           border-color: rgba($btn-background, 0.4);
-          background: rgba(mix($background, #fff, 96%), 0.9);
+          background: rgba(color.mix($background, #fff, 96%), 0.9);
           box-shadow: 0 0 0 2px rgba($btn-background, 0.08);
         }
 
@@ -1561,7 +1562,7 @@ body.has-status-bar {
           height: 12px;
           border: 1px solid rgba($secondary-line, 0.4);
           border-radius: 2px;
-          background: rgba(mix($background, #fff, 98%), 0.8);
+          background: rgba(color.mix($background, #fff, 98%), 0.8);
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
@@ -1569,7 +1570,7 @@ body.has-status-bar {
 
           &:hover {
             border-color: rgba($btn-background, 0.4);
-            background: rgba(mix($background, #fff, 96%), 0.9);
+            background: rgba(color.mix($background, #fff, 96%), 0.9);
           }
 
           &:checked {
@@ -1634,7 +1635,7 @@ body.has-status-bar {
 
   .cm-error-tooltip {
     padding: 12px 16px;
-    background: rgba(mix($background, #fff, 96%), 0.95);
+    background: rgba(color.mix($background, #fff, 96%), 0.95);
     backdrop-filter: blur(12px) saturate(1.1);
     color: rgba($font-color, 0.9);
     border: 1px solid rgba($secondary-line, 0.3);
@@ -1658,7 +1659,7 @@ body.has-status-bar {
       height: 0;
       border-left: 2px solid transparent;
       border-right: 2px solid transparent;
-      border-bottom: 2px solid rgba(mix($background, #fff, 96%), 0.95);
+      border-bottom: 2px solid rgba(color.mix($background, #fff, 96%), 0.95);
       filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.1));
     }
 
@@ -1686,7 +1687,7 @@ body.has-status-bar {
     padding: 1px 4px;
     font-weight: 300;
     color: $ternary;
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
     border-radius: 3px;
     margin: 1px 2px;
     transition: all 0.2s ease;
@@ -1712,7 +1713,7 @@ body.has-status-bar {
 
         &:hover {
           background: rgba($secondary-line, 0.15);
-          color: lighten($ternary, 10%);
+          color: color.adjust($ternary, $lightness: 10%);
         }
       }
 
@@ -1724,7 +1725,7 @@ body.has-status-bar {
 
       &:last-child .part-content {
         font-weight: 400;
-        color: lighten($ternary, 5%);
+        color: color.adjust($ternary, $lightness: 5%);
 
         .fa-file {
           color: rgba($btn-background, 0.5);
@@ -1786,7 +1787,7 @@ body.has-status-bar {
     flex-direction: row;
     border-bottom: 0.5px solid $ternary-line;
     height: $toolbar-height;
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
 
     .logo-container {
       position: absolute;
@@ -1898,7 +1899,7 @@ body.has-status-bar {
 .autocomplete-popup {
   position: absolute;
   z-index: 19;
-  background: rgba(mix($background, #fff, 97%), 0.95);
+  background: rgba(color.mix($background, #fff, 97%), 0.95);
   backdrop-filter: blur(12px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
@@ -1982,8 +1983,8 @@ body.has-status-bar {
   justify-content: space-between;
   padding: 0 20px;
   background: linear-gradient(180deg,
-          rgba(darken($background, 3%), 0.98) 0%,
-          rgba(darken($background, 6%), 0.98) 100%);
+          rgba(color.adjust($background, $lightness: -3%), 0.98) 0%,
+          rgba(color.adjust($background, $lightness: -6%), 0.98) 100%);
   backdrop-filter: blur(8px) saturate(1.1);
   border-top: 1px solid rgba(255, 255, 255, 0.04);
   color: rgba($font-color, 0.85);
@@ -2200,7 +2201,7 @@ body.has-status-bar {
     white-space: nowrap;
     overflow-x: auto;
     border-bottom: 1px solid rgba($ternary-line, 0.3);
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
     scrollbar-width: thin;
     scrollbar-color: #8880 transparent;
     -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -2245,7 +2246,7 @@ body.has-status-bar {
       }
 
       &.dirty {
-        color: lighten($dirty, 10%);
+        color: color.adjust($dirty, $lightness: 10%);
 
         &::before {
           content: "●";
@@ -2256,7 +2257,7 @@ body.has-status-bar {
       }
 
       &.uncommitted {
-        color: lighten($warning, 15%);
+        color: color.adjust($warning, $lightness: 15%);
 
         &::before {
           content: "○";
@@ -2317,7 +2318,7 @@ body.has-status-bar {
   .tab-content {
     overflow: auto;
     height: 100%;
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
   }
 }
 
@@ -2455,7 +2456,7 @@ body.has-status-bar {
         height: 16px;
         border: 1px solid rgba($secondary-line, 0.5);
         border-radius: 4px;
-        background: rgba(mix($background, #fff, 98%), 0.8);
+        background: rgba(color.mix($background, #fff, 98%), 0.8);
         cursor: pointer;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
@@ -2467,7 +2468,7 @@ body.has-status-bar {
 
         &:hover {
           border-color: rgba($btn-background, 0.4);
-          background: rgba(mix($background, #fff, 96%), 0.9);
+          background: rgba(color.mix($background, #fff, 96%), 0.9);
           transform: scale(1.05);
         }
 
@@ -2479,7 +2480,7 @@ body.has-status-bar {
         &:checked {
           background: linear-gradient(135deg,
                   rgba($btn-background, 0.9) 0%,
-                  rgba(darken($btn-background, 5%), 0.95) 100%);
+                  rgba(color.adjust($btn-background, $lightness: -5%), 0.95) 100%);
           border-color: rgba($btn-background, 0.6);
           transform: scale(1);
 
@@ -2499,7 +2500,7 @@ body.has-status-bar {
 
           &:hover {
             background: linear-gradient(135deg,
-                    rgba(lighten($btn-background, 3%), 0.95) 0%,
+                    rgba(color.adjust($btn-background, $lightness: 3%), 0.95) 0%,
                     rgba($btn-background, 1) 100%);
             box-shadow: 0 2px 8px rgba($btn-background, 0.25);
             transform: scale(1.02);
@@ -2551,7 +2552,7 @@ body.has-status-bar {
   top: 0;
   bottom: 0;
   width: $activity-bar-width;
-  background: darken($background, 2%);
+  background: color.adjust($background, $lightness: -2%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2639,7 +2640,7 @@ body.has-status-bar {
       .progress-bar-fill {
         background: linear-gradient(90deg,
                 rgba($btn-background, 0.9) 0%,
-                rgba(lighten($btn-background, 5%), 1) 50%,
+                rgba(color.adjust($btn-background, $lightness: 5%), 1) 50%,
                 rgba($btn-background, 0.9) 100%);
         box-shadow: 0 0 4px rgba($btn-background, 0.4);
       }
@@ -2651,7 +2652,7 @@ body.has-status-bar {
       .progress-bar-fill {
         background: linear-gradient(90deg,
                 rgba($btn-background, 1) 0%,
-                rgba(lighten($btn-background, 8%), 1) 50%,
+                rgba(color.adjust($btn-background, $lightness: 8%), 1) 50%,
                 rgba($btn-background, 1) 100%);
         box-shadow: 0 0 6px rgba($btn-background, 0.5);
       }
@@ -2665,7 +2666,7 @@ body.has-status-bar {
       height: 14px;
       background: linear-gradient(135deg,
               rgba($danger, 0.85) 0%,
-              rgba(darken($danger, 5%), 0.9) 100%);
+              rgba(color.adjust($danger, $lightness: -5%), 0.9) 100%);
       border: 1.5px solid rgba($background, 0.9);
       border-radius: 50%;
       color: rgba($font-color, 0.95);
@@ -2696,7 +2697,7 @@ body.has-status-bar {
       0 1px 3px rgba(0, 0, 0, 0.12);
       background: linear-gradient(135deg,
               rgba($danger, 0.9) 0%,
-              rgba(darken($danger, 3%), 0.95) 100%);
+              rgba(color.adjust($danger, $lightness: -3%), 0.95) 100%);
     }
 
     .notification-badge {
@@ -2707,7 +2708,7 @@ body.has-status-bar {
       height: 14px;
       background: linear-gradient(135deg,
               rgba($btn-background, 0.85) 0%,
-              rgba(darken($btn-background, 5%), 0.9) 100%);
+              rgba(color.adjust($btn-background, $lightness: -5%), 0.9) 100%);
       border: 1.5px solid rgba($background, 0.9);
       border-radius: 50%;
       color: rgba($font-color, 0.95);
@@ -2738,7 +2739,7 @@ body.has-status-bar {
       0 1px 3px rgba(0, 0, 0, 0.12);
       background: linear-gradient(135deg,
               rgba($btn-background, 0.9) 0%,
-              rgba(darken($btn-background, 3%), 0.95) 100%);
+              rgba(color.adjust($btn-background, $lightness: -3%), 0.95) 100%);
     }
 
     &::before {
@@ -2812,7 +2813,7 @@ body.has-status-bar {
     padding: 6px 12px 6px 36px;
     border: 1px solid rgba($secondary-line, 0.4);
     border-radius: 12px;
-    background: rgba(mix($background, #fff, 98%), 0.6);
+    background:  rgba(color.mix($background, #fff, 98%), 0.6);
     backdrop-filter: blur(8px);
     outline: none;
     font-size: 0.85rem;
@@ -2843,7 +2844,7 @@ body.has-status-bar {
 
     &:focus {
       border-color: rgba($btn-background, 0.4);
-      background: rgba(mix($background, #fff, 96%), 0.8);
+      background: rgba(color.mix($background, #fff, 96%), 0.8);
       box-shadow: 0 2px 12px rgba($btn-background, 0.15),
       0 1px 3px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -2852,7 +2853,7 @@ body.has-status-bar {
 
     &:hover:not(:focus) {
       border-color: rgba($secondary-line, 0.6);
-      background: rgba(mix($background, #fff, 97%), 0.7);
+      background: rgba(color.mix($background, #fff, 97%), 0.7);
     }
   }
 
@@ -2885,7 +2886,7 @@ body.has-status-bar {
     margin: 0;
     padding: 6px 0;
     overflow-y: auto;
-    background: rgba(mix($background, #fff, 96%), 0.95);
+    background: rgba(color.mix($background, #fff, 96%), 0.95);
     backdrop-filter: blur(16px) saturate(1.2);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -2967,7 +2968,7 @@ body.has-status-bar {
 
       .highlight {
         background: rgba($btn-background, 0.3);
-        color: lighten($font-color, 10%);
+        color: color.adjust($font-color, $lightness: 10%);
         font-weight: 600;
         border-radius: 2px;
         padding: 0 1px;
@@ -3013,7 +3014,7 @@ body.has-status-bar {
 
     &:hover,
     &.active {
-      background: rgba(mix($btn-background, $secondary, 20%), 0.12);
+      background: rgba(color.mix($btn-background, $secondary, 20%), 0.12);
       transform: translateX(2px);
 
       .name {
@@ -3021,7 +3022,7 @@ body.has-status-bar {
 
         .highlight {
           background: rgba($btn-background, 0.5);
-          color: lighten($font-color, 15%);
+          color: color.adjust($font-color, $lightness: 15%);
           box-shadow: 0 0 0 1px rgba($btn-background, 0.4);
         }
       }
@@ -3053,11 +3054,11 @@ body.has-status-bar {
     }
 
     &.active {
-      background: rgba(mix($btn-background, $secondary, 30%), 0.18);
+      background: rgba(color.mix($btn-background, $secondary, 30%), 0.18);
       box-shadow: 0 1px 3px rgba($btn-background, 0.2);
 
       .name {
-        color: lighten($font-color, 5%);
+        color: color.adjust($font-color, $lightness: 5%);
       }
     }
 
@@ -3231,8 +3232,8 @@ body.has-status-bar {
         line-height: 1.4;
         padding: 8px 4px;
         background: linear-gradient(180deg,
-                rgba(mix($background, #fff, 97%), 0.4) 0%,
-                rgba(mix($background, #fff, 95%), 0.6) 100%);
+                rgba(color.mix($background, #fff, 97%), 0.4) 0%,
+                rgba(color.mix($background, #fff, 95%), 0.6) 100%);
         backdrop-filter: blur(4px);
         border-bottom: 1px solid rgba($secondary-line, 0.2);
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -3253,8 +3254,8 @@ body.has-status-bar {
 
         &:hover {
           background: linear-gradient(180deg,
-                  rgba(mix($background, #fff, 96%), 0.5) 0%,
-                  rgba(mix($background, #fff, 94%), 0.7) 100%);
+                  rgba(color.mix($background, #fff, 96%), 0.5) 0%,
+                  rgba(color.mix($background, #fff, 94%), 0.7) 100%);
           border-bottom-color: rgba($secondary-line, 0.3);
         }
 
@@ -3314,6 +3315,8 @@ body.has-status-bar {
         background: $btn-background;
         animation: slide 1.2s linear infinite;
       }
+      
+      counter-reset: line;
 
       @keyframes slide {
         0% {
@@ -3323,8 +3326,6 @@ body.has-status-bar {
           left: 100%;
         }
       }
-
-      counter-reset: line;
 
       pre span.line:before {
         counter-increment: line;
@@ -3707,7 +3708,7 @@ textarea {
 }
 
 .collapsible {
-  background: rgba(mix($background, #fff, 98%), 0.4);
+  background: rgba(color.mix($background, #fff, 98%), 0.4);
   border: 1px solid rgba($secondary-line, 0.2);
   border-radius: 12px;
   backdrop-filter: blur(8px);
@@ -3794,7 +3795,7 @@ metadata {
   margin: 1rem 0;
   border: 1px solid rgba($secondary-line, 0.15);
   border-radius: 12px;
-  background: rgba(mix($background, #fff, 98%), 0.3);
+  background: rgba(color.mix($background, white, 98%), 0.3);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
   0 1px 2px rgba(0, 0, 0, 0.03);
@@ -3847,7 +3848,7 @@ metadata {
 
   .container {
     background: linear-gradient(145deg,
-            rgba(mix($secondary, $background, 15%), 0.6),
+            rgba(color.mix($secondary, $background, 15%), 0.6),
             rgba($background, 0.9));
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -3866,7 +3867,7 @@ metadata {
     margin-bottom: 0.5rem;
     font-size: 1.75rem;
     font-weight: 300;
-    color: lighten($font-color, 8%);
+    color: color.adjust($font-color, $lightness: 8%);
     letter-spacing: -0.025em;
   }
 
@@ -3962,7 +3963,7 @@ metadata {
   z-index: 20;
   display: none;
 
-  background: rgba(mix($background, #fff, 96%), 0.95);
+  background: rgba(color.mix($background, white, 96%), 0.95);
   backdrop-filter: blur(16px) saturate(1.2);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -3993,7 +3994,7 @@ metadata {
     justify-content: space-between;
     padding: 12px 16px;
     border-bottom: 1px solid rgba($secondary-line, 0.2);
-    background: rgba(mix($background, #fff, 98%), 0.5);
+    background: rgba(color.mix($background, white, 98%), 0.5);
     border-radius: 12px 12px 0 0;
 
     .usage-title {
@@ -4144,7 +4145,7 @@ metadata {
 
     &:hover,
     &.selected {
-      background: rgba(mix($btn-background, $secondary, 20%), 0.12);
+      background: rgba(color.mix($btn-background, $secondary, 20%), 0.12);
       border-radius: 6px;
       transform: translateX(2px);
 
@@ -4177,7 +4178,7 @@ metadata {
     }
 
     &.selected {
-      background: rgba(mix($btn-background, $secondary, 30%), 0.18);
+      background: rgba(color.mix($btn-background, $secondary, 30%), 0.18);
       box-shadow: 0 1px 3px rgba($btn-background, 0.2);
     }
   }
@@ -4697,7 +4698,7 @@ metadata {
               .extension-progress-fill {
                 background: linear-gradient(90deg,
                         rgba($btn-background, 0.9) 0%,
-                        rgba(lighten($btn-background, 5%), 1) 50%,
+                        rgba(color.adjust($btn-background, $lightness: 5%), 1) 50%,
                         rgba($btn-background, 0.9) 100%);
                 box-shadow: 0 0 4px rgba($btn-background, 0.4);
               }
@@ -4906,7 +4907,7 @@ metadata {
   }
 
   .tab-switcher-popup {
-    background: rgba(mix($background, #fff, 96%), 0.95);
+    background: rgba(color.mix($background, #fff, 96%), 0.95);
     backdrop-filter: blur(16px) saturate(1.2);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -4926,7 +4927,7 @@ metadata {
       gap: 8px;
       padding: 12px 16px;
       border-bottom: 1px solid rgba($secondary-line, 0.2);
-      background: rgba(mix($background, #fff, 98%), 0.5);
+      background: rgba(color.mix($background, #fff, 98%), 0.5);
       font-size: 0.9rem;
       font-weight: 500;
       color: rgba($font-color, 0.9);
@@ -5605,13 +5606,13 @@ metadata {
 
   .tab-list {
     border-bottom: 1px solid rgba($ternary-line, 0.3);
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
   }
 
   .tab-content {
     overflow: hidden;
     height: 100%;
-    background: darken($background, 2%);
+    background: color.adjust($background, $lightness: -2%);
     display: flex;
     flex-direction: column;
   }
@@ -5806,7 +5807,7 @@ metadata {
       padding: 6px 12px;
       border: 1px solid rgba($secondary-line, 0.4);
       border-radius: 8px;
-      background: rgba(mix($background, #fff, 98%), 0.6);
+      background: rgba(color.mix($background, #fff, 98%), 0.6);
       backdrop-filter: blur(8px);
       outline: none;
       font-size: 0.8rem;
@@ -5824,7 +5825,7 @@ metadata {
 
       &:focus {
         border-color: rgba($btn-background, 0.4);
-        background: rgba(mix($background, #fff, 96%), 0.8);
+        background: rgba(color.mix($background, #fff, 96%), 0.8);
         box-shadow: 0 2px 12px rgba($btn-background, 0.15),
         0 1px 3px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -5833,7 +5834,7 @@ metadata {
 
       &:hover:not(:focus) {
         border-color: rgba($secondary-line, 0.6);
-        background: rgba(mix($background, #fff, 97%), 0.7);
+        background: rgba(color.mix($background, #fff, 97%), 0.7);
       }
     }
   }
@@ -5887,7 +5888,7 @@ metadata {
 
       &:hover,
       &.selected {
-        background: rgba(mix($btn-background, $secondary, 20%), 0.12);
+        background: rgba(color.mix($btn-background, $secondary, 20%), 0.12);
         transform: translateX(2px);
 
         &::before {
@@ -5909,7 +5910,7 @@ metadata {
 
             .highlight {
               background: rgba($btn-background, 0.5);
-              color: lighten($font-color, 15%);
+              color: color.adjust($font-color, $lightness: 15%);
               box-shadow: 0 0 0 1px rgba($btn-background, 0.4);
             }
           }
@@ -5927,7 +5928,7 @@ metadata {
       }
 
       &.selected {
-        background: rgba(mix($btn-background, $secondary, 30%), 0.18);
+        background: rgba(color.mix($btn-background, $secondary, 30%), 0.18);
         box-shadow: 0 1px 3px rgba($btn-background, 0.2);
 
         .context-item-info {
@@ -5979,7 +5980,7 @@ metadata {
 
           .highlight {
             background: rgba($btn-background, 0.3);
-            color: lighten($font-color, 10%);
+            color: color.adjust($font-color, $lightness: 10%);
             font-weight: 600;
             border-radius: 2px;
             padding: 0 1px;
