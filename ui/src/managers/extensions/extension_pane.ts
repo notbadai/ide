@@ -248,7 +248,7 @@ class ExtensionPane extends BaseComponent {
                 $('div', '.warning-content', $ => {
                     $('i', '.fas.fa-folder-open')
                     $('div', '.warning-text', $ => {
-                        $('div', '.warning-title', 'Local Extensions Active')
+                        $('div', '.warning-title', 'Local Extension Configs Active')
                         $('div', '.warning-message', 'To make changes, edit extensions/config.yaml in your project directory.')
                     })
                 })
