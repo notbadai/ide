@@ -42,7 +42,6 @@ export interface EditorState {
     repo: string[]
     repo_path: string
 
-    edit_file?: string
     current_file?: string
     current_file_content?: string
     opened_files: string[]
@@ -52,23 +51,15 @@ export interface EditorState {
     cursor_column?: number
     selection?: string
     clip_board?: string
-
     symbol?: string
-
     prompt?: string
     chat_history?: Message[]
 
-    terminal_snapshot?: string[]
-    terminal_before_reset?: string[]
-    active_terminal_name?: string
-    terminal_names?: string[]
+    current_terminal: string
+    terminals: string[]
 
-    api_providers?: ApiProvider[]
-
-    audio_blob_path?: string
-
-    tool_action?: string
-    tool_state?: { [name: string]: any }
+    api_keys?: Record<string, ApiProvider>
+    settings?: { [key: string]: string[] }
 }
 
 export interface ExtensionData {

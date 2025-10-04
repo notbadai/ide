@@ -31,6 +31,7 @@ export interface ConfigData {
         context_lines?: number          // context_lines
         ignore_whitespace?: boolean     // whether to ignore whitespace differences
     }
+    settings?: Record<string, Record<string, any>>
     tools?: Tool[]
     api_providers: ApiProvider[]
     port: number
@@ -38,7 +39,7 @@ export interface ConfigData {
 }
 
 const VALID_CONFIG_KEYS = new Set([
-    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'diff', 'tools', 'api_providers', 'port', 'host'
+    'chat', 'apply', 'symbol_lookup', 'python_path', 'autocomplete', 'diff', 'settings', 'tools', 'api_providers', 'port', 'host'
 ])
 
 const VALID_DIFF_KEYS = new Set([
@@ -299,6 +300,23 @@ export class ExtensionConfig {
                 }
             }
         }
+
+        // validate settings if present
+        if (config.settings !== undefined) {
+            if (typeof config.settings !== 'object' || config.settings === null || Array.isArray(config.settings)) {
+                throw new ConfigError("config.yaml: 'settings' must be an object")
+            }
+
+            for (const [extensionName, extensionSettings] of Object.entries(config.settings)) {
+                if (typeof extensionName !== 'string' || extensionName.trim() === '') {
+                    throw new ConfigError("config.yaml: 'settings' extension names must be non-empty strings")
+                }
+
+                if (typeof extensionSettings !== 'object' || extensionSettings === null || Array.isArray(extensionSettings)) {
+                    throw new ConfigError(`config.yaml: settings for extension '${extensionName}' must be an object`)
+                }
+            }
+        }
     }
 
     private _isValidKeyCombo(keyCombo: string): boolean {
@@ -381,6 +399,14 @@ export class ExtensionConfig {
 
     public getApiProviders(): ApiProvider[] {
         return this.config.api_providers || []
+    }
+
+    public getExtensionSettings(extensionName: string): Record<string, any> {
+        if (!this.config.settings) {
+            return {}
+        }
+
+        return this.config.settings[extensionName] || {}
     }
 }
 
