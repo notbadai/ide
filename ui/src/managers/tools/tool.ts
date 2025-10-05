@@ -88,8 +88,9 @@ export class ToolExtension extends BaseExtension {
             codeEditor?.applyInlineCompletion(response.inline_completion, response.cursor_row, response.cursor_column)
         } else if (data.highlight) {
             statusBar.updateMessage(`${data.highlight.results.length} results found`)
+
             const results = data.highlight.results.map(res => ({
-                file_path: getCorrectPath(res.file_path, projectManager.project.projectName),
+                file_path: res.file_path ? getCorrectPath(res.file_path, projectManager.project.projectName) : this.currentFilePath,
                 row_from: res.row_from,
                 row_to: res.row_to,
                 column_from: res.column_from,
