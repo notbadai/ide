@@ -175,7 +175,7 @@ class HttpServer {
         } else if (data.method === 'update_progress') {
             return {is_stopped: false, progress: {message: data.content, progress: data.progress}}
         } else if (data.method === 'highlight') {
-            return {is_stopped: false, inspect: {results: data.results}}
+            return {is_stopped: false, highlight: {results: data.results}}
         } else if (data.method === 'start_chat') {
             return {is_stopped: false, chat: {start_chat: true}}
         } else if (data.method === 'end_chat') {

@@ -1,14 +1,15 @@
 import {Weya as $, WeyaElementFunction} from "../../../lib/weya/weya"
 import {BaseComponent} from "./base"
-import {CodeResults, CodeResult} from "./code_results"
+import {InspectResult} from "../models/extension"
 import {clearChildElements} from "../utils/document"
 import {projectManager} from "../managers/project/manager"
+import {InspectResults} from "./inspect_results"
 
 
 class InspectPanel extends BaseComponent {
     private elem: HTMLDivElement
     private inspectorListElem: HTMLDivElement
-    private results: CodeResult[]
+    private results: InspectResult[]
 
     constructor() {
         super()
@@ -26,7 +27,7 @@ class InspectPanel extends BaseComponent {
         return this.elem
     }
 
-    public update(results: CodeResult[]) {
+    public update(results: InspectResult[]) {
         this.results = results
 
         if (this.inspectorListElem == null) {
@@ -34,12 +35,12 @@ class InspectPanel extends BaseComponent {
         }
         clearChildElements(this.inspectorListElem)
         $(this.inspectorListElem, $ => {
-            const codeResults = new CodeResults({
+            const insectResults = new InspectResults({
                 results: this.results,
                 emptyMessage: 'No Results Found',
-                onItemClick: (result: CodeResult) => {
+                onItemClick: (result: InspectResult) => {
                     projectManager.jumpToEditorLine({
-                        lineNumber: result.line_number,
+                        lineNumber: result.row_from,
                         filePath: result.file_path
                     })
                 },
@@ -47,7 +48,7 @@ class InspectPanel extends BaseComponent {
                     // codeEditor.focus()
                 }
             })
-            codeResults.render($)
+            insectResults.render($)
         })
     }
 }

@@ -1,19 +1,13 @@
 import {Decoration, DecorationSet, EditorView, hoverTooltip} from "@codemirror/view"
 import {RangeSetBuilder, StateEffect, StateField} from "@codemirror/state"
+import {InspectResult} from "../../../models/extension"
 
-export interface DiagnosticOutput {
-    start_line: number,
-    start_char: number,
-    end_line: number,
-    end_char: number
-    description: string
-}
 
-export const diagnosticUnderline = Decoration.mark({class: 'cm-error-underline'})
+export const inspectUnderline = Decoration.mark({class: 'cm-error-underline'})
 
-export const setDiagnostic = StateEffect.define<DecorationSet>()
+export const setInspect = StateEffect.define<DecorationSet>()
 
-export const diagnosticField = StateField.define<DecorationSet>({
+export const inspectField = StateField.define<DecorationSet>({
     create() {
         return Decoration.none
     },
@@ -43,7 +37,7 @@ export const diagnosticField = StateField.define<DecorationSet>({
         }
 
         for (const ef of tr.effects) {
-            if (ef.is(setDiagnostic)) {
+            if (ef.is(setInspect)) {
                 return ef.value
             }
         }
@@ -52,9 +46,9 @@ export const diagnosticField = StateField.define<DecorationSet>({
     provide: f => EditorView.decorations.from(f)
 })
 
-export const setDiagnosticInfo = StateEffect.define<readonly DiagnosticOutput[]>()
+export const setInspectInfo = StateEffect.define<readonly InspectResult[]>()
 
-export const diagnosticInfoField = StateField.define<readonly DiagnosticOutput[]>({
+export const inspectInfoField = StateField.define<readonly InspectResult[]>({
     create() {
         return []
     },
@@ -69,12 +63,12 @@ export const diagnosticInfoField = StateField.define<readonly DiagnosticOutput[]
                     changedLines.add(ln)
                 }
             })
-            value = value.filter(e => !changedLines.has(e.start_line))
+            value = value.filter(e => !changedLines.has(e.row_from))
         }
 
         /* replace with new list from the server, if any */
         for (const ef of tr.effects) {
-            if (ef.is(setDiagnosticInfo)) {
+            if (ef.is(setInspectInfo)) {
                 return ef.value
             }
         }
@@ -82,13 +76,13 @@ export const diagnosticInfoField = StateField.define<readonly DiagnosticOutput[]
     }
 })
 
-export const diagnosticTooltip = hoverTooltip((view, pos) => {
-    const info: readonly DiagnosticOutput[] = view.state.field(diagnosticInfoField)
+export const inspectTooltip = hoverTooltip((view, pos) => {
+    const info: readonly InspectResult[] = view.state.field(inspectInfoField)
     if (!info.length) {
         return null
     }
     const lineNo = view.state.doc.lineAt(pos).number
-    const err = info.find(e => e.start_line === lineNo)
+    const err = info.find(e => e.row_from === lineNo)
     if (!err) {
         return null
     }

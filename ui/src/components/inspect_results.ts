@@ -1,30 +1,25 @@
 import {WeyaElementFunction} from "../../../lib/weya/weya"
+import {InspectResult} from "../models/extension"
 
 
-export interface CodeResult {
-    file_path: string
-    description: string
-    line_number: number
-}
-
-export interface CodeResultsOptions {
-    results: CodeResult[]
-    onItemClick: (result: CodeResult) => void
+export interface InspectResultsOptions {
+    results: InspectResult[]
+    onItemClick: (result: InspectResult) => void
     onClose: () => void
     emptyMessage?: string
 }
 
-export class CodeResults {
+export class InspectResults {
     private elem: HTMLDivElement
 
-    private readonly results: CodeResult[]
-    private readonly onItemClick: (result: CodeResult) => void
+    private readonly results: InspectResult[]
+    private readonly onItemClick: (result: InspectResult) => void
     private readonly onClose: () => void
     private readonly emptyMessage?: string
 
     private selectedIndex: number
 
-    constructor(opt: CodeResultsOptions) {
+    constructor(opt: InspectResultsOptions) {
         this.results = opt.results
 
         this.onItemClick = opt.onItemClick
@@ -49,12 +44,12 @@ export class CodeResults {
                 return
             }
 
-            this.results.forEach((result: CodeResult, index: number) => {
+            this.results.forEach((result: InspectResult, index: number) => {
                 const usageElem = $('div', '.code-result', $ => {
                     $('div', '.result-file', $ => {
                         $('i', '.fas.fa-file-code')
                         $('span', '.file-name', this.getFileName(result.file_path))
-                        $('span', '.line-number', `Line ${result.line_number}`)
+                        $('span', '.line-number', `Line ${result.row_from}`)
                     })
                     $('div', '.result-excerpt', $ => {
                         $('span', '.line-content', result.description || '')

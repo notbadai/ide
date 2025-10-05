@@ -8,7 +8,7 @@ import {BaseExtension} from "../../extensions/base_extension"
 import {ExtensionResponse} from "../../models/extension"
 import {extensionManager} from "../extensions/manager"
 import {chatManager} from "../chat/manager"
-import {diagnosticWidget} from "../../editor/widgets/diagnostic/widget"
+import {inspectWidget} from "../../editor/widgets/inspect/widget"
 import {tabsManager} from "../tabs/manager"
 import {applyWidget} from "../../editor/widgets/apply/widget"
 import {toolsManager} from "./manager"
@@ -82,29 +82,21 @@ export class ToolExtension extends BaseExtension {
             chatManager.getExternalChat(this.currentChatId)?.endExternalMessage()
         } else if (data.chat && data.chat.push_chat) {
             chatManager.getExternalChat(this.currentChatId)?.onExternalReceive(data)
-        } else if (data.inspect) {
-            statusBar.updateMessage(`${data.inspect.results.length} inspection results found`)
-            const results = data.inspect.results.map(res => ({
-                file_path: getCorrectPath(res.file_path, projectManager.project.projectName),
-                line_number: res.line_number,
-                description: res.description
-            }))
-            inspectPanel.update(results)
         } else if (data.inline_completion) {
             const response = data.inline_completion
             const codeEditor = tabsManager.getCodeEditor(this.currentFilePath)
             codeEditor?.applyInlineCompletion(response.inline_completion, response.cursor_row, response.cursor_column)
-        } else if (data.diagnostics) {
-            const response = data.diagnostics
-            statusBar.updateMessage(`${response.results.length} errors found`)
-            const results = response.results.map(d => ({
-                start_line: d.line_number,
-                start_char: 0,
-                end_line: d.line_number,
-                end_char: -1,
-                description: d.description
+        } else if (data.highlight) {
+            statusBar.updateMessage(`${data.highlight.results.length} results found`)
+            const results = data.highlight.results.map(res => ({
+                file_path: getCorrectPath(res.file_path, projectManager.project.projectName),
+                row_from: res.row_from,
+                row_to: res.row_to,
+                column_from: res.column_from,
+                column_to: res.column_to,
+                description: res.description
             }))
-            diagnosticWidget.showDiagnostics(this.currentFilePath, results)
+            inspectWidget.showResults(this.currentFilePath, results)
         } else if (data.apply) {
             const applyData = data.apply
             applyData.file_path = this.currentFilePath

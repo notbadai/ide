@@ -52,11 +52,9 @@ export class StreamChannel {
 
             ...(response.apply && {apply: response.apply}),
             ...(response.inline_completion && {inline_completion: response.inline_completion}),
-            ...(response.diagnostics && {diagnostics: response.diagnostics}),
             ...(response.autocomplete && {autocomplete: response.autocomplete}),
-            ...(response.inspect && {inspect: response.inspect}),
+            ...(response.highlight && {highlight: response.highlight}),
             ...(response.chat && {chat: response.chat}),
-            ...(response.symbol_lookup && {symbol_lookup: response.symbol_lookup}),
             ...(response.audio_transcription && {audio_transcription: response.audio_transcription}),
             ...(response.tool_interface && {tool_interface: response.tool_interface}),
         }

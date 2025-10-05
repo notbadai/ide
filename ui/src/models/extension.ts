@@ -19,10 +19,13 @@ export interface Message {
     content: string
 }
 
-export interface InspectionResult {
-    file_path?: string
-    line_number: number
-    description: string
+export interface InspectResult {
+    file_path: string
+    row_from: number
+    row_to?: number
+    column_from?: number
+    column_to?: number
+    description?: string
 }
 
 export type ApiProvider = {
@@ -129,10 +132,6 @@ export interface ApplyResponse {
     onApply?: () => void
 }
 
-export interface DiagnosticResponse {
-    results: InspectionResult[]
-}
-
 export interface AutoCompleteResponse {
     suggestions: Prediction[]
     time_elapsed: number
@@ -145,7 +144,7 @@ export interface InlineCompletionResponse {
 }
 
 export interface InspectResponse {
-    results: InspectionResult[]
+    results: InspectResult[]
 }
 
 export interface ChatResponse {
@@ -153,17 +152,6 @@ export interface ChatResponse {
     push_chat?: boolean
     start_chat?: boolean
     terminate_chat?: boolean
-}
-
-export interface SymbolLookupResult {
-    file_path: string
-    excerpt: string
-    line_number: number
-}
-
-export interface SymbolLookupResults {
-    results: SymbolLookupResult[]
-    intent: string
 }
 
 export interface AudioTranscription {
@@ -180,10 +168,8 @@ export interface ExtensionResponse {
     notification?: NotificationResponse
     apply?: ApplyResponse
     inline_completion?: InlineCompletionResponse
-    diagnostics?: DiagnosticResponse
     autocomplete?: AutoCompleteResponse
-    inspect?: InspectResponse
-    symbol_lookup?: SymbolLookupResults
+    highlight?: InspectResponse
     chat?: ChatResponse
     audio_transcription?: AudioTranscription
     tool_interface?: ToolInterface
