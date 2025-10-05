@@ -44,13 +44,13 @@ export abstract class BaseExtension {
         console.log(`Executing autocomplete process`)
 
         try {
-            const extension = this.getExtensionInfo(extensionData)
-
             this.extensionDirPath = fileHandler.localExtensionsDirPath
 
             this.config = await fileHandler.getExtensionConfig()
             this.apiProviders = this.config.getApiProviders()
             this.pythonPath = this.config.getPythonPath()
+
+            const extension = this.getExtensionInfo(extensionData)
             this.extensionSettings = this.config.getExtensionSettings(extension)
 
             if (extension == null) {

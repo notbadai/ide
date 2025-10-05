@@ -9,7 +9,6 @@ export class AutocompleteExtension extends PersistentExtension {
     }
 
     protected getExtensionInfo(extensionData: ExtensionData): string {
-        const extensionConfig = this.config
-        return extensionConfig.getAutocompleteExtension()
+        return this.config.getAutocompleteExtension()
     }
 }
