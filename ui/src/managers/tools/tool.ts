@@ -12,7 +12,7 @@ import {inspectWidget} from "../../editor/widgets/inspect/widget"
 import {tabsManager} from "../tabs/manager"
 import {applyWidget} from "../../editor/widgets/apply/widget"
 import {toolsManager} from "./manager"
-import {ComponentState, CustomToolInterface} from "./custom_tool_interface"
+import {Form} from "./form"
 
 
 export interface ToopOptions {
@@ -27,7 +27,7 @@ export class ToolExtension extends BaseExtension {
 
     private currentChatId: string | null
     private currentFilePath: string
-    private customToolInterface: CustomToolInterface
+    private form: Form
 
     constructor(opt: ToopOptions) {
         super()
@@ -44,7 +44,7 @@ export class ToolExtension extends BaseExtension {
 
         this.currentChatId = null
         this.currentFilePath = null
-        this.customToolInterface = null
+        this.form = null
     }
 
     protected onTerminate(): void {
@@ -64,7 +64,7 @@ export class ToolExtension extends BaseExtension {
         this.currentFilePath = projectManager.codeEditor?.file.path
 
         const sendData = {
-            ui_action: {action: 'init', state: {}},
+            ui_action: {state: {}},
             extension: this.extension,
             method: 'run_key_bind',
             terminal_snapshot: this.terminal == null ? [] : this.terminal.getSnapshot(),
@@ -103,21 +103,22 @@ export class ToolExtension extends BaseExtension {
             applyData.file_path = this.currentFilePath
             applyWidget.apply(applyData).then()
         }
-        if (data.state) {
+        if (data.ui_form) {
             toolsManager.onTerminate()
-            this.customToolInterface = new CustomToolInterface({
-                toolInterface: data.state,
+            this.form = new Form({
+                title: data.ui_form.title,
+                formContent: data.ui_form.form_content,
                 onButtonClick: this.onButtonClick.bind(this)
             })
-            toolsManager.renderCustomTool(this.customToolInterface)
+            toolsManager.renderCustomTool(this.form)
         } else if (data.is_stopped) {
             this.onTerminate()
         }
     }
 
-    private async onButtonClick(action: string, state: { [name: string]: ComponentState }): Promise<void> {
+    private async onButtonClick(state: { [name: string]: any }): Promise<void> {
         toolsManager.onRun()
-        await extensionManager.run(this.uuid, {ui_action: {action: action, state: state}, extension: this.extension})
+        await extensionManager.run(this.uuid, {ui_action: {state: state}, extension: this.extension})
     }
 
     public async run(): Promise<void> {

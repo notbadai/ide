@@ -56,7 +56,7 @@ export class StreamChannel {
             ...(response.highlight && {highlight: response.highlight}),
             ...(response.chat && {chat: response.chat}),
             ...(response.audio_transcription && {audio_transcription: response.audio_transcription}),
-            ...(response.state && {state: response.state}),
+            ...(response.ui_form && {state: response.ui_form}),
         }
         await this.sendResponseCallback(completeResponse)
     }

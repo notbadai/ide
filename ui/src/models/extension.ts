@@ -1,6 +1,3 @@
-import {UIState} from '../managers/tools/components'
-import {ComponentState} from '../managers/tools/custom_tool_interface'
-
 export type ExtensionType =
     'chat'
     | 'autocomplete'
@@ -46,8 +43,12 @@ export interface CodeApplyChange {
 }
 
 export interface UIAction {
-    action: string
-    state: { [name: string]: ComponentState }
+    state: { [name: string]: any }
+}
+
+export interface UIForm {
+    form_content: string
+    title: string
 }
 
 export interface EditorState {
@@ -105,7 +106,7 @@ export interface ExtensionData {
     open_file_paths?: string[]
     audio_blob?: ArrayBuffer
 
-    ui_action?: UIAction
+   ui_action?: UIAction
 }
 
 export interface LogResponse {
@@ -178,5 +179,5 @@ export interface ExtensionResponse {
     highlight?: InspectResponse
     chat?: ChatResponse
     audio_transcription?: AudioTranscription
-    state?: UIState
+    ui_form?: UIForm
 }
