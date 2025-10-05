@@ -580,7 +580,7 @@ export class CodeEditor extends BaseComponent {
         const line = this.editorView.state.doc.lineAt(pos)
 
         return {
-            line: line.number,              // 1-based
+            row: line.number,              // 1-based
             column: pos - line.from + 1     // 1-based
         }
     }

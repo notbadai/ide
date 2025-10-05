@@ -19,11 +19,6 @@ export interface Message {
     content: string
 }
 
-export interface Cursor {
-    line: number
-    column: number
-}
-
 export interface InspectionResult {
     file_path?: string
     line_number: number
@@ -36,6 +31,17 @@ export type ApiProvider = {
     default?: boolean
 }
 
+export interface Cursor {
+    symbol?: string
+    row: number
+    column: number
+}
+
+export interface CodeApplyChange {
+    target_file_path: string
+    patch_text: string
+}
+
 export interface EditorState {
     request_id?: string
 
@@ -46,12 +52,11 @@ export interface EditorState {
     current_file_content?: string
     opened_files: string[]
     context_files?: { [key: string]: string[] }
+    code_apply_change?: CodeApplyChange
 
-    cursor_row?: number
-    cursor_column?: number
+    cursor?: Cursor
     selection?: string
     clip_board?: string
-    symbol?: string
     prompt?: string
     chat_history?: Message[]
 
@@ -74,6 +79,7 @@ export interface ExtensionData {
     current_file_content?: string
     current_file_path?: string
     edit_file_path?: string
+    patch_text?: string
     extension?: string
 
     resend?: { [key: string]: any }

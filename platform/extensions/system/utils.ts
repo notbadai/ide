@@ -40,6 +40,8 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
     const messages = extensionData.messages || []
     const contextPaths = extensionData.context_paths || []
     const symbol = extensionData.symbol
+    const editFilePath = extensionData.edit_file_path || null
+    const patchText = extensionData.patch_text || null
     const currentFilePath = extensionData.current_file_path
     const currentFileContent = extensionData.current_file_content
     const cursor = extensionData.cursor
@@ -112,13 +114,16 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         current_file_content: currentFileContent,
         opened_files: openedFiles,
         context_files: contextFiles,
+        code_apply_change: {patch_text: patchText, target_file_path: editFilePath},
 
-        cursor_row: cursor.line,
-        cursor_column: cursor.column,
+        cursor: (cursor.row != null && cursor.column != null) ? {
+            row: cursor.row,
+            column: cursor.column,
+            symbol: symbol
+        } : null,
+
         selection: selection,
         clip_board: clipBoard,
-
-        symbol: symbol,
 
         prompt: prompt,
         chat_history: messages,

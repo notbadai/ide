@@ -70,7 +70,7 @@ class ExtensionManager {
             type: extension.type,
             requestId: data.requestId,
 
-            cursor: data.cursor ?? codeEditor?.getCursorPosition() ?? {line: 0, column: 0},
+            cursor: data.cursor ?? codeEditor?.getCursorPosition() ?? {row: 0, column: 0, symbol: null},
             selection: data.selection ?? codeEditor?.getSelectedText() ?? '',
             clip_board: data.clip_board ?? codeEditor ? await codeEditor.getClipboardText() : '',
             current_file_path: data.current_file_path ?? codeEditor?.file?.path ?? null,
