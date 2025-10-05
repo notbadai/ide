@@ -94,10 +94,6 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         contextFiles[localContextPath] = filePaths
     }
 
-    let currentFile = null
-    if (currentFilePath != null) {
-        currentFile = getLocalPath(currentFilePath)
-    }
     if (messages.length > 0) {
         prompt = messages.pop().content
     }
@@ -110,11 +106,14 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         repo,
         repo_path: fileHandler.getRoot(),
 
-        current_file: currentFile,
+        current_file: currentFilePath ? getLocalPath(currentFilePath) : null,
         current_file_content: currentFileContent,
         opened_files: openedFiles,
         context_files: contextFiles,
-        code_apply_change: {patch_text: patchText, target_file_path: editFilePath},
+        code_apply_change: {
+            patch_text: patchText,
+            target_file_path: editFilePath ? getLocalPath(editFilePath) : null
+        },
 
         cursor: (cursor.row != null && cursor.column != null) ? {
             row: cursor.row,

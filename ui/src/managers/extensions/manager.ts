@@ -87,6 +87,7 @@ class ExtensionManager {
             ...(data.resend && {resend: data.resend}),
             ...(data.edit_file_path && {edit_file_path: data.edit_file_path}),
             ...(data.prompt && {prompt: data.prompt}),
+            ...(data.patch_text && {patch_text: data.patch_text}),
             ...(data.messages && {messages: data.messages}),
             ...(data.symbol && {symbol: data.symbol}),
             ...(data.terminal_snapshot && {terminal_snapshot: data.terminal_snapshot}),
