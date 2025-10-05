@@ -6,15 +6,6 @@ export interface FormOptions {
     onButtonClick: (state: { [name: string]: any }) => Promise<void>
 }
 
-const formContent = `<form id="form">
-  <input type="text" name="text1" value="foo" />
-  <input type="text" name="text2" value="bar" />
-  <input type="text" name="text3" value="baz" />
-  <input type="checkbox" name="check" checked />
-  <button name="intent" value="save">Save</button>
-  <button name="intent" value="saveAsCopy">Save As Copy</button>
-</form>`
-
 
 export class Form {
     private elem: HTMLElement
