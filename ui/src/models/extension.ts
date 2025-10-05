@@ -1,4 +1,4 @@
-import {ToolInterface} from '../managers/tools/components'
+import {UIState} from '../managers/tools/components'
 import {ComponentState} from '../managers/tools/custom_tool_interface'
 
 export type ExtensionType =
@@ -45,6 +45,11 @@ export interface CodeApplyChange {
     patch_text: string
 }
 
+export interface UIAction {
+    action: string
+    state: { [name: string]: ComponentState }
+}
+
 export interface EditorState {
     request_id?: string
 
@@ -68,6 +73,8 @@ export interface EditorState {
 
     api_keys?: Record<string, ApiProvider>
     settings?: { [key: string]: string[] }
+
+    ui_action?: UIAction
 }
 
 export interface ExtensionData {
@@ -98,8 +105,7 @@ export interface ExtensionData {
     open_file_paths?: string[]
     audio_blob?: ArrayBuffer
 
-    tool_action?: string
-    tool_state?: { [name: string]: ComponentState }
+    ui_action?: UIAction
 }
 
 export interface LogResponse {
@@ -172,5 +178,5 @@ export interface ExtensionResponse {
     highlight?: InspectResponse
     chat?: ChatResponse
     audio_transcription?: AudioTranscription
-    tool_interface?: ToolInterface
+    state?: UIState
 }

@@ -94,8 +94,7 @@ class ExtensionManager {
             ...(data.terminal_before_reset && {terminal_before_reset: data.terminal_before_reset}),
             ...(data.context_paths && {context_paths: data.context_paths}),
             ...(data.audio_blob && {audio_blob: data.audio_blob}),
-            ...(data.tool_action && {tool_action: data.tool_action}),
-            ...(data.tool_state && {tool_state: data.tool_state}),
+            ...(data.ui_action && {ui_action: data.ui_action}),
         }
 
         await this.sendData(completeData)

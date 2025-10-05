@@ -64,7 +64,7 @@ export class ToolExtension extends BaseExtension {
         this.currentFilePath = projectManager.codeEditor?.file.path
 
         const sendData = {
-            tool_action: 'init',
+            ui_action: {action: 'init', state: {}},
             extension: this.extension,
             method: 'run_key_bind',
             terminal_snapshot: this.terminal == null ? [] : this.terminal.getSnapshot(),
@@ -103,10 +103,10 @@ export class ToolExtension extends BaseExtension {
             applyData.file_path = this.currentFilePath
             applyWidget.apply(applyData).then()
         }
-        if (data.tool_interface) {
+        if (data.state) {
             toolsManager.onTerminate()
             this.customToolInterface = new CustomToolInterface({
-                toolInterface: data.tool_interface,
+                toolInterface: data.state,
                 onButtonClick: this.onButtonClick.bind(this)
             })
             toolsManager.renderCustomTool(this.customToolInterface)
@@ -117,7 +117,7 @@ export class ToolExtension extends BaseExtension {
 
     private async onButtonClick(action: string, state: { [name: string]: ComponentState }): Promise<void> {
         toolsManager.onRun()
-        await extensionManager.run(this.uuid, {tool_action: action, extension: this.extension, tool_state: state})
+        await extensionManager.run(this.uuid, {ui_action: {action: action, state: state}, extension: this.extension})
     }
 
     public async run(): Promise<void> {

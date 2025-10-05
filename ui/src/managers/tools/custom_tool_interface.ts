@@ -1,10 +1,10 @@
 import {WeyaElementFunction} from '../../../../lib/weya/weya'
 import {BasicButton} from '../../components/buttons'
 import {Input} from '../../components/input'
-import {ToolInterface} from './components'
+import {UIState} from './components'
 
 export interface CustomToolInterfaceOptions {
-    toolInterface: ToolInterface
+    toolInterface: UIState
     onButtonClick: (action: string, state?: { [name: string]: ComponentState }) => Promise<void>
 }
 
@@ -31,7 +31,7 @@ export type ComponentState = InputComponentState | ButtonComponentState
 
 export class CustomToolInterface {
     private elem: HTMLElement
-    private readonly toolInterface: ToolInterface
+    private readonly toolInterface: UIState
     private readonly onButtonClick: (action: string, state: { [name: string]: ComponentState }) => Promise<void>
     private readonly components: Component[]
 

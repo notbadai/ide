@@ -203,8 +203,8 @@ class HttpServer {
             }
         } else if (data.method === 'autocomplete') {
             return {is_stopped: false, autocomplete: {suggestions: data.suggestions, time_elapsed: data.time_elapsed}}
-        } else if (data.method === 'send_tool_interface') {
-            return {is_stopped: false, tool_interface: data.tool_interface}
+        } else if (data.method === 'ui_action') {
+            return {is_stopped: false, state: data.state}
         } else {
             throw new Error(`invalid ExtensionAPI method: ${data.method}`)
         }

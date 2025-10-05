@@ -48,8 +48,7 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
     const selection = extensionData.selection
     const clipBoard = extensionData.clip_board
     const openFilePaths = extensionData.open_file_paths || []
-    // const toolAction = extensionData.tool_action || null
-    // const toolState = extensionData.tool_state || null
+    const uiAction = extensionData.ui_action || null
     const terminals = extensionData.terminal_names || []
     const currentTerminal = extensionData.active_terminal_name || null
     const requestId = extensionData.requestId || null
@@ -133,7 +132,6 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         api_keys: normalizedApiProviders,
         settings: extensionSettings,
 
-        // tool_action: toolAction,
-        // tool_state: toolState
+        ui_action: uiAction,
     }
 }

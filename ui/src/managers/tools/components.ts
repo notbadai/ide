@@ -7,7 +7,7 @@ export interface Component {
     disabled?: boolean
 }
 
-export interface ToolInterface {
+export interface UIState {
     title: string
     rows: Component[][]
 }
