@@ -463,10 +463,34 @@ export class CodeEditor extends BaseComponent {
         }
 
         const builder = new RangeSetBuilder<Decoration>()
-
         for (const e of results) {
-            const line = this.editorView.state.doc.line(e.row_from)
-            builder.add(line.from, line.to, inspectUnderline)
+            try {
+                const fromLine = this.editorView.state.doc.line(e.row_from)
+                const toLine = e.row_to != null 
+                    ? this.editorView.state.doc.line(e.row_to) 
+                    : fromLine
+
+                // start position
+                let startPos = fromLine.from
+                if (e.column_from != null) {
+                    startPos = fromLine.from + Math.min(e.column_from - 1, fromLine.length)
+                }
+
+                // end position
+                let endPos = toLine.to
+                if (e.row_to != null && e.column_to != null) {
+                    endPos = toLine.from + Math.min(e.column_to - 1, toLine.length)
+                } else if (e.row_to == null && e.column_to != null) {
+                    endPos = fromLine.from + Math.min(e.column_to - 1, fromLine.length)
+                }
+
+                // ensure valid range
+                if (startPos < endPos) {
+                    builder.add(startPos, endPos, inspectUnderline)
+                }
+            } catch (error) {
+                console.error('Error adding inspect decoration:', error, e)
+            }
         }
 
         this.editorView.dispatch({

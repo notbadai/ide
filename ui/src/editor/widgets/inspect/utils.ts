@@ -16,19 +16,25 @@ export const inspectField = StateField.define<DecorationSet>({
 
         if (tr.docChanged) {
             const changedLines = new Set<number>()
+            const changedRanges: { from: number, to: number }[] = []
+
             tr.changes.iterChanges((fromA: number, toA: number) => {
                 const start = tr.startState.doc.lineAt(fromA).number
                 const end = tr.startState.doc.lineAt(Math.max(fromA, toA - 1)).number
                 for (let ln = start; ln <= end; ln++) {
                     changedLines.add(ln)
                 }
+                changedRanges.push({from: fromA, to: toA})
             })
 
             if (changedLines.size) {
                 const builder = new RangeSetBuilder<Decoration>()
                 value.between(0, tr.state.doc.length, (from, to, deco) => {
-                    const ln = tr.state.doc.lineAt(from).number
-                    if (!changedLines.has(ln)) {// keep marks on untouched lines
+                    // check if this decoration intersects with any changed range
+                    const intersects = changedRanges.some(range =>
+                        !(to <= range.from || from >= range.to)
+                    )
+                    if (!intersects) {
                         builder.add(from, to, deco)
                     }
                 })
@@ -81,16 +87,52 @@ export const inspectTooltip = hoverTooltip((view, pos) => {
     if (!info.length) {
         return null
     }
-    const lineNo = view.state.doc.lineAt(pos).number
-    const err = info.find(e => e.row_from === lineNo)
+
+    // find the error that contains this position
+    const err = info.find(e => {
+        const lineNo = view.state.doc.lineAt(pos).number
+
+        // check if position is within the line range
+        if (e.row_to != null) {
+            if (lineNo < e.row_from || lineNo > e.row_to) {
+                return false
+            }
+            // if on the exact line and column info exists, check column range
+            if (lineNo === e.row_from && e.column_from != null) {
+                const lineObj = view.state.doc.line(lineNo)
+                const col = pos - lineObj.from + 1
+                if (col < e.column_from) return false
+            }
+            if (lineNo === e.row_to && e.column_to != null) {
+                const lineObj = view.state.doc.line(lineNo)
+                const col = pos - lineObj.from + 1
+                if (col > e.column_to) return false
+            }
+            return true
+        } else {
+            // single line case
+            return lineNo === e.row_from
+        }
+    })
+
     if (!err) {
         return null
     }
-    const line = view.state.doc.line(lineNo)
+
+    // calculate the precise range for the tooltip
+    const fromLine = view.state.doc.line(err.row_from)
+    const toLine = err.row_to != null ? view.state.doc.line(err.row_to) : fromLine
+
+    const fromPos = err.column_from != null
+        ? fromLine.from + err.column_from - 1
+        : fromLine.from
+    const toPos = err.column_to != null
+        ? toLine.from + err.column_to - 1
+        : toLine.to
 
     return {
-        pos: line.from,
-        end: line.to,
+        pos: fromPos,
+        end: toPos,
         create() {
             const dom = document.createElement('div')
             dom.textContent = err.description
@@ -99,4 +141,3 @@ export const inspectTooltip = hoverTooltip((view, pos) => {
         }
     }
 })
-
