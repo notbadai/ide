@@ -266,8 +266,39 @@ post_build_info() {
     echo "  cd ide/dist/desktop/"
     echo "  open ide-v*.app"
     echo ""
-    print_status "Required Python packages for AI extensions:"
-    echo "pip install openai requests GitPython black labml"
+}
+
+# Install Python packages
+install_python_packages() {
+    print_status "Installing Python packages..."
+    
+    # List of packages to install
+    local packages=(
+        "notbadai_ide"
+        "notbadai_chat"
+        "notbadai_files_chat"
+        "notbadai_apply"
+        "notbadai_lookup"
+        "notbadai_autocomplete"
+        "notbadai_commit"
+        "notbadai_inline_completion"
+        "notbadai_errors"
+        "notbadai_format"
+    )
+    
+    # Install each package
+    for package in "${packages[@]}"; do
+        print_status "Installing $package..."
+        if pip install "$package" --upgrade; then
+            print_status "✓ $package installed successfully"
+        else
+            print_error "Failed to install $package"
+            print_warning "Continuing with remaining packages..."
+        fi
+    done
+    
+    echo ""
+    print_status "Python packages installation completed!"
 }
 
 # Main execution
@@ -281,6 +312,7 @@ main() {
     install_nodejs
     install_dependencies
     build_package
+    install_python_packages
     post_build_info
 
     print_status "Build script completed!"
