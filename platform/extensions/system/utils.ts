@@ -8,45 +8,49 @@ function getLocalPath(pathStr: string): string {
     return pathStr.split('/').slice(1).join('/')
 }
 
-function normalizeApiProviders(apiProviders: ApiProvider[]): ApiProvider[] {
+function normalizeApiProviders(apiProviders: ApiProvider[]): Record<string, ApiProvider> {
+    const providersDict: Record<string, ApiProvider> = {}
+
     if (apiProviders.length === 0) {
-        return apiProviders
+        return providersDict
     }
 
     const hasExplicitDefault = apiProviders.some(provider => provider.default === true)
 
-    if (hasExplicitDefault) {
-        return apiProviders.map(provider => ({
+    const normalizedProviders = hasExplicitDefault
+        ? apiProviders.map(provider => ({
             ...provider,
             default: provider.default === true
         }))
-    } else {
-        return apiProviders.map((provider, index) => ({
+        : apiProviders.map((provider, index) => ({
             ...provider,
             default: index === 0
         }))
+
+    for (const provider of normalizedProviders) {
+        providersDict[provider.provider] = provider
     }
+
+    return providersDict
 }
 
-export async function prepareEditorState(extensionData: ExtensionData, apiProviders: ApiProvider[]): Promise<EditorState> {
+export async function prepareEditorState(extensionData: ExtensionData, apiProviders: ApiProvider[], extensionSettings: Record<string, any>): Promise<EditorState> {
     let prompt = extensionData.prompt
 
     const messages = extensionData.messages || []
     const contextPaths = extensionData.context_paths || []
     const symbol = extensionData.symbol
-    const editFilePath = extensionData.edit_file_path
+    const editFilePath = extensionData.edit_file_path || null
+    const patchText = extensionData.patch_text || null
     const currentFilePath = extensionData.current_file_path
     const currentFileContent = extensionData.current_file_content
     const cursor = extensionData.cursor
     const selection = extensionData.selection
     const clipBoard = extensionData.clip_board
-    const terminalSnapshot = extensionData.terminal_snapshot || []
-    const terminalBeforeRest = extensionData.terminal_before_reset || []
     const openFilePaths = extensionData.open_file_paths || []
-    const toolAction = extensionData.tool_action || null
-    const toolState = extensionData.tool_state || null
-    const terminalNames = extensionData.terminal_names || []
-    const activeTerminalName = extensionData.active_terminal_name || null
+    const uiAction = extensionData.ui_action || null
+    const terminals = extensionData.terminal_names || []
+    const currentTerminal = extensionData.active_terminal_name || null
     const requestId = extensionData.requestId || null
 
 
@@ -89,14 +93,6 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         contextFiles[localContextPath] = filePaths
     }
 
-    let currentFile = null
-    if (currentFilePath != null) {
-        currentFile = getLocalPath(currentFilePath)
-    }
-    let editFile = null
-    if (editFilePath != null) {
-        editFile = getLocalPath(editFilePath)
-    }
     if (messages.length > 0) {
         prompt = messages.pop().content
     }
@@ -109,30 +105,33 @@ export async function prepareEditorState(extensionData: ExtensionData, apiProvid
         repo,
         repo_path: fileHandler.getRoot(),
 
-        edit_file: editFile,
-        current_file: currentFile,
+        current_file: currentFilePath ? getLocalPath(currentFilePath) : null,
         current_file_content: currentFileContent,
         opened_files: openedFiles,
         context_files: contextFiles,
+        code_apply_change: {
+            patch_text: patchText,
+            target_file_path: editFilePath ? getLocalPath(editFilePath) : null
+        },
 
-        cursor_row: cursor.line,
-        cursor_column: cursor.column,
+        cursor: (cursor.row != null && cursor.column != null) ? {
+            row: cursor.row,
+            column: cursor.column,
+            symbol: symbol
+        } : null,
+
         selection: selection,
         clip_board: clipBoard,
-
-        symbol: symbol,
 
         prompt: prompt,
         chat_history: messages,
 
-        terminal_snapshot: terminalSnapshot,
-        terminal_before_reset: terminalBeforeRest,
-        active_terminal_name: activeTerminalName,
-        terminal_names: terminalNames,
+        current_terminal: currentTerminal,
+        terminals: terminals,
 
-        api_providers: normalizedApiProviders,
+        api_keys: normalizedApiProviders,
+        settings: extensionSettings,
 
-        tool_action: toolAction,
-        tool_state: toolState
+        ui_action: uiAction,
     }
 }

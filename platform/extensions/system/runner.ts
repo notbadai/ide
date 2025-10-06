@@ -16,7 +16,6 @@ export function buildEnv(extensionsDir: string | null, uuid: string, host: strin
 }
 
 export function createOnDemandRunner(extensionsDir: string | null, moduleName: string): string {
-    // Only add extensionsDir to sys.path if it's provided
     const sysPathSetup = extensionsDir ? `
 EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
@@ -25,22 +24,15 @@ if EXT_DIR not in sys.path:
 
     const template = `
 import sys, json, importlib, pathlib
+from notbadai import api
 ${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
 ext_module = importlib.import_module(module_name)
 
-# read settings to find entry point
-settings_module = importlib.import_module(f"{module_name}.settings")
-entry_point_name = getattr(settings_module, 'ENTRY_POINT')
-
-# get the entry point function
-entry_fn = getattr(ext_module, entry_point_name, None)
-if entry_fn is None:
-    raise AttributeError(f"Entry point '{entry_point_name}' not found in module '{module_name}'")
-
 if __name__ == "__main__":
-    entry_fn()
+    api.load()
+    ext_module.start()
     `
 
     const tempFile = path.join(os.tmpdir(), `extension_runner_${Date.now()}.py`)
@@ -50,7 +42,6 @@ if __name__ == "__main__":
 }
 
 export function createPersistentRunner(extensionsDir: string | null, moduleName: string): string {
-    // Only add extensionsDir to sys.path if it's provided
     const sysPathSetup = extensionsDir ? `
 EXT_DIR = ${JSON.stringify(extensionsDir)}
 if EXT_DIR not in sys.path:
@@ -62,19 +53,11 @@ import os
 import requests
 import sys, json, pathlib, threading, traceback
 import importlib
+from notbadai import api
 ${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
 ext_module = importlib.import_module(module_name)
-
-# read settings to find entry point
-settings_module = importlib.import_module(f"{module_name}.settings")
-entry_point_name = getattr(settings_module, 'ENTRY_POINT')
-
-# get the entry point function
-entry_fn = getattr(ext_module, entry_point_name, None)
-if entry_fn is None:
-    raise AttributeError(f"Entry point '{entry_point_name}' not found in module '{module_name}'")
 
 requests_lock = threading.Lock()
 
@@ -89,9 +72,12 @@ def send_error(content: str):
 
 def handle_request():
     try:
-        entry_fn()
+        api.load()
+        ext_module.start()
     except Exception as e:
         send_error(traceback.format_exc())
+    finally:
+        api.cleanup()
 
 def process_request_async():
     """Process a single request in a separate thread"""

@@ -49,7 +49,7 @@ class VoiceManager {
             if (capsLockOn && !this.isProcessing) {
                 chatManager.startRecording()
                 this.startRecording().then()
-                activityBarManager.openTab(CHAT)
+                activityBarManager.openTopTab(CHAT)
             } else if (!capsLockOn) {
                 chatManager.stopRecording()
                 this.stopRecording()

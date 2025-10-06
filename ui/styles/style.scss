@@ -2813,7 +2813,7 @@ body.has-status-bar {
     padding: 6px 12px 6px 36px;
     border: 1px solid rgba($secondary-line, 0.4);
     border-radius: 12px;
-    background:  rgba(color.mix($background, #fff, 98%), 0.6);
+    background: rgba(color.mix($background, #fff, 98%), 0.6);
     backdrop-filter: blur(8px);
     outline: none;
     font-size: 0.85rem;
@@ -3205,6 +3205,7 @@ body.has-status-bar {
           color: rgba($success, 0.8);
         }
       }
+
       .scrollable-code {
         max-height: 350px;
         overflow-y: auto;
@@ -3315,7 +3316,7 @@ body.has-status-bar {
         background: $btn-background;
         animation: slide 1.2s linear infinite;
       }
-      
+
       counter-reset: line;
 
       @keyframes slide {
@@ -6198,6 +6199,207 @@ metadata {
       gap: 8px;
     }
 
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      input[type="url"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid rgba($secondary-line, 0.4);
+        border-radius: 8px;
+        background: rgba($background, 0.8);
+        color: rgba($font-color, 0.9);
+        font-size: 0.85rem;
+        font-family: inherit;
+        transition: all 0.2s ease;
+        outline: none;
+        box-sizing: border-box;
+
+        &::placeholder {
+          color: rgba($ternary, 0.6);
+          font-weight: 300;
+        }
+
+        &:focus {
+          border-color: rgba($btn-background, 0.5);
+          background: rgba($background, 1);
+          box-shadow: 0 0 0 2px rgba($btn-background, 0.1);
+        }
+
+        &:hover:not(:focus) {
+          border-color: rgba($secondary-line, 0.6);
+          background: rgba($background, 0.9);
+        }
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      input[type="checkbox"],
+      input[type="radio"] {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid rgba($secondary-line, 0.5);
+        border-radius: 4px;
+        background: rgba(color.mix($background, #fff, 98%), 0.8);
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        margin: 0;
+        outline: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: middle;
+
+        &:hover {
+          border-color: rgba($btn-background, 0.4);
+          background: rgba(color.mix($background, #fff, 96%), 0.9);
+          transform: scale(1.05);
+        }
+
+        &:focus {
+          border-color: rgba($btn-background, 0.6);
+          box-shadow: 0 0 0 2px rgba($btn-background, 0.15);
+        }
+
+        &:checked {
+          background: linear-gradient(135deg,
+                  rgba($btn-background, 0.9) 0%,
+                  rgba(color.adjust($btn-background, $lightness: -5%), 0.95) 100%);
+          border-color: rgba($btn-background, 0.6);
+          transform: scale(1);
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -60%) rotate(45deg);
+            width: 3px;
+            height: 7px;
+            border: solid rgba($btn-text, 0.95);
+            border-width: 0 2px 2px 0;
+            opacity: 1;
+          }
+
+          &:hover {
+            background: linear-gradient(135deg,
+                    rgba(color.adjust($btn-background, $lightness: 3%), 0.95) 0%,
+                    rgba($btn-background, 1) 100%);
+            box-shadow: 0 2px 8px rgba($btn-background, 0.25);
+            transform: scale(1.02);
+
+            &::after {
+              transform: translate(-50%, -60%) rotate(45deg) scale(1.1);
+            }
+          }
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      input[type="radio"] {
+        border-radius: 50%;
+
+        &:checked::after {
+          width: 6px;
+          height: 6px;
+          border: none;
+          background: rgba($btn-text, 0.95);
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        color: rgba($font-color, 0.8);
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: rgba($font-color, 0.95);
+        }
+      }
+
+      button {
+        width: 100%;
+        padding: 6px 12px;
+        border: 1px solid rgba($btn-background, 0.3);
+        border-radius: 8px;
+        background: linear-gradient(135deg,
+                rgba($btn-background, 0.85),
+                rgba(color.adjust($btn-background, $lightness: -6%), 0.85));
+        color: rgba($btn-text, 0.95);
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 4px rgba($btn-background, 0.2),
+        0 1px 1px rgba(0, 0, 0, 0.08);
+
+        &:hover {
+          background: linear-gradient(135deg,
+                  rgba(color.adjust($btn-background, $lightness: 3%), 0.9),
+                  rgba($btn-background, 0.9));
+          border-color: rgba($btn-background, 0.5);
+          transform: translateY(-1px);
+          box-shadow: 0 3px 8px rgba($btn-background, 0.25),
+          0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 2px rgba($btn-background, 0.15);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+
+      .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+
+        label {
+          font-weight: 500;
+          margin-bottom: 2px;
+        }
+      }
+    }
+
     .row {
       display: flex;
       align-items: center;
@@ -6234,6 +6436,7 @@ metadata {
       }
     }
   }
+
 
   .tool-content {
     position: relative;

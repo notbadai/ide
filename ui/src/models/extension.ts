@@ -1,6 +1,3 @@
-import {ToolInterface} from '../managers/tools/components'
-import {ComponentState} from '../managers/tools/custom_tool_interface'
-
 export type ExtensionType =
     'chat'
     | 'autocomplete'
@@ -19,15 +16,14 @@ export interface Message {
     content: string
 }
 
-export interface Cursor {
-    line: number
-    column: number
-}
-
-export interface InspectionResult {
-    file_path?: string
-    line_number: number
-    description: string
+export interface InspectResult {
+    file_path: string
+    row_from: number
+    row_to?: number
+    column_from?: number
+    column_to?: number
+    description?: string
+    color?: string
 }
 
 export type ApiProvider = {
@@ -36,39 +32,51 @@ export type ApiProvider = {
     default?: boolean
 }
 
+export interface Cursor {
+    symbol?: string
+    row: number
+    column: number
+}
+
+export interface CodeApplyChange {
+    target_file_path: string
+    patch_text: string
+}
+
+export interface UIAction {
+    state: { [name: string]: any }
+}
+
+export interface UIForm {
+    form_content: string
+    title: string
+}
+
 export interface EditorState {
     request_id?: string
 
     repo: string[]
     repo_path: string
 
-    edit_file?: string
     current_file?: string
     current_file_content?: string
     opened_files: string[]
     context_files?: { [key: string]: string[] }
+    code_apply_change?: CodeApplyChange
 
-    cursor_row?: number
-    cursor_column?: number
+    cursor?: Cursor
     selection?: string
     clip_board?: string
-
-    symbol?: string
-
     prompt?: string
     chat_history?: Message[]
 
-    terminal_snapshot?: string[]
-    terminal_before_reset?: string[]
-    active_terminal_name?: string
-    terminal_names?: string[]
+    current_terminal: string
+    terminals: string[]
 
-    api_providers?: ApiProvider[]
+    api_keys?: Record<string, ApiProvider>
+    settings?: { [key: string]: string[] }
 
-    audio_blob_path?: string
-
-    tool_action?: string
-    tool_state?: { [name: string]: any }
+    ui_action?: UIAction
 }
 
 export interface ExtensionData {
@@ -83,6 +91,7 @@ export interface ExtensionData {
     current_file_content?: string
     current_file_path?: string
     edit_file_path?: string
+    patch_text?: string
     extension?: string
 
     resend?: { [key: string]: any }
@@ -98,8 +107,7 @@ export interface ExtensionData {
     open_file_paths?: string[]
     audio_blob?: ArrayBuffer
 
-    tool_action?: string
-    tool_state?: { [name: string]: ComponentState }
+   ui_action?: UIAction
 }
 
 export interface LogResponse {
@@ -132,10 +140,6 @@ export interface ApplyResponse {
     onApply?: () => void
 }
 
-export interface DiagnosticResponse {
-    results: InspectionResult[]
-}
-
 export interface AutoCompleteResponse {
     suggestions: Prediction[]
     time_elapsed: number
@@ -148,7 +152,7 @@ export interface InlineCompletionResponse {
 }
 
 export interface InspectResponse {
-    results: InspectionResult[]
+    results: InspectResult[]
 }
 
 export interface ChatResponse {
@@ -156,17 +160,6 @@ export interface ChatResponse {
     push_chat?: boolean
     start_chat?: boolean
     terminate_chat?: boolean
-}
-
-export interface SymbolLookupResult {
-    file_path: string
-    excerpt: string
-    line_number: number
-}
-
-export interface SymbolLookupResults {
-    results: SymbolLookupResult[]
-    intent: string
 }
 
 export interface AudioTranscription {
@@ -183,11 +176,9 @@ export interface ExtensionResponse {
     notification?: NotificationResponse
     apply?: ApplyResponse
     inline_completion?: InlineCompletionResponse
-    diagnostics?: DiagnosticResponse
     autocomplete?: AutoCompleteResponse
-    inspect?: InspectResponse
-    symbol_lookup?: SymbolLookupResults
+    highlight?: InspectResponse
     chat?: ChatResponse
     audio_transcription?: AudioTranscription
-    tool_interface?: ToolInterface
+    ui_form?: UIForm
 }

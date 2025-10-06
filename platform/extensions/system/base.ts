@@ -19,6 +19,7 @@ export abstract class BaseExtension {
     protected apiProviders: ApiProvider[] | null = null
     protected pythonPath: string | null = null
     protected extensionDirPath: string | null = null
+    protected extensionSettings: Record<string, any>
 
     protected constructor(opt: BaseExtensionOptions) {
         this.channel = opt.channel
@@ -29,7 +30,7 @@ export abstract class BaseExtension {
     protected abstract run(name: string, data: EditorState): Promise<void>
 
     protected async prepareEditorState(extensionData: ExtensionData): Promise<EditorState> {
-        return prepareEditorState(extensionData, this.apiProviders)
+        return prepareEditorState(extensionData, this.apiProviders, this.extensionSettings)
     }
 
     protected async runAndStream(name: string, extensionData: ExtensionData): Promise<void> {
@@ -50,6 +51,7 @@ export abstract class BaseExtension {
             this.pythonPath = this.config.getPythonPath()
 
             const extension = this.getExtensionInfo(extensionData)
+            this.extensionSettings = this.config.getExtensionSettings(extension)
 
             if (extension == null) {
                 throw new Error('Invalid or missing extension')

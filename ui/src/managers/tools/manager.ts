@@ -4,7 +4,7 @@ import {ToolSearch, SearchableObject} from './search'
 import {Loader} from '../../components/loader'
 import {projectManager} from '../project/manager'
 import {clearChildElements} from '../../utils/document'
-import {CustomToolInterface} from "./custom_tool_interface"
+import {Form} from "./form"
 import {ToolExtension} from "./tool"
 
 interface ToolConfig {
@@ -61,10 +61,10 @@ class ToolsManager extends BaseComponent {
         this.toolSearch.updateObjects(this.tools)
     }
 
-    public renderCustomTool(customToolInterface: CustomToolInterface): void {
+    public renderCustomTool(form: Form): void {
         clearChildElements(this.toolElem)
         $(this.toolElem, $ => {
-            customToolInterface.render($)
+            form.render($)
         })
     }
 

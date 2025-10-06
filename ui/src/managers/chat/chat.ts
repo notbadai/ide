@@ -428,6 +428,9 @@ export class Chat extends BaseComponent {
     }
 
     public onExternalReceive(data: ExtensionResponse) {
+        if (this.messages.length <= 0) {
+            this.startExternalMessage()
+        }
         this.websocketDataQueue.push(data)
         if (!this.isResponseRendering) {
             this.renderResponse().then()
@@ -440,7 +443,7 @@ export class Chat extends BaseComponent {
         this.renderMessageLoading(message.isMessageLoading)
         this.scrollMessageThread()
     }
-    
+
     public getUUID(): string {
         return this.uuid
     }
@@ -451,7 +454,7 @@ export class Chat extends BaseComponent {
         this.sendButton.disabled = this.input.value === ''
     }
 
-    public focus(){
+    public focus() {
         this.input.focus()
     }
 

@@ -101,7 +101,7 @@ export class AutocompleteWidget {
             response = await autocompleteExtension.fetch({
                 current_file_path: this.file.path,
                 current_file_content: content,
-                cursor: {line: line.number, column: column}
+                cursor: {row: line.number, column: column}
             })
             if (!response.success) {
                 return []

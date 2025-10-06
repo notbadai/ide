@@ -27,23 +27,21 @@ import {banner} from "../components/banner"
 import {autocompletion, CompletionContext} from "@codemirror/autocomplete"
 import {AutocompleteWidget} from "./widgets/autocomplete/widget"
 import {
-    diagnosticField,
-    diagnosticInfoField,
-    diagnosticTooltip,
-    diagnosticUnderline,
-    setDiagnostic,
-    setDiagnosticInfo,
-    DiagnosticOutput,
-} from "./widgets/diagnostic/utils"
+    inspectField,
+    inspectInfoField,
+    inspectTooltip,
+    createInspectUnderline,
+    setInspect,
+    setInspectInfo,
+} from "./widgets/inspect/utils"
 import {AutoSaveManager} from '../utils/autosave_manager'
 import {popup} from "../components/popup"
 import {DiffView} from "../components/diff_view"
 import {SymbolLookupExtension} from "../extensions/symbol_lookup"
-import {SymbolLookupWidget} from "./widgets/symbol_lookup/widget"
 import {inspectPanel} from "../components/inspect_panel"
 import {InlineCompletionWidget} from './widgets/inline_completion/widget'
 import {ghostTextField} from './widgets/inline_completion/ghost_text_decorator'
-import {ApplyResponse} from "../models/extension";
+import {ApplyResponse, InspectResult} from "../models/extension"
 
 const disableCmCompletion = autocompletion({
     override: [() => null],   // always return null → no hints → no UI
@@ -76,10 +74,7 @@ export class CodeEditor extends BaseComponent {
     private editorView: EditorView
     private loader: DataLoader
     private autocompleteWidget: AutocompleteWidget
-
     private autoSaveManager: AutoSaveManager
-
-    private symbolLookupWidget: SymbolLookupWidget
     private inlineCompletionWidget: InlineCompletionWidget
 
     private readonly symbolLookupExtension: SymbolLookupExtension
@@ -195,7 +190,6 @@ export class CodeEditor extends BaseComponent {
                 statusBar.updateMessage('')
             }
         })
-        this.symbolLookupWidget = new SymbolLookupWidget()
         this.language = ''
         this.isEditorReady = false
 
@@ -259,7 +253,6 @@ export class CodeEditor extends BaseComponent {
         this.elem = $('div', '.editor', $ => {
             this.loader.render($)
             this.autocompleteWidget.render($)
-            this.symbolLookupWidget.render($)
             this.pathElem = $('div', '.path')
             this.editorElem = $('div', '.editor-view')
         })
@@ -364,9 +357,9 @@ export class CodeEditor extends BaseComponent {
             this.languageFromPath(this.file.path),
             vscodeDark,
             indentUnit.of("    "),
-            diagnosticField,
-            diagnosticInfoField,
-            diagnosticTooltip,
+            inspectField,
+            inspectInfoField,
+            inspectTooltip,
             cursorWatcher,
             changeWatcher,
             viewportWatcher,
@@ -462,49 +455,56 @@ export class CodeEditor extends BaseComponent {
         this.inlineCompletionWidget = new InlineCompletionWidget(this.editorView)
     }
 
-    public showDiagnostics(diagnostics: DiagnosticOutput[]) {
-        if (!diagnostics?.length) {
-            this.editorView.dispatch({effects: setDiagnostic.of(Decoration.none)})
+    public showInspectResult(results: InspectResult[]) {
+        if (!results?.length) {
+            this.editorView.dispatch({effects: setInspect.of(Decoration.none)})
             inspectPanel.update([])
             return
         }
 
         const builder = new RangeSetBuilder<Decoration>()
+        for (const e of results) {
+            try {
+                const fromLine = this.editorView.state.doc.line(e.row_from)
+                const toLine = e.row_to != null 
+                    ? this.editorView.state.doc.line(e.row_to) 
+                    : fromLine
 
-        for (const e of diagnostics) {
-            const line = this.editorView.state.doc.line(e.start_line)
-            builder.add(line.from, line.to, diagnosticUnderline)
+                // start position
+                let startPos = fromLine.from
+                if (e.column_from != null) {
+                    startPos = fromLine.from + Math.min(e.column_from - 1, fromLine.length)
+                }
+
+                // end position
+                let endPos = toLine.to
+                if (e.row_to != null && e.column_to != null) {
+                    endPos = toLine.from + Math.min(e.column_to - 1, toLine.length)
+                } else if (e.row_to == null && e.column_to != null) {
+                    endPos = fromLine.from + Math.min(e.column_to - 1, fromLine.length)
+                }
+
+                // ensure valid range
+                if (startPos < endPos) {
+                    builder.add(startPos, endPos, createInspectUnderline(e.color))
+                } else {
+                    banner.error(`Invalid range for line ${e.row_from}: startPos (${startPos}) >= endPos (${endPos})`)
+                }
+            } catch (error) {
+                banner.error(`Error highlighting line ${e.row_from}: ${error.message || String(error)}`)
+            }
         }
 
         this.editorView.dispatch({
             effects: [
-                setDiagnostic.of(builder.finish()),
-                setDiagnosticInfo.of(diagnostics)
+                setInspect.of(builder.finish()),
+                setInspectInfo.of(results)
             ]
         })
     }
 
     private async onSymbolLookUp(symbol: string, cursorLine: number) {
-        const symbolLookupResults = await this.symbolLookupExtension.onSymbolLookup(symbol, cursorLine)
-
-        if (symbolLookupResults?.results?.length > 0) {
-            // get cursor coordinates for positioning
-            const pos = this.editorView.state.selection.main.head
-            const coords = this.editorView.coordsAtPos(pos)
-
-            if (coords) {
-                const results = symbolLookupResults.results.map(res => ({
-                    file_path: this.file.path,
-                    line_number: res.line_number,
-                    description: res.excerpt
-                }))
-                this.symbolLookupWidget.renderSymbolLookupResults(results, symbolLookupResults.intent, symbol, coords)
-            }
-        }
-
-        if (symbolLookupResults?.results?.length == 0) {
-            banner.info(`No results found for symbol: ${symbol}`)
-        }
+        await this.symbolLookupExtension.onSymbolLookup(symbol, cursorLine)
     }
 
     public JumpToLine(lineNumber: number) {
@@ -580,7 +580,7 @@ export class CodeEditor extends BaseComponent {
         const line = this.editorView.state.doc.lineAt(pos)
 
         return {
-            line: line.number,              // 1-based
+            row: line.number,              // 1-based
             column: pos - line.from + 1     // 1-based
         }
     }
@@ -672,7 +672,6 @@ export class CodeEditor extends BaseComponent {
         this.autocompleteWidget = null
         this.autoSaveManager = null
 
-        this.symbolLookupWidget.destroy()
         this.symbolLookupExtension.destroy()
 
         this.elem?.removeEventListener('keydown', this.boundKeyDown)

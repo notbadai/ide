@@ -8,7 +8,6 @@ export class ApplyExtension extends OnDemandExtension {
     }
 
     protected getExtensionInfo(extensionData: ExtensionData): string {
-        const extensionConfig = this.config
-        return extensionConfig.getApplyExtension()
+        return this.config.getApplyExtension()
     }
 }

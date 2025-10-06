@@ -59,7 +59,7 @@ class ApplyExtension extends BaseExtension {
 
         let sendData = {
             edit_file_path: this.editFilePath == null ? '' : this.editFilePath,
-            prompt: content,
+            patch_text: content,
         }
         await extensionManager.run(this.uuid, sendData)
     }

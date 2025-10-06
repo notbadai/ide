@@ -8,7 +8,6 @@ export class SymbolLookupExtension extends OnDemandExtension {
     }
 
     protected getExtensionInfo(extensionData: ExtensionData): string {
-        const extensionConfig = this.config
-        return extensionConfig.getSymbolLookupExtension()
+        return  this.config.getSymbolLookupExtension()
     }
 }

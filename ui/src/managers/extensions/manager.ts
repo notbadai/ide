@@ -70,7 +70,7 @@ class ExtensionManager {
             type: extension.type,
             requestId: data.requestId,
 
-            cursor: data.cursor ?? codeEditor?.getCursorPosition() ?? {line: 0, column: 0},
+            cursor: data.cursor ?? codeEditor?.getCursorPosition() ?? {row: 0, column: 0, symbol: null},
             selection: data.selection ?? codeEditor?.getSelectedText() ?? '',
             clip_board: data.clip_board ?? codeEditor ? await codeEditor.getClipboardText() : '',
             current_file_path: data.current_file_path ?? codeEditor?.file?.path ?? null,
@@ -87,14 +87,14 @@ class ExtensionManager {
             ...(data.resend && {resend: data.resend}),
             ...(data.edit_file_path && {edit_file_path: data.edit_file_path}),
             ...(data.prompt && {prompt: data.prompt}),
+            ...(data.patch_text && {patch_text: data.patch_text}),
             ...(data.messages && {messages: data.messages}),
             ...(data.symbol && {symbol: data.symbol}),
             ...(data.terminal_snapshot && {terminal_snapshot: data.terminal_snapshot}),
             ...(data.terminal_before_reset && {terminal_before_reset: data.terminal_before_reset}),
             ...(data.context_paths && {context_paths: data.context_paths}),
             ...(data.audio_blob && {audio_blob: data.audio_blob}),
-            ...(data.tool_action && {tool_action: data.tool_action}),
-            ...(data.tool_state && {tool_state: data.tool_state}),
+            ...(data.ui_action && {ui_action: data.ui_action}),
         }
 
         await this.sendData(completeData)
@@ -133,7 +133,7 @@ class ExtensionManager {
             console.error(`${extension.name} error:\n` + data.error.message)
             extensionPane.addError(data.error.message, extension.name)
             banner.error(`${extension.name} failed with an error. Click here to see the full error log.`, false, () => {
-                activityBarManager.openTab(EXTENSIONS)
+                activityBarManager.openTopTab(EXTENSIONS)
                 extensionPane.openErrorsTab()
                 banner.hide(true)
             })

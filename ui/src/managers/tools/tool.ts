@@ -8,11 +8,11 @@ import {BaseExtension} from "../../extensions/base_extension"
 import {ExtensionResponse} from "../../models/extension"
 import {extensionManager} from "../extensions/manager"
 import {chatManager} from "../chat/manager"
-import {diagnosticWidget} from "../../editor/widgets/diagnostic/widget"
+import {inspectWidget} from "../../editor/widgets/inspect/widget"
 import {tabsManager} from "../tabs/manager"
 import {applyWidget} from "../../editor/widgets/apply/widget"
 import {toolsManager} from "./manager"
-import {ComponentState, CustomToolInterface} from "./custom_tool_interface"
+import {Form} from "./form"
 
 
 export interface ToopOptions {
@@ -27,7 +27,7 @@ export class ToolExtension extends BaseExtension {
 
     private currentChatId: string | null
     private currentFilePath: string
-    private customToolInterface: CustomToolInterface
+    private form: Form
 
     constructor(opt: ToopOptions) {
         super()
@@ -44,7 +44,7 @@ export class ToolExtension extends BaseExtension {
 
         this.currentChatId = null
         this.currentFilePath = null
-        this.customToolInterface = null
+        this.form = null
     }
 
     protected onTerminate(): void {
@@ -64,7 +64,7 @@ export class ToolExtension extends BaseExtension {
         this.currentFilePath = projectManager.codeEditor?.file.path
 
         const sendData = {
-            tool_action: 'init',
+            ui_action: {state: {}},
             extension: this.extension,
             method: 'run_key_bind',
             terminal_snapshot: this.terminal == null ? [] : this.terminal.getSnapshot(),
@@ -82,49 +82,40 @@ export class ToolExtension extends BaseExtension {
             chatManager.getExternalChat(this.currentChatId)?.endExternalMessage()
         } else if (data.chat && data.chat.push_chat) {
             chatManager.getExternalChat(this.currentChatId)?.onExternalReceive(data)
-        } else if (data.inspect) {
-            statusBar.updateMessage(`${data.inspect.results.length} inspection results found`)
-            const results = data.inspect.results.map(res => ({
-                file_path: getCorrectPath(res.file_path, projectManager.project.projectName),
-                line_number: res.line_number,
-                description: res.description
-            }))
-            inspectPanel.update(results)
         } else if (data.inline_completion) {
             const response = data.inline_completion
             const codeEditor = tabsManager.getCodeEditor(this.currentFilePath)
             codeEditor?.applyInlineCompletion(response.inline_completion, response.cursor_row, response.cursor_column)
-        } else if (data.diagnostics) {
-            const response = data.diagnostics
-            statusBar.updateMessage(`${response.results.length} errors found`)
-            const results = response.results.map(d => ({
-                start_line: d.line_number,
-                start_char: 0,
-                end_line: d.line_number,
-                end_char: -1,
-                description: d.description
+        } else if (data.highlight) {
+            statusBar.updateMessage(`${data.highlight.results.length} results found`)
+            const results = data.highlight.results.map(res => ({
+                ...res,
+                file_path: res.file_path
+                    ? getCorrectPath(res.file_path, projectManager.project.projectName)
+                    : this.currentFilePath
             }))
-            diagnosticWidget.showDiagnostics(this.currentFilePath, results)
+            inspectWidget.showResults(this.currentFilePath, results)
         } else if (data.apply) {
             const applyData = data.apply
             applyData.file_path = this.currentFilePath
             applyWidget.apply(applyData).then()
         }
-        if (data.tool_interface) {
+        if (data.ui_form) {
             toolsManager.onTerminate()
-            this.customToolInterface = new CustomToolInterface({
-                toolInterface: data.tool_interface,
+            this.form = new Form({
+                title: data.ui_form.title,
+                formContent: data.ui_form.form_content,
                 onButtonClick: this.onButtonClick.bind(this)
             })
-            toolsManager.renderCustomTool(this.customToolInterface)
+            toolsManager.renderCustomTool(this.form)
         } else if (data.is_stopped) {
             this.onTerminate()
         }
     }
 
-    private async onButtonClick(action: string, state: { [name: string]: ComponentState }): Promise<void> {
+    private async onButtonClick(state: { [name: string]: any }): Promise<void> {
         toolsManager.onRun()
-        await extensionManager.run(this.uuid, {tool_action: action, extension: this.extension, tool_state: state})
+        await extensionManager.run(this.uuid, {ui_action: {state: state}, extension: this.extension})
     }
 
     public async run(): Promise<void> {

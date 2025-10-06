@@ -1,14 +1,13 @@
 import {BaseExtension} from "./base_extension"
-import {ExtensionResponse, SymbolLookupResults} from "../models/extension"
+import {ExtensionResponse} from "../models/extension"
 import {statusBar} from "../components/status_bar"
 import {banner} from "../components/banner"
 import {projectManager} from "../managers/project/manager"
 import {extensionManager} from "../managers/extensions/manager"
+import {inspectPanel} from "../components/inspect_panel"
 
 
 export class SymbolLookupExtension extends BaseExtension {
-    private symbolLookupResults: SymbolLookupResults
-
     constructor() {
         super()
 
@@ -25,7 +24,7 @@ export class SymbolLookupExtension extends BaseExtension {
         this.isStopped = true
     }
 
-    private async getSymbolLookups(symbol: string, lineNumber: number) {
+    private async getSymbolLookups(symbol: string) {
         this.isStopped = false
 
         const sendData = {
@@ -35,14 +34,14 @@ export class SymbolLookupExtension extends BaseExtension {
         await extensionManager.run(this.uuid, sendData)
     }
 
-    public async onSymbolLookup(symbol: string, symbolLineNumber: number): Promise<SymbolLookupResults> {
+    public async onSymbolLookup(symbol: string, symbolLineNumber: number): Promise<void> {
         if (!this.isStopped) {
             this.onTerminate()
         }
 
         statusBar.startLoading(`symbol lookup for line no: ${symbolLineNumber}, symbol: ${symbol}`)
 
-        await this.getSymbolLookups(symbol, symbolLineNumber)
+        await this.getSymbolLookups(symbol)
 
         try {
             await this.waitUntilStopped()
@@ -51,27 +50,25 @@ export class SymbolLookupExtension extends BaseExtension {
         }
 
         statusBar.stopLoading()
-
-        return this.symbolLookupResults
     }
 
     protected async onReceive(data: ExtensionResponse): Promise<void> {
-        if (data.is_stopped){
+        if (data.is_stopped) {
             this.onTerminate()
             return
         }
-        if (data.symbol_lookup == null) {
+        if (data.highlight == null) {
             return
         }
 
-        const results = data.symbol_lookup
+        const results = data.highlight
 
         const formattedResults = results.results.map(result => ({
             file_path: `${projectManager.project.getProjectName()}/${result.file_path}`,
-            line_number: result.line_number,
-            excerpt: result.excerpt
+            row_from: result.row_from,
+            description: result.description
         }))
-        this.symbolLookupResults = {results: formattedResults, intent: results.intent}
+        inspectPanel.update(formattedResults)
         this.onTerminate()
     }
 }

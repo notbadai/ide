@@ -174,15 +174,15 @@ class HttpServer {
             return {is_stopped: false, notification: {message: data.content, title: data.title}}
         } else if (data.method === 'update_progress') {
             return {is_stopped: false, progress: {message: data.content, progress: data.progress}}
-        } else if (data.method === 'send_inspector_results') {
-            return {is_stopped: false, inspect: {results: data.results}}
+        } else if (data.method === 'highlight') {
+            return {is_stopped: false, highlight: {results: data.results}}
         } else if (data.method === 'start_chat') {
             return {is_stopped: false, chat: {start_chat: true}}
-        } else if (data.method === 'terminate_chat') {
+        } else if (data.method === 'end_chat') {
             return {is_stopped: false, chat: {terminate_chat: true}}
-        } else if (data.method === 'push_chat') {
+        } else if (data.method === 'chat') {
             return {is_stopped: false, chat: {push_chat: true, chunk: data.content}}
-        } else if (data.method === 'apply_inline_completion') {
+        } else if (data.method === 'inline_completion') {
             return {
                 is_stopped: false,
                 inline_completion: {
@@ -191,9 +191,7 @@ class HttpServer {
                     cursor_column: data.cursor_column
                 }
             }
-        } else if (data.method === 'send_diagnostics') {
-            return {is_stopped: false, diagnostics: {results: data.diagnostics}}
-        } else if (data.method === 'apply_diff') {
+        } else if (data.method === 'update_file') {
             return {
                 is_stopped: false,
                 apply: {
@@ -203,14 +201,10 @@ class HttpServer {
                     cursor_row: data.cursor_row
                 }
             }
-        } else if (data.method === 'apply_autocomplete') {
+        } else if (data.method === 'autocomplete') {
             return {is_stopped: false, autocomplete: {suggestions: data.suggestions, time_elapsed: data.time_elapsed}}
-        } else if (data.method === 'send_symbol_results') {
-            return {is_stopped: false, symbol_lookup: {results: data.results, intent: data.intent}}
-        } else if (data.method === 'send_audio_transcription') {
-            return {is_stopped: false, audio_transcription: {text: data.content}}
-        } else if (data.method === 'send_tool_interface') {
-            return {is_stopped: false, tool_interface: data.tool_interface}
+        } else if (data.method === 'ui_form') {
+            return {is_stopped: false, ui_form: {title: data.title, form_content: data.form_content}}
         } else {
             throw new Error(`invalid ExtensionAPI method: ${data.method}`)
         }
