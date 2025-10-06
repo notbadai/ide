@@ -487,9 +487,11 @@ export class CodeEditor extends BaseComponent {
                 // ensure valid range
                 if (startPos < endPos) {
                     builder.add(startPos, endPos, inspectUnderline)
+                } else {
+                    banner.error(`Invalid range for line ${e.row_from}: startPos (${startPos}) >= endPos (${endPos})`)
                 }
             } catch (error) {
-                console.error('Error adding inspect decoration:', error, e)
+                banner.error(`Error highlighting line ${e.row_from}: ${error.message || String(error)}`)
             }
         }
 
