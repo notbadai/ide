@@ -1,34 +1,27 @@
 chat:
-  - default
-  - files
-apply: apply.model
-symbol_lookup: lookup
-autocomplete: autocomplete
+  - notbadai_chat
+  - notbadai_files_chat
+apply: notbadai_apply
+symbol_lookup: notbadai_lookup
+autocomplete: notbadai_autocomplete
 diff:
   min_collapse_lines: 3
   min_auto_collapse_lines: 5
   context_lines: 2
   ignore_whitespace: false
-port: 7523
+port: 7527
 host: localhost
-python_path:
+python_path: 
 tools:
    - name: "source control"
-     extension: "commit"
+     extension: "notbadai_commit"
      description: "A git commit tool"
-   - name: "modify big"
-     extension: "modify_big"
-     shortcut: "ctrl+,"
-   - name: "autocomplete big"
-     extension: "autocomplete_big"
+   - name: "inline completions"
+     extension: "notbadai_inline_completion"
      shortcut: "ctrl+m"
-   - name: "analyze"
-     extension: "analyze"
+   - name: "find errors"
+     extension: "notbadai_errors"
      shortcut: "cmd+e"
-   - name: "format"
-     extension: "format"
+   - name: "code format"
+     extension: "notbadai_format"
      shortcut: "cmd+l"
-api_providers:
-   - provider: "openrouter"
-     key: ""
-     default: true
