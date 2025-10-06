@@ -30,7 +30,7 @@ import {
     inspectField,
     inspectInfoField,
     inspectTooltip,
-    inspectUnderline,
+    createInspectUnderline,
     setInspect,
     setInspectInfo,
 } from "./widgets/inspect/utils"
@@ -486,7 +486,7 @@ export class CodeEditor extends BaseComponent {
 
                 // ensure valid range
                 if (startPos < endPos) {
-                    builder.add(startPos, endPos, inspectUnderline)
+                    builder.add(startPos, endPos, createInspectUnderline(e.color))
                 } else {
                     banner.error(`Invalid range for line ${e.row_from}: startPos (${startPos}) >= endPos (${endPos})`)
                 }

@@ -3,7 +3,28 @@ import {RangeSetBuilder, StateEffect, StateField} from "@codemirror/state"
 import {InspectResult} from "../../../models/extension"
 
 
-export const inspectUnderline = Decoration.mark({class: 'cm-error-underline'})
+function isValidCssColor(color: string): boolean {
+    const testElement = document.createElement('div')
+    testElement.style.color = color
+
+    return testElement.style.color !== ''
+}
+
+export function createInspectUnderline(color?: string): Decoration {
+    const defaultColor = 'rgba(248, 81, 73, 0.6)'
+    const underlineColor = color || defaultColor
+
+    if (color && !isValidCssColor(color)) {
+        throw new Error(`Invalid CSS color value: "${color}"`)
+    }
+
+    return Decoration.mark({
+        attributes: {
+            style: `text-decoration: underline wavy ${underlineColor}; text-decoration-thickness: 1px; text-underline-offset: 2px;`
+        }
+    })
+}
+
 
 export const setInspect = StateEffect.define<DecorationSet>()
 

@@ -23,6 +23,7 @@ export interface InspectResult {
     column_from?: number
     column_to?: number
     description?: string
+    color?: string
 }
 
 export type ApiProvider = {
