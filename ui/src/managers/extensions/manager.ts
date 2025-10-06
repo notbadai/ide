@@ -133,7 +133,7 @@ class ExtensionManager {
             console.error(`${extension.name} error:\n` + data.error.message)
             extensionPane.addError(data.error.message, extension.name)
             banner.error(`${extension.name} failed with an error. Click here to see the full error log.`, false, () => {
-                activityBarManager.openTab(EXTENSIONS)
+                activityBarManager.openTopTab(EXTENSIONS)
                 extensionPane.openErrorsTab()
                 banner.hide(true)
             })

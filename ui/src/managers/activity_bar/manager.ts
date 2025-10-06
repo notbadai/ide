@@ -322,9 +322,14 @@ class ActivityBarManager {
         }
     }
 
-    public openTab(activity: Activity) {
+    public openTopTab(activity: Activity) {
         this.selectTopActivity(activity)
         this.onTopActivityBarClick(activity, false)
+    }
+
+    public openBottomTab(activity: Activity) {
+        this.selectBottomActivity(activity)
+        this.onBottomActivityBarClick(activity, false).then()
     }
 }
 

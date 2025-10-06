@@ -4,6 +4,7 @@ import {InspectResult} from "../models/extension"
 import {clearChildElements} from "../utils/document"
 import {projectManager} from "../managers/project/manager"
 import {InspectResults} from "./inspect_results"
+import {activityBarManager, INSPECTOR_PANEL} from "../managers/activity_bar/manager"
 
 
 class InspectPanel extends BaseComponent {
@@ -47,6 +48,10 @@ class InspectPanel extends BaseComponent {
             })
             insectResults.render($)
         })
+
+        if (this.results.length > 0) {
+            activityBarManager.openBottomTab(INSPECTOR_PANEL)
+        }
     }
 }
 
