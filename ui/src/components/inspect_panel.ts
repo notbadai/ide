@@ -44,9 +44,6 @@ class InspectPanel extends BaseComponent {
                         filePath: result.file_path
                     })
                 },
-                onClose: () => {
-                    // codeEditor.focus()
-                }
             })
             insectResults.render($)
         })
