@@ -11,6 +11,7 @@ interface ToolConfig {
     shortcut: string
     shortcutLister: () => void
     tool: ToolExtension
+    extension: string
 }
 
 class ToolsManager extends BaseComponent {
@@ -104,7 +105,9 @@ class ToolsManager extends BaseComponent {
         for (const tool of toolExtensions) {
             const existingConfig = this.toolExtensions.get(tool.name)
 
-            if (existingConfig != null && tool.shortcut != null && existingConfig.shortcut !== tool.shortcut) {
+            if (existingConfig != null &&
+                ((tool.shortcut != null && existingConfig.shortcut !== tool.shortcut) ||
+                    tool.extension !== existingConfig.extension)) {
                 if (existingConfig.shortcutLister != null) {
                     existingConfig.shortcutLister()
                 }
@@ -127,7 +130,8 @@ class ToolsManager extends BaseComponent {
                 this.toolExtensions.set(tool.name, {
                     shortcut: tool.shortcut,
                     shortcutLister,
-                    tool: toolExtension
+                    tool: toolExtension,
+                    extension: tool.extension
                 })
             }
         }

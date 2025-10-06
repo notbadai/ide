@@ -4,7 +4,6 @@ import {clearChildElements} from "../../utils/document"
 
 export interface SearchableObject {
     name: string
-
     [key: string]: any
 }
 
