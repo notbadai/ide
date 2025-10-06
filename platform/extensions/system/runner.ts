@@ -24,7 +24,7 @@ if EXT_DIR not in sys.path:
 
     const template = `
 import sys, json, importlib, pathlib
-from notbadai import api
+from notbadai_ide import api
 ${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
@@ -53,7 +53,7 @@ import os
 import requests
 import sys, json, pathlib, threading, traceback
 import importlib
-from notbadai import api
+from notbadai_ide import api
 ${sysPathSetup}
 # import the extension module
 module_name = ${JSON.stringify(moduleName)}
