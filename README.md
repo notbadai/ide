@@ -28,22 +28,11 @@ The packaged application will be available in the `ide/dist/desktop/` directory.
 
 To use the AI features, you need to complete the following setup:
 
-**1. Configure Python Path and API Key**
+**1. Setting Up API Keys**
 
-Set up your Python executable path and API key for AI model providers. The Python path is required to run the AI
-extensions, and the API key enables access to language models for code assistance. You can configure these by going
-to `Extensions → Management` (select from left pane).
+Configure API keys for your AI model providers by navigating to `Extensions → Management` from the left panel.
 
 ***Important: Add an OpenRouter API key to enable the code apply feature. Other provider we support do not have the model we use to apply changes.***
-
-**2. Install Required Python Packages**
-
-Install the necessary Python packages to run AI extensions:
-
-```bash
-pip install openai requests GitPython black labml
-```
-
 ## Features
 
 <img src="https://github.com/notbadai/ide/blob/main/docs/images/image.003.png" alt=""/>
