@@ -29,5 +29,3 @@ api_providers:
   - provider: "openrouter"
     key: ""
     default: true
-  - provider: "deepinfra"
-    key: ""
