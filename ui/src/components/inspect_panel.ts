@@ -23,12 +23,12 @@ class InspectPanel extends BaseComponent {
             this.inspectorListElem = $('div', '.inspector-list')
         })
 
-        this.update(this.results)
+        this.updateResults(this.results)
 
         return this.elem
     }
 
-    public update(results: InspectResult[]) {
+    private updateResults(results: InspectResult[]) {
         this.results = results
 
         if (this.inspectorListElem == null) {
@@ -48,6 +48,10 @@ class InspectPanel extends BaseComponent {
             })
             insectResults.render($)
         })
+    }
+
+    public update(results: InspectResult[]) {
+        this.updateResults(results)
 
         if (this.results.length > 0) {
             activityBarManager.openBottomTab(INSPECTOR_PANEL)
