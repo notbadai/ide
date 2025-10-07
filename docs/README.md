@@ -71,27 +71,31 @@ From this tab, you can:
 ## Developing Your Own Extensions
 
 To use your own set of extensions, create a directory named `extensions` at the root level of your project.
-This will override all the default extensions, as the editor will use this directory as the extension path when
-executing extensions.
+All Python modules in this directory will be automatically added to the Python path, making them available for use by the IDE.
 
 The easiest way to get started is to copy
-the [default extensions directory](https://github.com/hnipun/extensions/tree/main) into your project (top level) and
+the [default extensions](https://github.com/notbadai/extensions) into your project (top level) and
 customize it as needed.
-
-***Note: Default extensions are automatically downloaded to `~/.notbadaiide/extensions/` when you first run the application.***
 
 ### 1. config.yaml
 
 <img src="https://github.com/notbadai/ide/blob/main/docs/images/image.006.png" alt=""/>
 
-All extension-related settings are defined in [config.yaml](https://github.com/hnipun/extensions/blob/main/config.yaml).
+All extension-related settings are defined in [config.yaml](https://github.com/notbadai/ide/blob/main/config.default.yaml).
 From this file, you can configure the main entry file and other settings for each extension.
 
 Any errors in the `config.yaml` file will be displayed in the `Extensions` tab.
 
+#### `config.yaml` Priority
+
+By default, the IDE uses the system-wide configuration located at `Extensions → Management`.
+
+You can override these defaults by creating a `config.yaml` file in your project's root-level `extensions/` directory. This local configuration takes precedence over system-wide settings, enabling per-project customization and easier extension development.
+
+
 ### 2. Extension API
 
-The [ExtensionAPI](https://github.com/hnipun/extensions/blob/main/common/api.py)
+The [ExtensionAPI](https://github.com/notbadai/notbadai_ide/blob/main/notbadai_ide/api.py)
 defines:
 
 - The data passed from the editor to the extension.
@@ -100,27 +104,13 @@ defines:
 Every extension’s main file must include a function with the following definition:
 
 ```python
-def extension(api: ExtensionAPI):
+def start():
     pass
 ``` 
 
 This function is executed by the editor when the extension runs.
 
-### 3. `extensions/common` directory
-
-The `extensions/common` directory is automatically added to the Python path when running an extension.
-This allows you to import shared utilities, or settings directly into your extensions without needing relative
-paths.
-
-example:
-
-```python
-from common.api import ExtensionAPI
-from common.diff import get_matches
-from common.settings import LLM_PROVIDERS
-```
-
-### 4. Debug Logs
+### 3. Debug Logs
 
 During extension development, you can add debug logs using the [
 `log`](https://github.com/hnipun/extensions/blob/32a86209fb968d1b157d72ef73e43d2a95452523/common/api.py#L234)  function
