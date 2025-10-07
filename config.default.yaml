@@ -11,17 +11,23 @@ diff:
   ignore_whitespace: false
 port: 7527
 host: localhost
-python_path: 
+python_path:
 tools:
-   - name: "source control"
-     extension: "notbadai_commit"
-     description: "A git commit tool"
-   - name: "inline completions"
-     extension: "notbadai_inline_completion"
-     shortcut: "ctrl+m"
-   - name: "find errors"
-     extension: "notbadai_errors"
-     shortcut: "cmd+e"
-   - name: "code format"
-     extension: "notbadai_format"
-     shortcut: "cmd+l"
+  - name: "source control"
+    extension: "notbadai_commit"
+    description: "A git commit tool"
+  - name: "inline completions"
+    extension: "notbadai_inline_completion"
+    shortcut: "ctrl+m"
+  - name: "find errors"
+    extension: "notbadai_errors"
+    shortcut: "cmd+e"
+  - name: "code format"
+    extension: "notbadai_format"
+    shortcut: "cmd+l"
+api_providers:
+  - provider: "openrouter"
+    key: ""
+    default: true
+  - provider: "deepinfra"
+    key: ""
