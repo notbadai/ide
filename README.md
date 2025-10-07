@@ -36,7 +36,7 @@ Add the following section to the YAML file with your API keys:
 
 ```yaml
   - provider: "openrouter"
-    key: ""
+    key: "<YOUR-KEY>"
     default: true
 ```
 
