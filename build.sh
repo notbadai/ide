@@ -279,29 +279,31 @@ parse_packages_from_config() {
         return 1
     fi
     
-    # Extract chat extensions (handle both single values and lists)
+    # Extract chat extensions (handle list items starting with -)
     while IFS= read -r line; do
+        # Extract value after the dash, trim whitespace
+        line=$(echo "$line" | sed 's/^\s*-\s*//;s/\s*$//')
         [ -n "$line" ] && packages+=("$line")
-    done < <(grep -A 10 "^chat:" "$config_file" | grep -E "^\s*-\s+" | sed 's/^\s*-\s*//' | sed 's/\s*$//')
+    done < <(awk '/^chat:/{flag=1;next}/^[a-z_]+:/{flag=0}flag&&/^\s*-\s*/{print}' "$config_file")
     
     # Extract apply extension
-    local apply_pkg=$(grep "^apply:" "$config_file" | sed 's/^apply:\s*//' | sed 's/\s*$//')
+    local apply_pkg=$(awk -F': *' '/^apply:/{print $2}' "$config_file" | sed 's/\s*$//')
     [ -n "$apply_pkg" ] && packages+=("$apply_pkg")
     
     # Extract symbol_lookup extension
-    local lookup_pkg=$(grep "^symbol_lookup:" "$config_file" | sed 's/^symbol_lookup:\s*//' | sed 's/\s*$//')
+    local lookup_pkg=$(awk -F': *' '/^symbol_lookup:/{print $2}' "$config_file" | sed 's/\s*$//')
     [ -n "$lookup_pkg" ] && packages+=("$lookup_pkg")
     
     # Extract autocomplete extension
-    local autocomplete_pkg=$(grep "^autocomplete:" "$config_file" | sed 's/^autocomplete:\s*//' | sed 's/\s*$//')
+    local autocomplete_pkg=$(awk -F': *' '/^autocomplete:/{print $2}' "$config_file" | sed 's/\s*$//')
     [ -n "$autocomplete_pkg" ] && packages+=("$autocomplete_pkg")
     
     # Extract tools extensions - look for extension field and remove quotes
     while IFS= read -r line; do
-        # Remove leading/trailing whitespace and quotes
-        line=$(echo "$line" | sed 's/^\s*extension:\s*//;s/^"//;s/"$//;s/\s*$//')
+        # Extract value after extension:, remove quotes and whitespace
+        line=$(echo "$line" | awk -F': *' '{print $2}' | sed 's/"//g;s/\s*$//')
         [ -n "$line" ] && packages+=("$line")
-    done < <(grep -B 2 "extension:" "$config_file" | grep "extension:" | sed 's/.*extension:\s*//')
+    done < <(awk '/^tools:/{flag=1}/^[a-z_]+:/{if(!/^tools:/)flag=0}flag&&/extension:/{print}' "$config_file")
     
     # Remove duplicates and empty entries
     packages=($(printf "%s\n" "${packages[@]}" | sort -u | grep -v '^$'))
