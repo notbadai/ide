@@ -300,8 +300,8 @@ parse_packages_from_config() {
     
     # Extract tools extensions - look for extension field and remove quotes
     while IFS= read -r line; do
-        # Extract value after extension:, remove quotes and whitespace
-        line=$(echo "$line" | awk -F': *' '{print $2}' | sed 's/"//g;s/\s*$//')
+        # Extract value after extension:, remove quotes and whitespace more carefully
+        line=$(echo "$line" | sed 's/.*extension:[[:space:]]*"\([^"]*\)".*/\1/' | sed 's/[[:space:]]*$//')
         [ -n "$line" ] && packages+=("$line")
     done < <(awk '/^tools:/{flag=1}/^[a-z_]+:/{if(!/^tools:/)flag=0}flag&&/extension:/{print}' "$config_file")
     
