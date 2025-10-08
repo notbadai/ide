@@ -16,7 +16,13 @@ Follow these steps to set up the development environment.
 export const TRANSCRIPTION_API_ENDPOINT: string = ''
 ```
 
-3. To compile frontend assets and automatically recompile when changes are made:
+3. install the packages
+
+```bash
+npm install
+```
+
+4. To compile frontend assets and automatically recompile when changes are made:
 
 ```bash
 make watch
