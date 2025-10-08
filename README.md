@@ -32,12 +32,14 @@ To use the AI features, you need to complete the following setup:
 
 Configure API keys for your AI model providers by navigating to `Extensions → Management` from the left panel. This will open the configuration YAML file located at `~/.notbadaiide/config.yaml`.
 
-Add the following section to the YAML file with your API keys:
+Add at least one provider with your API key. You can add one or both providers, and remove any that you don't plan to use:
 
 ```yaml
   - provider: "openrouter"
     key: "<YOUR-KEY>"
     default: true
+  - provider: "deepinfra"
+    key: "<YOUR-KEY>"
 ```
 
 ***Important: Add an OpenRouter API key to enable the code apply feature. Other provider we support do not have the model we use to apply changes.***
