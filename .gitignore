@@ -180,3 +180,5 @@ node_modules/*
 /ui/src/env.ts
 /lib/
 /extensions/
+
+.DS_Store
