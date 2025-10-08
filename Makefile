@@ -1,7 +1,6 @@
 .PHONY: compile-ui watch package clean install
 
 compile:
-	npm install
 	rm -rf dist*
 	mkdir -p dist/js/sourcemaps
 	cp -r ui/static/* dist
