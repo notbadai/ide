@@ -272,33 +272,42 @@ post_build_info() {
 parse_packages_from_config() {
     local config_file="$1"
     local packages=()
-
+    
+    # Check if config file exists
     if [ ! -f "$config_file" ]; then
         echo ""  # Return empty array
         return 1
     fi
-
+    
+    # Extract chat extensions (handle both single values and lists)
     while IFS= read -r line; do
         [ -n "$line" ] && packages+=("$line")
     done < <(grep -A 10 "^chat:" "$config_file" | grep -E "^\s*-\s+" | sed 's/^\s*-\s*//' | sed 's/\s*$//')
-
+    
+    # Extract apply extension
     local apply_pkg=$(grep "^apply:" "$config_file" | sed 's/^apply:\s*//' | sed 's/\s*$//')
     [ -n "$apply_pkg" ] && packages+=("$apply_pkg")
-
+    
+    # Extract symbol_lookup extension
     local lookup_pkg=$(grep "^symbol_lookup:" "$config_file" | sed 's/^symbol_lookup:\s*//' | sed 's/\s*$//')
     [ -n "$lookup_pkg" ] && packages+=("$lookup_pkg")
-
+    
+    # Extract autocomplete extension
     local autocomplete_pkg=$(grep "^autocomplete:" "$config_file" | sed 's/^autocomplete:\s*//' | sed 's/\s*$//')
     [ -n "$autocomplete_pkg" ] && packages+=("$autocomplete_pkg")
-
+    
+    # Extract tools extensions - look for extension field and remove quotes
     while IFS= read -r line; do
+        # Remove leading/trailing whitespace and quotes
+        line=$(echo "$line" | sed 's/^\s*extension:\s*//;s/^"//;s/"$//;s/\s*$//')
         [ -n "$line" ] && packages+=("$line")
-    done < <(grep -A 3 "^tools:" "$config_file" | grep "extension:" | sed 's/.*extension:\s*"\([^"]*\)".*/\1/')
-
+    done < <(grep -B 2 "extension:" "$config_file" | grep "extension:" | sed 's/.*extension:\s*//')
+    
+    # Remove duplicates and empty entries
     packages=($(printf "%s\n" "${packages[@]}" | sort -u | grep -v '^$'))
-
+    
+    # Return packages as newline-separated list
     printf "%s\n" "${packages[@]}"
-
     return 0
 }
 
