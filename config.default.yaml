@@ -25,6 +25,9 @@ tools:
   - name: "code format"
     extension: "notbadai_format"
     shortcut: "cmd+l"
+  - name: "modify code"
+    extension: "notbadai_modify"
+    shortcut: "ctrl+,"
 api_providers:
   - provider: "openrouter"
     key: ""
