@@ -268,34 +268,84 @@ post_build_info() {
     echo ""
 }
 
+# Parse config.yaml and extract package names
+parse_packages_from_config() {
+    local config_file="$1"
+    local packages=()
+
+    if [ ! -f "$config_file" ]; then
+        echo ""  # Return empty array
+        return 1
+    fi
+
+    while IFS= read -r line; do
+        [ -n "$line" ] && packages+=("$line")
+    done < <(grep -A 10 "^chat:" "$config_file" | grep -E "^\s*-\s+" | sed 's/^\s*-\s*//' | sed 's/\s*$//')
+
+    local apply_pkg=$(grep "^apply:" "$config_file" | sed 's/^apply:\s*//' | sed 's/\s*$//')
+    [ -n "$apply_pkg" ] && packages+=("$apply_pkg")
+
+    local lookup_pkg=$(grep "^symbol_lookup:" "$config_file" | sed 's/^symbol_lookup:\s*//' | sed 's/\s*$//')
+    [ -n "$lookup_pkg" ] && packages+=("$lookup_pkg")
+
+    local autocomplete_pkg=$(grep "^autocomplete:" "$config_file" | sed 's/^autocomplete:\s*//' | sed 's/\s*$//')
+    [ -n "$autocomplete_pkg" ] && packages+=("$autocomplete_pkg")
+
+    while IFS= read -r line; do
+        [ -n "$line" ] && packages+=("$line")
+    done < <(grep -A 3 "^tools:" "$config_file" | grep "extension:" | sed 's/.*extension:\s*"\([^"]*\)".*/\1/')
+
+    packages=($(printf "%s\n" "${packages[@]}" | sort -u | grep -v '^$'))
+
+    printf "%s\n" "${packages[@]}"
+
+    return 0
+}
+
 # Install Python packages
 install_python_packages() {
     print_status "Installing Python packages..."
     
-    # List of packages to install
-    local packages=(
-        "notbadai_ide"
-        "notbadai_chat"
-        "notbadai_files_chat"
-        "notbadai_apply"
-        "notbadai_lookup"
-        "notbadai_autocomplete"
-        "notbadai_commit"
-        "notbadai_inline_completion"
-        "notbadai_errors"
-        "notbadai_format"
-    )
+    local config_dir="$HOME/.notbadaiide"
+    local config_file="$config_dir/config.yaml"
     
-    # Install each package
-    for package in "${packages[@]}"; do
-        print_status "Installing $package..."
-        if pip install "$package" --upgrade; then
-            print_status "✓ $package installed successfully"
-        else
-            print_error "Failed to install $package"
-            print_warning "Continuing with remaining packages..."
-        fi
-    done
+    # Check if config file exists
+    if [ ! -f "$config_file" ]; then
+        print_warning "Config file not found at $config_file"
+        print_warning "Skipping Python package installation"
+        return
+    fi
+    
+    # Parse packages from config
+    local packages=()
+    while IFS= read -r line; do
+        [ -n "$line" ] && packages+=("$line")
+    done < <(parse_packages_from_config "$config_file")
+    
+    # Always install the base IDE package first
+    print_status "Installing notbadai_ide (base package)..."
+    if pip install "notbadai_ide" --upgrade; then
+        print_status "✓ notbadai_ide installed successfully"
+    else
+        print_error "Failed to install notbadai_ide"
+        print_warning "Continuing with remaining packages..."
+    fi
+    
+    # Install each package from config
+    if [ ${#packages[@]} -eq 0 ]; then
+        print_warning "No extension packages found in config.yaml"
+    else
+        print_status "Found ${#packages[@]} extension package(s) in config.yaml"
+        for package in "${packages[@]}"; do
+            print_status "Installing $package..."
+            if pip install "$package" --upgrade; then
+                print_status "✓ $package installed successfully"
+            else
+                print_error "Failed to install $package"
+                print_warning "Continuing with remaining packages..."
+            fi
+        done
+    fi
     
     echo ""
     print_status "Python packages installation completed!"
