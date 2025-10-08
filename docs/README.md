@@ -106,10 +106,13 @@ defines:
 
 - The data passed from the editor to the extension.
 - The utility functions available for extensions to interact with the editor.
+- Can be imported in your extension using `from notbadai_ide import api`
 
-Every extension’s main file must include a function with the following definition:
+Every extension must include a function with the following definition:
 
 ```python
+from notbadai_ide import api
+
 def start():
     pass
 ``` 
