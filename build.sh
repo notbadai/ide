@@ -33,6 +33,36 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Parse command line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --voice)
+                if [ -n "$2" ] && [ "${2:0:1}" != "-" ]; then
+                    VOICE_API_URL="$2"
+                    shift 2
+                else
+                    print_error "--voice requires a URL argument"
+                    exit 1
+                fi
+                ;;
+            -h|--help)
+                echo "Usage: $0 [OPTIONS]"
+                echo ""
+                echo "Options:"
+                echo "  --voice <URL>    Set the transcription API endpoint URL (optional)"
+                echo "  -h, --help       Show this help message"
+                echo ""
+                exit 0
+                ;;
+            *)
+                # Ignore unknown arguments for backward compatibility
+                shift
+                ;;
+        esac
+    done
+}
+
 # Detect and configure Python path
 setup_python_config() {
     local config_dir="$HOME/.notbadaiide"
@@ -303,7 +333,7 @@ parse_packages_from_config() {
         # Extract value after extension:, remove quotes and whitespace more carefully
         line=$(echo "$line" | sed 's/.*extension:[[:space:]]*"\([^"]*\)".*/\1/' | sed 's/[[:space:]]*$//')
         [ -n "$line" ] && packages+=("$line")
-    done < <(awk '/^tools:/{flag=1}/^[a-z_]+:/{if(!/^tools:/)flag=0}flag&&/extension:/{print}' "$config_file")
+    done < <(awk '/^tools:/{flag=1}/^[a-z_]:/{if(!/^tools:/)flag=0}flag&&/extension:/{print}' "$config_file")
     
     # Remove duplicates and empty entries
     packages=($(printf "%s\n" "${packages[@]}" | sort -u | grep -v '^$'))
@@ -367,6 +397,9 @@ main() {
     print_status "Starting IDE build process..."
     echo ""
 
+    # Parse arguments first (this is optional - script works without any args)
+    parse_arguments "$@"
+
     init_submodules
     create_env_config
     setup_python_config
@@ -379,5 +412,5 @@ main() {
     print_status "Build script completed!"
 }
 
-# Run main function
+# Run main function with all arguments
 main "$@"

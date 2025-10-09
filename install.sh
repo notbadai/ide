@@ -11,6 +11,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Global variable for voice API URL
+VOICE_API_URL=""
+
 # Print colored output
 print_status() {
     echo -e "${GREEN}[INFO]${NC} $1"
@@ -27,6 +30,36 @@ print_error() {
 # Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# Parse command line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --voice)
+                if [ -n "$2" ] && [ "${2:0:1}" != "-" ]; then
+                    VOICE_API_URL="$2"
+                    shift 2
+                else
+                    print_error "--voice requires a URL argument"
+                    exit 1
+                fi
+                ;;
+            -h|--help)
+                echo "Usage: $0 [OPTIONS]"
+                echo ""
+                echo "Options:"
+                echo "  --voice <URL>    Set the transcription API endpoint URL (optional)"
+                echo "  -h, --help       Show this help message"
+                echo ""
+                exit 0
+                ;;
+            *)
+                # Ignore unknown arguments for backward compatibility
+                shift
+                ;;
+        esac
+    done
 }
 
 # Check for required tools
@@ -74,7 +107,14 @@ run_build_script() {
     fi
     
     chmod +x build.sh
-    ./build.sh
+    
+    # Pass the voice API URL if provided
+    if [ -n "$VOICE_API_URL" ]; then
+        print_status "Using transcription API endpoint: $VOICE_API_URL"
+        ./build.sh --voice "$VOICE_API_URL"
+    else
+        ./build.sh
+    fi
 }
 
 # Main execution
@@ -82,6 +122,9 @@ main() {
     print_status "Starting IDE installation process..."
     echo ""
 
+    # Parse arguments first (this is optional - script works without any args)
+    parse_arguments "$@"
+    
     check_prerequisites
     clone_repo
     run_build_script
@@ -89,5 +132,5 @@ main() {
     print_status "Installation script completed!"
 }
 
-# Run main function
+# Run main function with all arguments
 main "$@"
