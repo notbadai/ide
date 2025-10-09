@@ -310,16 +310,70 @@ post_build_info() {
     
     local app_folder="${pkg_name}-v${pkg_version}-${platform}-${arch}"
     local app_name="${pkg_name}-v${pkg_version}.app"
+    local app_path="$(pwd)/dist/desktop/${app_folder}/${app_name}"
     
-    print_status "The packaged application is available in the 'ide/dist/desktop/${app_folder}/' directory."
+    print_status "Build location: ${app_path}"
     echo ""
-    print_status "To run the application:"
-    echo "  cd ide/dist/desktop/${app_folder}/"
-    echo "  open ${app_name}"
+    
+    # Prompt user to install to Applications
+    print_prompt "Would you like to install IDE to your Applications folder? (y/n): "
+    read -r install_choice </dev/tty
     echo ""
-    echo "Or run directly:"
-    echo "  open ide/dist/desktop/${app_folder}/${app_name}"
+    
+    if [[ $install_choice =~ ^[Yy]$ ]]; then
+        local generic_app_name="IDE.app"
+        local dest_path="/Applications/${generic_app_name}"
+        
+        # Inform user if replacing existing version
+        if [ -e "$dest_path" ]; then
+            print_warning "Existing IDE installation found at ${dest_path}"
+            print_status "Removing old version..."
+            if rm -rf "$dest_path"; then
+                print_status "✓ Old version removed successfully"
+            else
+                print_error "Failed to remove old version"
+                print_warning "You may need administrator permissions"
+                print_prompt "Try with sudo? (y/n): "
+                read -r use_sudo </dev/tty
+                echo ""
+                if [[ $use_sudo =~ ^[Yy]$ ]]; then
+                    sudo rm -rf "$dest_path"
+                else
+                    print_error "Cannot proceed without removing old version"
+                    return 1
+                fi
+            fi
+        fi
+        
+        print_status "Installing to Applications folder..."
+        if cp -R "${app_path}" "$dest_path"; then
+            print_status "✓ IDE installed successfully to ${dest_path}"
+            echo ""
+            print_prompt "Open IDE now? (y/n): "
+            read -r open_now </dev/tty
+            echo ""
+            if [[ $open_now =~ ^[Yy]$ ]]; then
+                open "$dest_path"
+            fi
+        else
+            print_error "Failed to copy to Applications folder"
+            print_warning "You may need administrator permissions"
+        fi
+    else
+        print_status "Skipping Applications installation"
+        echo ""
+        print_status "Application built successfully!"
+        print_status "Location: ${app_path}"
+        echo ""
+        print_status "To open IDE, run:"
+        echo "  open \"${app_path}\""
+        echo ""
+        print_status "Or navigate to the build location in Finder:"
+        echo "  open \"$(pwd)/dist/desktop/${app_folder}\""
+    fi
+    
     echo ""
+    print_status "Build complete! 🎉"
 }
 
 # Parse config.yaml and extract package names
