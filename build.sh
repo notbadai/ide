@@ -439,6 +439,34 @@ install_python_packages() {
         return
     fi
     
+    # Determine pip command based on which Python was configured
+    # Read the python_path from config to determine which pip to use
+    local python_path=$(grep "^python_path:" "$config_file" | sed 's/python_path:[[:space:]]*//')
+    local pip_cmd="pip"
+    
+    if [[ "$python_path" == *"python3"* ]]; then
+        pip_cmd="pip3"
+    fi
+    
+    # Verify pip command exists
+    if ! command_exists $pip_cmd; then
+        print_error "$pip_cmd is not installed"
+        print_warning "Trying alternative pip command..."
+        if [ "$pip_cmd" = "pip3" ]; then
+            pip_cmd="pip"
+        else
+            pip_cmd="pip3"
+        fi
+        
+        if ! command_exists $pip_cmd; then
+            print_error "No pip command found"
+            print_warning "Skipping Python package installation"
+            return
+        fi
+    fi
+    
+    print_status "Using pip command: $pip_cmd (matches Python at $python_path)"
+    
     # Parse packages from config
     local packages=()
     while IFS= read -r line; do
@@ -447,7 +475,7 @@ install_python_packages() {
     
     # Always install the base IDE package first
     print_status "Installing notbadai_ide (base package)..."
-    if pip install "notbadai_ide" --upgrade; then
+    if $pip_cmd install "notbadai_ide" --upgrade; then
         print_status "✓ notbadai_ide installed successfully"
     else
         print_error "Failed to install notbadai_ide"
@@ -461,7 +489,7 @@ install_python_packages() {
         print_status "Found ${#packages[@]} extension package(s) in config.yaml"
         for package in "${packages[@]}"; do
             print_status "Installing $package..."
-            if pip install "$package" --upgrade; then
+            if $pip_cmd install "$package" --upgrade; then
                 print_status "✓ $package installed successfully"
             else
                 print_error "Failed to install $package"
