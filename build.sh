@@ -79,10 +79,10 @@ setup_python_config() {
     print_status "Setting up Python configuration..."
     
     local python_path=""
-    if command_exists python3; then
-        python_path=$(which python3)
-    elif command_exists python; then
+    if command_exists python; then
         python_path=$(which python)
+    elif command_exists python3; then
+        python_path=$(which python3)
     fi
     
     # Check if Python is installed
