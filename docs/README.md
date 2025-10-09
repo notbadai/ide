@@ -142,11 +142,10 @@ transcription.
 It’s quite fast and easy to set up.
 
 1. Run the transcription server.
-2. Create a file named `env.ts` inside the `ui/src/` directory (if it doesn't already exist).
-3. Add your server URL like this:
+2. Install the IDE with voice support enabled:
 
-```typescript
-export const TRANSCRIPTION_API_ENDPOINT: string = 'http://x.x.x.x:xxxx/v1/audio/transcriptions'
+```bash
+curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash -s -- --voice "<URL>"
 ```
 
 Finally, follow the steps to build the app with voice.
