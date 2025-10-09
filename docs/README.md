@@ -147,5 +147,3 @@ It’s quite fast and easy to set up.
 ```bash
 curl -sSL https://raw.githubusercontent.com/notbadai/ide/main/install.sh | bash -s -- --voice "<URL>"
 ```
-
-Finally, follow the steps to build the app with voice.
