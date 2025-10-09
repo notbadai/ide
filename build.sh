@@ -78,8 +78,15 @@ setup_python_config() {
     
     print_status "Setting up Python configuration..."
     
+    local python_path=""
+    if command_exists python3; then
+        python_path=$(which python3)
+    elif command_exists python; then
+        python_path=$(which python)
+    fi
+    
     # Check if Python is installed
-    if ! command_exists python; then
+     if [ -z "$python_path" ]; then
         print_error "Python is not installed on your system."
         echo ""
         echo "Please install Python first:"
@@ -100,9 +107,6 @@ setup_python_config() {
         echo ""
         exit 1
     fi
-    
-    # Detect Python path
-    local python_path=$(which python)
     
     # Get Python version
     local python_version=$($python_path --version 2>&1)

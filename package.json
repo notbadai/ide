@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "private": true,
   "author": "notbadai",
-  "license": "ISC",
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
     "@types/express": "^5.0.3",
@@ -28,7 +27,7 @@
     "watch:sass": "sass --style compressed --watch ui/styles/style.scss:dist/css/style.css",
     "electron": "electron .",
     "build:electron": "tsc",
-    "package:electron": "DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --asar.unpack='**/*.node' --app-version=$npm_package_version",
+    "package:electron": "DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --icon=icons/icon --asar.unpack='**/*.node' --app-version=$npm_package_version",
     "postinstall": "electron-rebuild -f -w node-pty"
   },
   "browserslist": {
