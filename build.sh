@@ -294,11 +294,31 @@ build_package() {
 post_build_info() {
     print_status "Installation completed successfully!"
     echo ""
-    print_status "The packaged application is available in the 'ide/dist/desktop/' directory."
+    # Get package name and version from package.json
+    local pkg_name=$(node -p "require('./package.json').name")
+    local pkg_version=$(node -p "require('./package.json').version")
+    
+    # Detect platform and architecture
+    local platform=$(uname -s | tr '[:upper:]' '[:lower:]')
+    local arch=$(uname -m)
+    
+    # Map architecture names to electron-packager format
+    case "$arch" in
+        x86_64) arch="x64" ;;
+        arm64|aarch64) arch="arm64" ;;
+    esac
+    
+    local app_folder="${pkg_name}-v${pkg_version}-${platform}-${arch}"
+    local app_name="${pkg_name}-v${pkg_version}.app"
+    
+    print_status "The packaged application is available in the 'ide/dist/desktop/${app_folder}/' directory."
     echo ""
     print_status "To run the application:"
-    echo "  cd ide/dist/desktop/"
-    echo "  open ide-v*.app"
+    echo "  cd ide/dist/desktop/${app_folder}/"
+    echo "  open ${app_name}"
+    echo ""
+    echo "Or run directly:"
+    echo "  open ide/dist/desktop/${app_folder}/${app_name}"
     echo ""
 }
 
