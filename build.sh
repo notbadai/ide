@@ -35,6 +35,7 @@ command_exists() {
 
 # Parse command line arguments
 parse_arguments() {
+    VOICE_API_URL=""  # Initialize at the start of parse_arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
             --voice)
@@ -160,15 +161,18 @@ init_submodules() {
 create_env_config() {
     print_status "Creating environment configuration..."
 
-    # Create env.ts file if it doesn't exist
-    if [ ! -f "ui/src/env.ts" ]; then
+    # Create env.ts file with the provided voice API URL
+    if [ -n "$VOICE_API_URL" ]; then
+        print_status "Configuring transcription API endpoint: $VOICE_API_URL"
+        cat > ui/src/env.ts << EOF
+export const TRANSCRIPTION_API_ENDPOINT: string = '$VOICE_API_URL'
+EOF
+    else
         cat > ui/src/env.ts << 'EOF'
 export const TRANSCRIPTION_API_ENDPOINT: string = ''
 EOF
-        print_status "Created ui/src/env.ts file"
-    else
-        print_warning "ui/src/env.ts already exists, skipping creation"
     fi
+    print_status "Created ui/src/env.ts file"
 }
 
 # Install Node.js using official installer or NVM
