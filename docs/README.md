@@ -98,6 +98,19 @@ By default, the IDE uses the system-wide configuration located at `Extensions â†
 
 You can override these defaults by creating a `config.yaml` file in your project's root-level `extensions/` directory. This local configuration takes precedence over system-wide settings, enabling per-project customization and easier extension development.
 
+#### Extension Settings
+
+You can pass custom settings to extensions through the `settings` section in `config.yaml`. Settings are organized by extension name and can contain any configuration parameters your extension needs:
+
+```yaml
+settings:
+  extension1:
+    parameter1: "value1"
+    parameter2: "value2"
+  extension2:
+    parameter1: "value1"
+    parameter2: "value2"
+```
 
 ### 2. Extension API
 
