@@ -25,9 +25,7 @@ class FileWatcherManager {
         projectManager.reRenderFiles(project)
         tabsManager.syncWithProject(res.changes)
         statusBar.updateGitBranch(project.gitBranch)
-        for (const onFileSave of projectManager.getOnFileSaveCallbacks()) {
-            onFileSave()
-        }
+        projectManager.runOnFileSaveCallbacks()
     }
 }
 

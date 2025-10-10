@@ -26,6 +26,7 @@ import {inspectPanel} from "../components/inspect_panel"
 import {popup} from "../components/popup"
 import {voiceManager} from '../managers/voice/manager'
 import {toolsManager} from "../managers/tools/manager"
+import {apiKeys} from "../managers/extensions/api_keys"
 
 
 export class EditorView extends ScreenView {
@@ -116,7 +117,7 @@ export class EditorView extends ScreenView {
             toolsManager.updateTools()
             await activityBarManager.restoreActivity(projectManager.project.workspace?.activityState)
             resizableSplitView.restorePaneLayout()
-            toolsManager.registerToolExtensions()
+            apiKeys.renderPopup()
         })
     }
 

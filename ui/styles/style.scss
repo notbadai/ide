@@ -6664,3 +6664,97 @@ metadata {
     background: rgba($secondary-line, 0.6);
   }
 }
+
+.api-keys-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px;
+  min-width: 500px;  
+  max-width: 600px;  
+
+  h6 {
+    margin: 0 0 8px 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: rgba($font-color, 0.9);
+  }
+  
+  .api-keys-description {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: rgba($secondary-line, 0.03);
+    border: 1px solid rgba($secondary-line, 0.1);
+    border-radius: 8px;
+    margin-bottom: 8px;
+
+    p {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: rgba($font-color, 0.8);
+      font-weight: 400;
+    }
+
+    .api-keys-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba($btn-background, 0.05);
+      border-left: 3px solid rgba($btn-background, 0.4);
+      border-radius: 4px;
+
+      i {
+        color: rgba($btn-background, 0.7);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+
+      span {
+        font-weight: 500;
+        color: rgba($btn-background, 0.9);
+      }
+    }
+  }
+
+  .api-key-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: rgba($secondary-line, 0.05);
+    border: 1px solid rgba($secondary-line, 0.15);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba($secondary-line, 0.25);
+      background: rgba($secondary-line, 0.08);
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba($font-color, 0.85);
+    }
+
+    .input-text-area {
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.8rem;
+    }
+
+    .check-box {
+      margin-top: 4px;
+    }
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid rgba($secondary-line, 0.1);
+  }
+}

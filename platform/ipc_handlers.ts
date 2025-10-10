@@ -6,7 +6,8 @@ import {streamService} from "./extensions/streaming/service"
 import {settings} from "./system/settings"
 import {workspaceConfig} from "./system/workspace_config"
 import {FileOperationData} from "../ui/src/models/file_operation"
-import {loadExtensionConfigContent, saveExtensionConfig} from "./system/extension_config"
+import {ApiProvider} from "../ui/src/models/extension"
+import {loadExtensionConfigContent, saveExtensionConfig, updateApiProviders} from "./system/extension_config"
 import {Extensions} from "./system/models"
 
 export interface IPCHandlersOptions {
@@ -124,6 +125,11 @@ class IPCHandlers {
 
         this.handleIPC('fs:saveExtensionConfig', async (configContent: string): Promise<Extensions> => {
             await saveExtensionConfig(configContent)
+            return await fileHandler.getExtensions()
+        })
+
+        this.handleIPC('fs:updateApiProviders', async (apiProviders: ApiProvider[]): Promise<Extensions> => {
+            await updateApiProviders(apiProviders)
             return await fileHandler.getExtensions()
         })
     }

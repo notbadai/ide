@@ -462,3 +462,22 @@ export async function saveExtensionConfig(configContent: string): Promise<void> 
 
     return null
 }
+
+export async function updateApiProviders(apiProviders: ApiProvider[]): Promise<void> {
+    const configPath = path.join(settings.getBaseDirectory(), 'config.yaml')
+
+    try {
+        const configContent = await fs.readFile(configPath, 'utf8')
+        const config = yaml.load(configContent) as ConfigData
+
+        config.api_providers = apiProviders
+        const updatedContent = yaml.dump(config, {
+            lineWidth: -1,
+            noRefs: true,
+            sortKeys: false
+        })
+        await fs.writeFile(configPath, updatedContent, 'utf8')
+    } catch (error) {
+        throw new ConfigError(`failed to update api_providers: ${error.message}`)
+    }
+}
