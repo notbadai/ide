@@ -364,7 +364,7 @@ class ExtensionPane extends BaseComponent {
             messageElem.textContent = extensionError
             this.errorElem.classList.remove('hide')
             this.addError(extensionError)
-            banner.error(extensionError)
+            // banner.error(extensionError)
             return true
         } else {
             this.errorElem.classList.add('hide')
