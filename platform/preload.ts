@@ -1,6 +1,7 @@
 import {contextBridge, ipcRenderer} from 'electron'
 import {FileOperationData} from '../ui/src/models/file_operation'
 import {Extensions, Project} from "./system/models"
+import {ApiProvider} from "../ui/src/models/extension"
 
 export interface ElectronAPI {
     openDirectory: () => Promise<string | null>
@@ -17,6 +18,7 @@ export interface ElectronAPI {
 
     loadExtensionConfigContent: () => Promise<string>
     saveExtensionConfig: (configContent: string) => Promise<Extensions>
+    updateApiProviders: (apiProviders: ApiProvider[]) => Promise<Extensions>
 
     onFileWatcherChanges: (cb: () => void) => void
 
@@ -58,6 +60,7 @@ const api: ElectronAPI = {
 
     loadExtensionConfigContent: () => ipcRenderer.invoke('fs:loadExtensionConfigContent'),
     saveExtensionConfig: (configContent: string) => ipcRenderer.invoke('fs:saveExtensionConfig', configContent),
+    updateApiProviders: (apiProviders: ApiProvider[]) => ipcRenderer.invoke('fs:updateApiProviders', apiProviders),
 
     onFileWatcherChanges: (cb) => ipcRenderer.on('fileWatcher:changes', cb),
 

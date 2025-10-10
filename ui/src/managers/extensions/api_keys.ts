@@ -5,6 +5,11 @@ import {BasicButton} from "../../components/buttons"
 import {popup} from "../../components/popup"
 import {projectManager} from "../project/manager"
 
+enum ApiProviderName {
+    OPENROUTER = 'openrouter',
+    DEEPINFRA = 'deepinfra'
+}
+
 class ApiKeys {
     private elem: HTMLDivElement
     private openrouterInput: Input
@@ -33,7 +38,8 @@ class ApiKeys {
                 $('label', 'OpenRouter')
                 this.openrouterInput = new Input({
                     placeholder: 'Enter OpenRouter API key',
-                    inputValue: ''
+                    inputValue: '',
+                    onKeyDown: this.updateSaveButtonState.bind(this),
                 })
                 this.openrouterInput.render($)
 
@@ -53,7 +59,8 @@ class ApiKeys {
                 $('label', 'DeepInfra')
                 this.deepinfraInput = new Input({
                     placeholder: 'Enter DeepInfra API key',
-                    inputValue: ''
+                    inputValue: '',
+                    onKeyDown: this.updateSaveButtonState.bind(this),
                 })
                 this.deepinfraInput.render($)
 
@@ -76,6 +83,7 @@ class ApiKeys {
                     onButtonClick: this.handleSave.bind(this)
                 })
                 this.saveButton.render($)
+                this.saveButton.disabled = true
             })
 
             $('div', '.api-keys-description', $ => {
@@ -103,12 +111,40 @@ class ApiKeys {
         popup.renderContent(this, true)
     }
 
-    private handleSave() {
+    private updateSaveButtonState(e) {
         const openrouterKey = this.openrouterInput.value.trim()
         const deepinfraKey = this.deepinfraInput.value.trim()
-        const openrouterDefault = this.openrouterCheckbox.checked
-        const deepinfraDefault = this.deepinfraCheckbox.checked
 
+        console.log(openrouterKey, deepinfraKey)
+
+        const hasAtLeastOneKey = openrouterKey.length > 0 || deepinfraKey.length > 0
+        this.saveButton.disabled = !hasAtLeastOneKey
+    }
+
+    private async handleSave() {
+        this.saveButton.disabled = true
+
+        const data = []
+
+        const openrouterKey = this.openrouterInput.value.trim()
+        if (openrouterKey.length > 0) {
+            data.push({
+                provider: ApiProviderName.OPENROUTER,
+                key: openrouterKey,
+                default: this.openrouterCheckbox.checked
+            })
+        }
+
+        const deepinfraKey = this.deepinfraInput.value.trim()
+        if (deepinfraKey.length > 0) {
+            data.push({
+                provider: ApiProviderName.DEEPINFRA,
+                key: deepinfraKey,
+                default: this.deepinfraCheckbox.checked
+            })
+        }
+
+        await window.electronAPI.updateApiProviders(data)
         popup.onClose()
     }
 }
