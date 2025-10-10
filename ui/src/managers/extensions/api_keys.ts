@@ -12,9 +12,9 @@ class ApiKeys {
     private openrouterCheckbox: CheckBox
     private deepinfraCheckbox: CheckBox
     private saveButton: BasicButton
-    
+
     constructor() {
-        
+
     }
 
     public render($: WeyaElementFunction) {
@@ -90,9 +90,13 @@ class ApiKeys {
     }
 
     public renderPopup() {
-        const apiProviders = projectManager.project?.extensions?.apiProviders || []
+        const extensions = projectManager.project?.extensions
+        if (extensions != null && extensions.isLocal) {
+            return
+        }
+        const apiProviders = extensions?.apiProviders || []
         for (const apiProvider of apiProviders) {
-            if (apiProvider.key){
+            if (apiProvider.key) {
                 return
             }
         }
