@@ -105,6 +105,7 @@ class FileHandler {
                 diff: config.getDiffSettings(),
                 tools: config.getTools(),
                 isLocal: this.isLocalConfig,
+                apiProviders: config.getApiProviders()
             }
         } catch (error) {
             return {
@@ -113,6 +114,7 @@ class FileHandler {
                 diff: null,
                 error: error.message,
                 isLocal: this.isLocalConfig,
+                apiProviders: []
             }
         }
     }

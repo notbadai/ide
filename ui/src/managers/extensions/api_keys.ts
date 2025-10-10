@@ -2,6 +2,8 @@ import {WeyaElementFunction} from "../../../../lib/weya/weya"
 import {Input} from "../../components/input"
 import {CheckBox} from "../../components/check_box"
 import {BasicButton} from "../../components/buttons"
+import {popup} from "../../components/popup"
+import {projectManager} from "../project/manager"
 
 class ApiKeys {
     private elem: HTMLDivElement
@@ -87,11 +89,23 @@ class ApiKeys {
         return this.elem
     }
 
+    public renderPopup() {
+        const apiProviders = projectManager.project?.extensions?.apiProviders || []
+        for (const apiProvider of apiProviders) {
+            if (apiProvider.key){
+                return
+            }
+        }
+        popup.renderContent(this, true)
+    }
+
     private handleSave() {
         const openrouterKey = this.openrouterInput.value.trim()
         const deepinfraKey = this.deepinfraInput.value.trim()
         const openrouterDefault = this.openrouterCheckbox.checked
         const deepinfraDefault = this.deepinfraCheckbox.checked
+
+        popup.onClose()
     }
 }
 

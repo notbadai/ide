@@ -1,4 +1,5 @@
 import {File, FileModel} from "./file"
+import {ApiProvider} from "./extension"
 
 export interface DiffSettings {
     min_collapse_lines: number
@@ -21,6 +22,7 @@ export interface Extensions {
     tools?: Tool[]
     error?: string
     isLocal: boolean
+    apiProviders: ApiProvider[]
 }
 
 export interface TabState {

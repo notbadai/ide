@@ -1,6 +1,7 @@
 import {Summary} from "./document";
 import {WorkspaceData} from "./workspace_config"
 import {Tool} from "./extension_config"
+import {ApiProvider} from "../../ui/src/models/extension"
 
 export interface Project {
     project_name: string
@@ -24,4 +25,5 @@ export interface Extensions {
     tools?: Tool[]
     error?: string,
     isLocal: boolean,
+    apiProviders: ApiProvider[],
 }
