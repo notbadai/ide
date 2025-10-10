@@ -276,8 +276,10 @@ class ProjectManager extends BaseComponent {
         }
     }
 
-    public getOnFileSaveCallbacks() {
-        return this.onFileSaveCallbacks
+    public runOnFileSaveCallbacks() {
+        for (const onFileSave of this.onFileSaveCallbacks) {
+            onFileSave()
+        }
     }
 
     private setUncommittedFiles(uncommitted_paths: string[]) {

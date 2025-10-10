@@ -128,8 +128,9 @@ class IPCHandlers {
             return await fileHandler.getExtensions()
         })
 
-        this.handleIPC('fs:updateApiProviders', async (apiProviders: ApiProvider[]): Promise<void> => {
+        this.handleIPC('fs:updateApiProviders', async (apiProviders: ApiProvider[]): Promise<Extensions> => {
             await updateApiProviders(apiProviders)
+            return await fileHandler.getExtensions()
         })
     }
 

@@ -31,9 +31,7 @@ class ConfigEditor {
         this.autoSaveManager = new AutoSaveManager({
             onSave: async () => {
                 projectManager.project.extensions = await window.electronAPI.saveExtensionConfig(this.configContent)
-                for (const onFileSave of projectManager.getOnFileSaveCallbacks()) {
-                    onFileSave()
-                }
+                projectManager.runOnFileSaveCallbacks()
             },
             autoSaveDelayMs: 1_000
         })

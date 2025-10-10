@@ -39,7 +39,7 @@ class ApiKeys {
                 this.openrouterInput = new Input({
                     placeholder: 'Enter OpenRouter API key',
                     inputValue: '',
-                    onKeyDown: this.updateSaveButtonState.bind(this),
+                    onInput: this.updateSaveButtonState.bind(this),
                 })
                 this.openrouterInput.render($)
 
@@ -60,7 +60,7 @@ class ApiKeys {
                 this.deepinfraInput = new Input({
                     placeholder: 'Enter DeepInfra API key',
                     inputValue: '',
-                    onKeyDown: this.updateSaveButtonState.bind(this),
+                    onInput: this.updateSaveButtonState.bind(this),
                 })
                 this.deepinfraInput.render($)
 
@@ -115,8 +115,6 @@ class ApiKeys {
         const openrouterKey = this.openrouterInput.value.trim()
         const deepinfraKey = this.deepinfraInput.value.trim()
 
-        console.log(openrouterKey, deepinfraKey)
-
         const hasAtLeastOneKey = openrouterKey.length > 0 || deepinfraKey.length > 0
         this.saveButton.disabled = !hasAtLeastOneKey
     }
@@ -144,7 +142,8 @@ class ApiKeys {
             })
         }
 
-        await window.electronAPI.updateApiProviders(data)
+        projectManager.project.extensions = await window.electronAPI.updateApiProviders(data)
+        projectManager.runOnFileSaveCallbacks()
         popup.onClose()
     }
 }
