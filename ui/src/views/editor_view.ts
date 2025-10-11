@@ -117,6 +117,7 @@ export class EditorView extends ScreenView {
             toolsManager.updateTools()
             await activityBarManager.restoreActivity(projectManager.project.workspace?.activityState)
             resizableSplitView.restorePaneLayout()
+            toolsManager.registerToolExtensions()
             apiKeys.renderPopup()
         })
     }
