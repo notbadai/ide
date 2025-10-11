@@ -8,4 +8,7 @@ export abstract class BaseComponent {
 
     public renderActionPanel() {
     }
+
+    public async onActive() {
+    }
 }

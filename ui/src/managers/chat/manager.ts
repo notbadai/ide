@@ -160,6 +160,14 @@ class ChatManager extends BaseComponent {
         this.renderActiveContent().then()
     }
 
+    public async onActive() {
+        const activeTab = this.tabs.find(tab => tab.id === this.activeTabId)
+        if (!activeTab) {
+            return
+        }
+        activeTab.chatInstance.focus()
+    }
+
     private renderTabs(): void {
         // clear existing tabs (but keep the add button)
         const addButton = this.addTabButtonElem
@@ -213,6 +221,9 @@ class ChatManager extends BaseComponent {
             }
             this.contentElem.appendChild(chatElement)
         })
+
+        await new Promise(resolve => requestAnimationFrame(resolve))
+        activeTab.chatInstance.focus()
 
         this.setupVoiceRecorderForActiveChat(activeTab)
     }

@@ -285,6 +285,7 @@ class ActivityBarManager {
 
         const component = this.getComponent(activity)
         resizableSplitView.leftRender(component)
+        component.onActive().then()
 
         this.updateConfig()
     }
