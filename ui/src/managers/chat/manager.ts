@@ -214,6 +214,9 @@ class ChatManager extends BaseComponent {
             this.contentElem.appendChild(chatElement)
         })
 
+        await new Promise(resolve => requestAnimationFrame(resolve))
+        activeTab.chatInstance.focus()
+
         this.setupVoiceRecorderForActiveChat(activeTab)
     }
 
