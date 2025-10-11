@@ -95,7 +95,7 @@ setup_python_config() {
         echo "  1. Download Miniconda for macOS:"
         echo "     For Apple Silicon: https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh"
         echo "     For Intel: https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh"
-        echo ""
+       	echo ""
         echo "  2. Install Miniconda:"
         echo "     bash ~/Downloads/Miniconda3-latest-MacOSX-*.sh"
         echo ""
@@ -391,31 +391,36 @@ parse_packages_from_config() {
         return 1
     fi
     
-    # Extract chat extensions (handle list items starting with -)
+    # Extract chat extensions using grep with context
     while IFS= read -r line; do
-        # Extract value after the dash, trim whitespace
-        line=$(echo "$line" | sed 's/^\s*-\s*//;s/\s*$//')
+        line=$(echo "$line" | sed 's/^[[:space:]]*-[[:space:]]*//' | sed 's/[[:space:]]*$//')
         [ -n "$line" ] && packages+=("$line")
-    done < <(awk '/^chat:/{flag=1;next}/^[a-z_]+:/{flag=0}flag&&/^\s*-\s*/{print}' "$config_file")
+    done < <(grep -A 10 '^chat:' "$config_file" | grep '^[[:space:]]*-' | head -20)
     
     # Extract apply extension
-    local apply_pkg=$(awk -F': *' '/^apply:/{print $2}' "$config_file" | sed 's/\s*$//')
+    local apply_pkg=$(grep '^apply:' "$config_file" | sed 's/^apply:[[:space:]]*//' | sed 's/[[:space:]]*$//')
     [ -n "$apply_pkg" ] && packages+=("$apply_pkg")
     
     # Extract symbol_lookup extension
-    local lookup_pkg=$(awk -F': *' '/^symbol_lookup:/{print $2}' "$config_file" | sed 's/\s*$//')
+    local lookup_pkg=$(grep '^symbol_lookup:' "$config_file" | sed 's/^symbol_lookup:[[:space:]]*//' | sed 's/[[:space:]]*$//')
     [ -n "$lookup_pkg" ] && packages+=("$lookup_pkg")
     
     # Extract autocomplete extension
-    local autocomplete_pkg=$(awk -F': *' '/^autocomplete:/{print $2}' "$config_file" | sed 's/\s*$//')
+    local autocomplete_pkg=$(grep '^autocomplete:' "$config_file" | sed 's/^autocomplete:[[:space:]]*//' | sed 's/[[:space:]]*$//')
     [ -n "$autocomplete_pkg" ] && packages+=("$autocomplete_pkg")
     
-    # Extract tools extensions - look for extension field and remove quotes
+    # Extract tools extensions using grep with context
     while IFS= read -r line; do
-        # Extract value after extension:, remove quotes and whitespace more carefully
-        line=$(echo "$line" | sed 's/.*extension:[[:space:]]*"\([^"]*\)".*/\1/' | sed 's/[[:space:]]*$//')
-        [ -n "$line" ] && packages+=("$line")
-    done < <(awk '/^tools:/{flag=1}/^[a-z_]:/{if(!/^tools:/)flag=0}flag&&/extension:/{print}' "$config_file")
+        # Try to extract quoted value first
+        local extracted=$(echo "$line" | sed -n 's/.*extension:[[:space:]]*"\([^"]*\)".*/\1/p')
+        # If no quoted value, try unquoted
+        if [ -z "$extracted" ]; then
+            extracted=$(echo "$line" | sed -n 's/.*extension:[[:space:]]*\([^[:space:]]*\).*/\1/p')
+        fi
+        # Trim whitespace
+        extracted=$(echo "$extracted" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        [ -n "$extracted" ] && packages+=("$extracted")
+    done < <(grep -A 100 '^tools:' "$config_file" | grep 'extension:' | head -20)
     
     # Remove duplicates and empty entries
     packages=($(printf "%s\n" "${packages[@]}" | sort -u | grep -v '^$'))
@@ -472,6 +477,13 @@ install_python_packages() {
     while IFS= read -r line; do
         [ -n "$line" ] && packages+=("$line")
     done < <(parse_packages_from_config "$config_file")
+    
+    # Debug: print parsed packages
+    print_status "Parsed packages from config:"
+    for package in "${packages[@]}"; do
+        print_status "  - $package"
+    done
+    echo ""
     
     # Always install the base IDE package first
     print_status "Installing notbadai_ide (base package)..."
