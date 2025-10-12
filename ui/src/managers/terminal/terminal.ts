@@ -103,6 +103,14 @@ export class TerminalPanel extends BaseComponent {
         this.term.clear()
     }
 
+    public runCommand(command: string, pressEnter: boolean = true) {
+        window.electronAPI.terminalSend?.(this.terminalId, command)
+
+        if (pressEnter) {
+            window.electronAPI.terminalSend?.(this.terminalId, '\r')
+        }
+    }
+
     public focus() {
         this.term.focus()
     }
