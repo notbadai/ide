@@ -27,7 +27,7 @@
     "watch:sass": "sass --style compressed --watch ui/styles/style.scss:dist/css/style.css",
     "electron": "electron .",
     "build:electron": "tsc",
-    "package:electron": "DEBUG=electron-packager electron-packager . \"ide-v$npm_package_version\" --out=dist/desktop --overwrite --icon=icons/icon.icns --asar.unpack='**/*.node' --app-version=$npm_package_version",
+    "package:electron": "DEBUG=electron-packager electron-packager . \"notbadaiide-v$npm_package_version\" --out=dist/desktop --overwrite --icon=icons/icon.icns --asar.unpack='**/*.node' --app-version=$npm_package_version",
     "postinstall": "electron-rebuild -f -w node-pty"
   },
   "browserslist": {
