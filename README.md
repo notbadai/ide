@@ -115,4 +115,4 @@ input box. Setup instructions are available in the [documentation](https://githu
 
 Join our Discord server to connect with other users, get support, and discuss features:
 
-[Join our Discord](https://discord.gg/8MjX9xVS)
+[Join our Discord](https://discord.gg/dR2nGYxa)
