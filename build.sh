@@ -320,7 +320,7 @@ post_build_info() {
     echo ""
     
     # Install to Applications by default
-    local generic_app_name="IDE.app"
+    local generic_app_name="NotBadAI IDE.app"
     local dest_path="/Applications/${generic_app_name}"
     
     # Inform user if replacing existing version
