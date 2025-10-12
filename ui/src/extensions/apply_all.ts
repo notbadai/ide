@@ -81,7 +81,7 @@ class ApplyAllExtension extends BaseExtension {
 
         let sendData = {
             edit_file_path: this.editFilePath == null ? '' : this.editFilePath,
-            prompt: currentCodeBlock.content,
+            patch_text: currentCodeBlock.content,
         }
         await extensionManager.run(this.uuid, sendData)
     }
