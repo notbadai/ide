@@ -6,6 +6,8 @@ import {popup} from "./popup"
 import {applyAllExtension} from "../extensions/apply_all"
 import {applyExtension} from "../extensions/apply"
 import {Dropdown} from "./dropdown"
+import {terminalManager} from "../managers/terminal/manager"
+import {activityBarManager, TERMINAL_PANEL} from "../managers/activity_bar/manager"
 
 
 interface CodeBlockOptions {
@@ -27,6 +29,7 @@ export class CodeBlock {
 
     private applyButton: BasicButton
     private applyAllButton: BasicButton
+    private runInTerminalButton: BasicButton
     private moreButton: BasicButton
     private dropDown: Dropdown
 
@@ -40,6 +43,7 @@ export class CodeBlock {
 
         this.applyButton = new BasicButton({text: 'Apply', onButtonClick: this.onApply.bind(this)})
         this.applyAllButton = new BasicButton({text: 'Apply All', onButtonClick: this.onApplyAll.bind(this)})
+        this.runInTerminalButton = new BasicButton({text: 'Run in Terminal', onButtonClick: this.runInTerminal.bind(this)})
         this.dropDown = new Dropdown({
             options: [
                 {text: 'View', onClick: this.onView.bind(this)},
@@ -107,6 +111,12 @@ export class CodeBlock {
         this.loading(true)
     }
 
+    private runInTerminal() {
+        activityBarManager.openBottomTab(TERMINAL_PANEL)
+        const activateTerminal = terminalManager.activateTerminal.terminal
+        activateTerminal.runCommand(this.content.trim())
+    }
+
     private onMoreButtonClick(e) {
         this.dropDown.rePosition(e)
         this.dropDown.display(true)
@@ -133,6 +143,11 @@ export class CodeBlock {
 
     public get content(): string {
         return this.block.content
+    }
+
+    private isShellLanguage(): boolean {
+        const shellLanguages = ['bash', 'sh', 'shell', 'zsh', 'fish', 'powershell', 'cmd', 'console', 'terminal']
+        return shellLanguages.includes(this.lang.toLowerCase())
     }
 
     private loadingAnimation(loading: boolean) {
@@ -163,7 +178,9 @@ export class CodeBlock {
                         $('span', 'Applied')
                     })
                     $('div', '.buttons', $ => {
-                        if (this.block.path != null) {
+                        if (this.isShellLanguage()) {
+                            this.runInTerminalButton.render($)
+                        } else if (this.block.path != null) {
                             this.applyButton.render($)
                             this.applyAllButton.render($)
                             this.applyButton.disabled = true
