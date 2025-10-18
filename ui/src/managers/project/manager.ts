@@ -120,7 +120,7 @@ class ProjectManager extends BaseComponent {
             operation: 'delete',
             file_path: path
         }).then((res) => {
-            console.log(res)
+            // console.log(res)
             if (!res.success) {
                 banner.error(`${res.error}`)
                 if (onError != null) {
@@ -208,11 +208,11 @@ class ProjectManager extends BaseComponent {
     public onFileOrFolderRename(path: string, newFileName: string, onSuccess: () => void = null, onError: () => void = null) {
         const doc = this._project.getFile(path)
         if (doc == null) {
-            console.log(`renaming a directory: ${path}: ${newFileName}`);
+            // console.log(`renaming a directory: ${path}: ${newFileName}`);
             this.onFolderRename(path, newFileName, onSuccess, onError)
         } else {
             // empty directories also comes here
-            console.log(`renaming a file: ${path}: ${newFileName}`);
+            // console.log(`renaming a file: ${path}: ${newFileName}`);
             this.onFileRename(path, newFileName, onSuccess, onError)
         }
     }

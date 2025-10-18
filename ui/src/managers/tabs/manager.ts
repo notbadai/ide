@@ -454,7 +454,7 @@ class TabsManager extends BaseComponent {
             return false
         }
 
-        console.log('updating the current tab ...')
+        // console.log('updating the current tab ...')
 
         return currentFile.content != this.codeEditor.content
     }

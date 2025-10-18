@@ -13,7 +13,7 @@ class FileWatcherManager {
     public init() {
         this.projectHandleCache = CACHE.getProject()
         window.electronAPI.onFileWatcherChanges(() => {
-            console.log('File watcher changes detected, updating...')
+            // console.log('File watcher changes detected, updating...')
             this.update().then()
         })
     }

@@ -116,8 +116,8 @@ export class AutocompleteWidget {
 
         const fetchTime = new Date().getTime() - fetchStartTime
 
-        console.log('currLinePrefix', this.currentLinePrefix)
-        console.log(`line no: ${line.number} line prefix: ${linePrefix} fetchTime:${fetchTime}`)
+        // console.log('currLinePrefix', this.currentLinePrefix)
+        // console.log(`line no: ${line.number} line prefix: ${linePrefix} fetchTime:${fetchTime}`)
 
         return response.suggestions
     }
