@@ -149,7 +149,7 @@ class VoiceManager {
         // validate audio blob before sending
         const audioBlob = new Blob(audioChunks, {type: 'audio/webm'})
         if (audioBlob.size < 1000) {
-            console.warn('Audio blob too small, skipping transcription')
+            // console.warn('Audio blob too small, skipping transcription')
             return ''
         }
 
@@ -173,7 +173,7 @@ class VoiceManager {
                 body: formData
             })
             const requestTime = Date.now() - requestStart
-            console.log(`Audio transcription request completed in ${requestTime}ms`)
+            // console.log(`Audio transcription request completed in ${requestTime}ms`)
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`)

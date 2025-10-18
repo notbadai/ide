@@ -130,7 +130,7 @@ class ExtensionManager {
         }
 
         if (data.error != null) {
-            console.error(`${extension.name} error:\n` + data.error.message)
+            // console.error(`${extension.name} error:\n` + data.error.message)
             extensionPane.addError(data.error.message, extension.name)
             banner.error(`${extension.name} failed with an error. Click here to see the full error log.`, false, () => {
                 activityBarManager.openTopTab(EXTENSIONS)
@@ -141,7 +141,7 @@ class ExtensionManager {
             extension.onTerminate?.()
             extension.onReceive(data)
         } else if (data.log != null) {
-            console.log(`# ${extension.name} logger:\n` + data.log.message)
+            // console.log(`# ${extension.name} logger:\n` + data.log.message)
         } else if (data.notification != null) {
             const notification = data.notification
             extensionPane.addNotification(notification.message, notification.title, extension.name)

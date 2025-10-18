@@ -112,11 +112,11 @@ function diffWithJsDiff(oldLines: string[], newLines: string[]) {
 
 export function getDiff(oldLines: string[], newLines: string[], matches: number[][]) {
     if (matches && matches.length) {
-        console.log(`using diffWithMatches of size ${matches.length}`)
+        // console.log(`using diffWithMatches of size ${matches.length}`)
         return diffWithMatches(oldLines, newLines, matches)
     }
 
-    console.log(`not using diffWithMatches of size ${matches.length}`)
+    // console.log(`not using diffWithMatches of size ${matches.length}`)
 
     return diffWithJsDiff(oldLines, newLines)
 }

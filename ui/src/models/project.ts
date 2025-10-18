@@ -171,7 +171,7 @@ export class Project {
                     }
                 }
 
-                console.log('changed', existingFile.path, existingFile.version, fileModel.version)
+                // console.log('changed', existingFile.path, existingFile.version, fileModel.version)
 
                 existingFile.close()
                 updatedPaths.push(fileModel.path)
