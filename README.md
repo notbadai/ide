@@ -10,7 +10,7 @@ ideas.
 
 For setting up a development environment and detailed information on using extensions and developing/modifying your own, please see our [documentation](https://github.com/notbadai/ide/blob/main/docs/README.md).
 
-## Installation
+## Installation (macOS Only)
 
 ### Quick Install & Update
 
