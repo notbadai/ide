@@ -1,6 +1,6 @@
 chat:
   - notbadai_chat
-  - notbadai_files_chat
+  - notbadai_tools_chat
 apply: notbadai_apply
 symbol_lookup: notbadai_lookup
 autocomplete: notbadai_autocomplete
